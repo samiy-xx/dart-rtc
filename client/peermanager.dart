@@ -5,15 +5,24 @@ class PeerManager {
   final READYSTATE_OPEN = "open";
   final Logger log = new Logger();
   
+  VideoManager _videoManager;
   List<PeerWrapper> _peers;
-   
-  PeerManager() {
+  
+  VideoManager get videoManager => getVideoManager();
+  PeerManager(VideoManager vm) {
+    _videoManager = vm;
     _peers = new List<PeerWrapper>();
   }
   
-  RtcPeerConnection createPeer() {
+  VideoManager getVideoManager() {
+    if (_videoManager == null)
+      throw new Exception("VideoManager is null, forgot to set it?");
+    return _videoManager;
+  }
+  
+  PeerWrapper createPeer() {
     RtcPeerConnection peer = new RtcPeerConnection({'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]});
-    PeerWrapper wrapper = new PeerWrapper(peer);
+    PeerWrapper wrapper = new PeerWrapper(this, peer);
     peer.on.iceCandidate.add(onIceCandidate);
     peer.on.iceChange.add(onIceChange);
     peer.on.addStream.add(onAddStream);
@@ -23,13 +32,22 @@ class PeerManager {
     peer.on.stateChange.add(onStateChanged);
     
     _peers.add(wrapper);
-    return peer;
+    return wrapper;
   }
   
   PeerWrapper getWrapperForPeer(RtcPeerConnection p) {
     for (int i = 0; i < _peers.length; i++) {
       PeerWrapper wrapper = _peers[i];
       if (wrapper.peer == p)
+        return wrapper;
+    }
+    return null;
+  }
+  
+  PeerWrapper findWrapper(String id) {
+    for (int i = 0; i < _peers.length; i++) {
+      PeerWrapper wrapper = _peers[i];
+      if (wrapper.id == id)
         return wrapper;
     }
     return null;

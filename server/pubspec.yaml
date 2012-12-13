@@ -1,6 +1,8 @@
 name:  sample_pubspec
 description:  A sample application
 
-#dependencies:
+dependencies:
+  uuid: 0.0.8
+  args: { sdk: args }
 #  js: any
 #  unittest: { sdk: unittest }

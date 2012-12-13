@@ -64,6 +64,10 @@ class PacketFactory {
     }
   }
   
+  static String get(Packet p) {
+    return JSON.stringify(p); 
+  }
+  
   static Packet createIcePacket() {
     
   }
