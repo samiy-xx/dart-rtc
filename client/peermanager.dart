@@ -5,11 +5,14 @@ class PeerManager {
   final READYSTATE_OPEN = "open";
   final Logger log = new Logger();
   
+  SignalHandler _signalHandler;
   VideoManager _videoManager;
   List<PeerWrapper> _peers;
   
   VideoManager get videoManager => getVideoManager();
-  PeerManager(VideoManager vm) {
+  
+  PeerManager(SignalHandler sh, VideoManager vm) {
+    _signalHandler = sh;
     _videoManager = vm;
     _peers = new List<PeerWrapper>();
   }
@@ -19,7 +22,11 @@ class PeerManager {
       throw new Exception("VideoManager is null, forgot to set it?");
     return _videoManager;
   }
-  
+  SignalHandler getSignalHandler() {
+    if (_signalHandler == null)
+      throw new Exception("SignalHandler is null, forgot to set it?");
+    return _signalHandler;
+  }
   PeerWrapper createPeer() {
     RtcPeerConnection peer = new RtcPeerConnection({'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]});
     PeerWrapper wrapper = new PeerWrapper(this, peer);

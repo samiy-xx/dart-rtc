@@ -22,6 +22,7 @@ class SignalHandler {
   Logger _log = new Logger();
   WebSocket _ws;
   PeerManager _peerManager;
+  VideoManager _videoManager;
   
   /** Getter for PeerManager */
   PeerManager get peerManager => getPeerManager();
@@ -34,12 +35,9 @@ class SignalHandler {
   /**
    * Constructor
    */
-  SignalHandler() {
-    _peerManager = new PeerManager(this);
-  }
-  
-  SignalHandler.With(PeerManager p) {
-    _peerManager = p;
+  SignalHandler(VideoManager vm) {
+    _videoManager = vm;
+    _peerManager = new PeerManager(this, vm);
   }
   
   void initialize() {
@@ -116,6 +114,7 @@ class SignalHandler {
       }
     
   }
+  
   void send(Packet p) {
     _ws.send(p.toString());
   }
@@ -126,7 +125,7 @@ class SignalHandler {
     p.room = packet.roomId;
     p.id = packet.userId;
     p._isHost = true;
-    p.addLocalStream();
+    p.addStream(_videoManager.getLocalStream());
   }
   
   void handleId(IdPacket id) {

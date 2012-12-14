@@ -12,7 +12,7 @@ part "peermanager.dart";
 part "peerwrapper.dart";
 part "signalhandler.dart";
 
-const bool DEBUG = false;
+const bool DEBUG = true;
 String WEBSOCKET_SERVER = DEBUG 
     ? "ws://127.0.0.1:8234/ws" 
     : "ws://app.faceseer.com:8234/ws";

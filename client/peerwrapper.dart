@@ -114,7 +114,7 @@ class PeerWrapper {
     if (c.candidate != null) {
       log.Debug("Sending local ICE Candidate ${c.candidate.candidate}");
       ICEPacket ice = new ICEPacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id, room);
-      _manager.ge.send(ice);
+      _manager.getSignalHandler().send(ice);
     } else {
       log.Warning("Local ICE Candidate was null");
       
@@ -126,7 +126,7 @@ class PeerWrapper {
   }
   
   void _onAddStream(MediaStreamEvent e) {
-    _manager.getVideoManager().addRemoteStream(e.stream, _userId, true);
+    _manager.getVideoManager().addRemoteStream(e.stream, id, true);
   }
   
   void _onRemoveStream(Event e) {
