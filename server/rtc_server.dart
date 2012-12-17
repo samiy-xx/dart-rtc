@@ -5,7 +5,7 @@ import 'dart:json';
 import 'dart:math';
 import 'dart:isolate';
 import '../packet/packet.dart';
-import '../util/logger.dart';
+import '../util/rtc_utils.dart';
 import 'package:uuid/uuid.dart';
 import 'package:args/args.dart';
 
@@ -34,9 +34,10 @@ void main() {
   
   int p = int.parse(port);
   new Logger().Info("Server process starting");
-  
+  new Logger().Info("Server type=$type");
   Server server;
   if (type == "wheel") {
+    
     server = new WheelServer();
   } else if (type == "room") {
     server = new RoomServer();
