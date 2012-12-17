@@ -41,7 +41,7 @@ void main() {
   } else if (type == "room") {
     server = new RoomServer();
   } else {
-    server = new FacebookServer();
+    //server = new FacebookServer();
   }
     
   try {

@@ -2,13 +2,13 @@ part of rtc_server;
 
 class Container {
   /* Store users */
-  List<User> _users;
+  List<RoomUser> _users;
   
   /* Store rooms */
   List<Room> _rooms;
   
   /* Reference to Server */
-  Server _server;
+  RoomServer _server;
   
   /* logger singleton instance */
   Logger logger = new Logger();
@@ -20,7 +20,7 @@ class Container {
    * @param Server
    */
   Container(Server s) {
-    _users = new List<User>();
+    _users = new List<RoomUser>();
     _rooms = new List<Room>();
     _server = s;
   }
@@ -28,7 +28,7 @@ class Container {
   /**
    * Method to return instance of the Server
    */
-  Server getServer() {
+  RoomServer getServer() {
     return _server; 
   }
   
@@ -39,14 +39,7 @@ class Container {
     return Util.generateId();
   }
   
-  User findRouter(User sender, User target) {
-    _users.filter((User m) => m != sender && m != target).forEach((User u)  {
-      if (u.canRoute) {
-        return u;
-      }
-    });
-    return null;
-  }
+  
   void cleanUp() {
     
     logger.Debug("Users active: ${_users.length} Rooms active: ${_rooms.length}");
@@ -54,7 +47,7 @@ class Container {
     int currentTime = new Date.now().millisecondsSinceEpoch;
     
     for (int i = 0; i < _users.length; i++) {
-      User u = _users[i];
+      RoomUser u = _users[i];
       if (currentTime >= u.lastActivity + DEAD_SOCKET_CHECK && currentTime < u.lastActivity + DEAD_SOCKET_KILL) {
         _server.sendToClient(u.connection, JSON.stringify(new PingPacket.With(u.id, u.room.id)));
       } else if(currentTime >= u.lastActivity + DEAD_SOCKET_KILL) {
@@ -85,12 +78,12 @@ class Container {
     }
   }
   
-  User createUser(WebSocketConnection c) {
+  RoomUser createUser(WebSocketConnection c) {
     String id = genId();
     return createUserFromId(id, c);
   }
   
-  User createUserFromId(String id, WebSocketConnection c) {
+  RoomUser createUserFromId(String id, WebSocketConnection c) {
     
     User u = findUserById(id);
     
@@ -106,7 +99,7 @@ class Container {
     return u;
   }
   
-  void removeUser(User u) {
+  void removeUser(RoomUser u) {
     if (_users.contains(u)) {
       _users.removeAt(_users.indexOf(u));
       
@@ -116,11 +109,11 @@ class Container {
     }
   }
   
-  bool userExist(User userToFind) {
-    return _users.filter((User u) => u == userToFind).length > 0; 
+  bool userExist(RoomUser userToFind) {
+    return _users.filter((RoomUser u) => u == userToFind).length > 0; 
   }
   
-  User findUserByConn(WebSocketConnection c) {
+  RoomUser findUserByConn(WebSocketConnection c) {
     User u = null;
     
     for(int i = 0; i < _users.length; i++) {
@@ -134,7 +127,7 @@ class Container {
   }
   
   // TODO: make this match both id and connection
-  User findUserById(String id) {
+  RoomUser findUserById(String id) {
     
     User u = null;
     
@@ -150,8 +143,8 @@ class Container {
     return u;
   }
   
-  List<User> usersInRoom(Room r) {
-    return _users.filter((User u) => u._room == r);
+  List<RoomUser> usersInRoom(Room r) {
+    return _users.filter((RoomUser u) => u._room == r);
   }
   
   

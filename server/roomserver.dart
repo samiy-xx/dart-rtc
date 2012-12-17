@@ -8,185 +8,16 @@ part of rtc_server;
  * and keeping track of rooms
  */
 class RoomServer extends Server {
-  HttpServer _httpServer;
-  WebSocketHandler _wsHandler;
   
-  // Container keeps track of users and rooms
-  Container _container;
-  
-  // Ip address socket is going to be bind
-  String _ip = null;
-  
-  // path for websocket
-  String _path = null;
-  
-  // path for commands from server
-  String _commandPath = null;
-  
-  // port to bind to
-  int _port = 8234;
-  
-  // 2 second session timeout
-  int _sessionTimeout = 2;
-  
-  // 1 minute
-  int _timerTickInterval = 60000;
-  
-  Logger logger = new Logger();
-  
-  Timer _timer;
-  
-  RoomServer() {
-    _httpServer = new HttpServer();
-    _httpServer.sessionTimeout = _sessionTimeout;
-    _wsHandler = new WebSocketHandler();
-    _container = new Container(this);
-    _timer = new Timer.repeating(_timerTickInterval, onTimerTick);
+  RoomServer() : super() {
+    registerHandler("helo", handleIncomingHelo);
+    registerHandler("bye", handleIncomingBye);
+    registerHandler("pong", handleIncomingPong);
+    registerHandler("description", handleIncomingDescription);
+    registerHandler("ice", handleIncomingIce);
+    registerHandler("connected", handleIncomingConnected);
   }
   
-  void stop() {
-    logger.Info("Stopping server");
-    _timer.cancel();
-    _httpServer.close();
-  }
-  
-  void listen([String ip="0.0.0.0", int port=8234, String path="/ws", String command="/command"]) {
-    _ip = ip;
-    _path = path;
-    _port = port;
-    _commandPath = command;
-    
-    _httpServer.addRequestHandler((req) => req.path == _path, handler);
-    _httpServer.addRequestHandler((req) => req.path == _commandPath, commandHandler);
-    
-    _httpServer.onError = (err) {
-      logger.Error(err);
-    };
-    run();
-  }
-  
-  void commandHandler(HttpRequest request, HttpResponse response) {
-    print(request.connectionInfo.remoteHost);
-    print(request.method);
-    print(request.path);
-   
-    request.inputStream.onData = () {
-      print(request.contentLength);
-      print(request.inputStream.available());
-      print(new String.fromCharCodes(request.inputStream.read(6)));
-      
-    };
-    response.statusCode = 200;
-    response.outputStream.writeString("Hihihi");
-    response.outputStream.close();
-  }
-  
-  void handler(HttpRequest request, HttpResponse response) {
-    
-    print("Incoming connection from: ${request.connectionInfo.remoteHost}");
-    _wsHandler.onRequest(request, response);
-  
-  }
-  
-  void run() {
-    logger.Info("Starting server on ip $_ip and port $_port");
-    
-    _wsHandler.onOpen = (WebSocketConnection conn) {
-      try {
-      conn.onMessage = (message) {
-        logger.Debug("Raw message $message");
-        Packet p = PacketFactory.getPacketFromString(message);
-        
-        switch (p.packetType) {
-          case "helo":
-            logger.Debug("HELO Packet");
-            User u = _container.findUserByConn(conn);
-            
-            // Dont allow multiple helos's from same connection.
-            // could be spam.
-            if (u != null) {
-              conn.close(1003, "Already HELO'd");
-              logger.Warning("User exists, disconnecting");
-            }
-            handleIncomingHelo(p, conn);
-            logger.Info(displayStatus());
-            break;
-          case "bye":
-            logger.Debug ("BYE Packet");
-            handleIncomingBye(p, conn);
-            logger.Info(displayStatus());
-            break;
-          case "desc":
-            logger.Debug ("DESCRIPTION Packet");
-            handleIncomingDescription(p, conn);
-            break;
-          case "ice":
-            logger.Debug ("ICE Packet");
-            handleIncomingIce(p, conn);
-            break;
-          case "pong":
-            logger.Debug ("PONG Packet");
-            handleIncomingPong(p, conn);
-            break;
-          case "connected":
-            logger.Debug ("CONNECTED Packet");
-            handleIncomingConnected(p, conn);
-            break;
-          case "route":
-            logger.Debug ("ROUTE Packet");
-            handleIncomingRouteRequest(p, conn);
-            break;
-          default:
-            logger.Debug("UNKNOWN Packet");
-            break;
-        }
-        
-      };
-      } on Exception catch(e) {
-        logger.Error("Error onMessage: $e");
-      } catch(e) {
-        logger.Error("Last catch onMessage: $e");
-      }
-      
-      
-      conn.onClosed = (int status, String reason) {
-        logger.Debug('closed with $status for $reason');
-        logger.Info(displayStatus());
-      };
-      
-      
-    };
-    
-    _httpServer.listen(_ip, _port);
-  }
-  
-  String displayStatus() {
-    StringBuffer buffer = new StringBuffer();
-    buffer.add("Users: ${_container.userCount} Rooms: ${_container.roomCount}");
-    return buffer.toString();
-  }
-  void sendToClient(WebSocketConnection c, String p) {
-    try {
-      c.send(p);
-    } catch(e) {
-      logger.Debug("Socket Dead? removing connection");
-      try {
-        User u = _container.findUserByConn(c);
-        if (u != null) {
-          _container.removeUser(u);
-          u.room = null;
-          u = null;
-        }
-        c.close(1000, "Assuming dead");
-      } catch (e) {
-        logger.Debug("Last catch, sendToClient $e");
-      }
-    }
-  }
-  
-  void onTimerTick(Timer t) {
-    _container.cleanUp();
-  }
   /**
    * handleIncomingHelo
    * Handles Helo packet, creates user and assigns to room
@@ -194,7 +25,7 @@ class RoomServer extends Server {
   void handleIncomingHelo(HeloPacket helo, WebSocketConnection c) {
     try {
       // Create the user
-      User u;
+      RoomUser u;
       if (helo.userId != null && !helo.userId.isEmpty)
         u = _container.createUserFromId(helo.userId, c);
       else
@@ -233,7 +64,7 @@ class RoomServer extends Server {
   }
   
   void handleIncomingBye(ByePacket p, c) {
-    User sender = _container.findUserByConn(c);
+    RoomUser sender = _container.findUserByConn(c);
     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
     
     logger.Debug("Notifying users, user leaving");
@@ -253,10 +84,10 @@ class RoomServer extends Server {
   
   void handleIncomingDescription(DescriptionPacket desc, WebSocketConnection c) {
     
-    User sender = _container.findUserByConn(c);
+    RoomUser sender = _container.findUserByConn(c);
     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
     
-    User receiver = _container.findUserById(desc.userId);
+    RoomUser receiver = _container.findUserById(desc.userId);
     receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
     
     if (sender == null || receiver == null) {
@@ -281,10 +112,10 @@ class RoomServer extends Server {
   }
   
   void handleIncomingIce(ICEPacket ice, WebSocketConnection c) {
-    User sender = _container.findUserByConn(c);
+    RoomUser sender = _container.findUserByConn(c);
     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
     
-    User receiver = _container.findUserById(ice.userId);
+    RoomUser receiver = _container.findUserById(ice.userId);
     receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
     
     if (sender == null || receiver == null) {
@@ -308,23 +139,23 @@ class RoomServer extends Server {
   }
   
   void handleIncomingConnected(ConnectedPacket p, WebSocketConnection c) {
-    User sender = _container.findUserByConn(c);
+    RoomUser sender = _container.findUserByConn(c);
     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
     
-    User receiver = _container.findUserById(p.target);
+    RoomUser receiver = _container.findUserById(p.target);
     receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
     
     sender.talkTo(receiver);
   }
-  
+  /*
   void handleIncomingRouteRequest(RoutePacket p, WebSocketConnection c) {
-    User sender = _container.findUserByConn(c);
-    User target = _container.findUserById(p.target);
+    RoomUser sender = _container.findUserByConn(c);
+    RoomUser target = _container.findUserById(p.target);
     
-    User router = _container.findRouter(sender, target);
+    RoomUser router = _container.findRouter(sender, target);
     
     if (router != null) {
       sendToClient(sender.connection, JSON.stringify(new RoutePacket.With(sender.id, target.id, router.id)));
     }
-  }
+  }*/
 }

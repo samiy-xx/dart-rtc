@@ -33,13 +33,13 @@ class Room {
    * Joins the room
    * @param User joining the room
    */
-  void join(User newUser) {
+  void join(RoomUser newUser) {
     if (!canJoin)
       return;
     
     newUser.room = this;
     // Get the server
-    Server server = container.getServer();
+    RoomServer server = container.getServer();
     
     // Create a join packet to notify existing users in room
     String jp = JSON.stringify(new JoinPacket.With(id, newUser.id));
@@ -58,7 +58,7 @@ class Room {
     });
   }
   
-  void leave(User u) {
+  void leave(RoomUser u) {
     u.room = null;
     if (userCount <= 0)
       container.removeRoom(this);
