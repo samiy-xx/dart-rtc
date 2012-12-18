@@ -1,27 +1,25 @@
 library signaling_packets;
 import 'dart:json';
 
-part 'packettype.dart';
-part 'helopacket.dart';
-part 'descpacket.dart';
-part 'icepacket.dart';
-part 'userpacket.dart';
-part 'roompacket.dart';
-part 'byepacket.dart';
-part 'joinpacket.dart';
-part 'idpacket.dart';
-part 'ackpacket.dart';
-part 'pingpacket.dart';
-part 'pongpacket.dart';
-part 'packetfactory.dart';
-part 'routepacket.dart';
-part 'connectedpacket.dart';
-part 'InvalidPacketException.dart';
+part 'src/packettype.dart';
+part 'src/basepacket.dart';
+part 'src/InvalidPacketException.dart';
 
-abstract class Packet {
-  String packetType;
-  Map toJson();
-  String toString() {
-    return JSON.stringify(toJson());
-  }
-}
+part 'lib/helopacket.dart';
+part 'lib/descpacket.dart';
+part 'lib/icepacket.dart';
+part 'lib/userpacket.dart';
+part 'lib/roompacket.dart';
+part 'lib/byepacket.dart';
+part 'lib/joinpacket.dart';
+part 'lib/idpacket.dart';
+part 'lib/ackpacket.dart';
+part 'lib/pingpacket.dart';
+part 'lib/pongpacket.dart';
+part 'lib/packetfactory.dart';
+part 'lib/routepacket.dart';
+part 'lib/connectedpacket.dart';
+part 'lib/random.dart';
+
+
+
