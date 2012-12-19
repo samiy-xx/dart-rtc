@@ -97,21 +97,22 @@ class Server {
         conn.onMessage = (message) {
           logger.Debug("Raw message $message");
           Packet p = PacketFactory.getPacketFromString(message);
-          
-          if (p.packetType == "helo") {
-            User u = _container.findUserByConn(conn);
-            if (u != null) {
-              conn.close(1003, "Already HELO'd");
-              logger.Warning("User exists, disconnecting");
+          if (p != null) {
+            if (p.packetType == "helo") {
+              User u = _container.findUserByConn(conn);
+              if (u != null) {
+                conn.close(1003, "Already HELO'd");
+                logger.Warning("User exists, disconnecting");
+              }
             }
-          }
-          
-          Function f = getHandler(p.packetType);
-          if (f != null) {
-            print ("handler found");
-            f(p, conn);
-          } else {
-            logger.Warning("Incoming packet ${p.packetType} but no handler registered");
+            
+            Function f = getHandler(p.packetType);
+            if (f != null) {
+              print ("handler found");
+              f(p, conn);
+            } else {
+              logger.Warning("Incoming packet ${p.packetType} but no handler registered");
+            }
           }
           
         };

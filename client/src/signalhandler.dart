@@ -42,7 +42,10 @@ class SignalHandler {
   
   set channelId(String value) => _channelId = value;
   
-  Map<String, Function> _methodHandlers;
+  String get id => _id;
+  String get channelId => _channelId;
+  
+  Map<String, List<Function>> _methodHandlers;
   
   /**
    * Constructor
@@ -50,25 +53,23 @@ class SignalHandler {
   SignalHandler(VideoManager vm) {
     _videoManager = vm;
     _peerManager = new PeerManager(this, vm);
-    _methodHandlers = new Map<String, Function>();
+    _methodHandlers = new Map<String, List<Function>>();
     
     registerHandler("ping", handlePing);
     registerHandler("ice", handleIce);
     registerHandler("description", handleDescription);
     registerHandler("bye", handleBye);
     registerHandler("connected", handleConnectionSuccess);
-    
-    
+    registerHandler("join", handleJoin);
   }
   
   void registerHandler(String type, Function handler) {
-    if (_methodHandlers.containsKey(type))
-      return;
-    
-    _methodHandlers[type] = handler;
+    if (!_methodHandlers.containsKey(type))
+      _methodHandlers[type] = new List<Function>();
+    _methodHandlers[type].add(handler);
   }
   
-  Function getHandler(String type) {
+  List<Function> getHandlers(String type) {
     if (_methodHandlers.containsKey(type))
       return _methodHandlers[type];
     
@@ -122,21 +123,33 @@ class SignalHandler {
       if (p.packetType == null || p.packetType.isEmpty)
         return;
       
-      Function f = getHandler(p.packetType);
-      if (f != null) {
-        f(p);
+      List<Function> handlers = getHandlers(p.packetType);
+      if (handlers != null) {
+        for (Function f in handlers)
+          f(p);
       } else {
         _log.Warning("Packet ${p.packetType} arrived but no handler set");
       }
+        
+      //Function f = getHandler(p.packetType);
+      //if (f != null) {
+      //  f(p);
+      //} else {
+      //  _log.Warning("Packet ${p.packetType} arrived but no handler set");
+      //}
   }
   
-  void send(Packet p) {
-    _ws.send(p.toString());
+  void send(String p) {
+    _ws.send(p);
+  }
+  
+  void handleJoin(JoinPacket p) {
+    if (p.id == _id)
+      _channelId = p.channelId;
   }
   
   void handleConnectionSuccess(ConnectionSuccessPacket p) {
     _log.Debug("Connection successfull user ${p.id}");
-    //_roomId = ack.roomId;
     _id = p.id;
   }
   

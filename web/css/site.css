@@ -1,0 +1,6 @@
+#chatText {
+  width: 800px;
+  height: 400px;
+  overflow:auto;
+  border: 1px solid #000; 
+}

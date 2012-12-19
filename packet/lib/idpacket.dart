@@ -2,21 +2,21 @@ part of signaling_packets;
 
 class IdPacket implements Packet {
   IdPacket();
-  IdPacket.With(this.userId, this.roomId);
+  IdPacket.With(this.id, this.channelId);
   
   String packetType = PacketType.ID;
-  String roomId = "";
-  String userId = "";
+  String channelId = "";
+  String id = "";
   
   Map toJson() {
     return {
       'packetType': packetType,
-      'roomId': roomId,
-      'userId': userId
+      'channelId': channelId,
+      'id': id
     };
   }
   
   static IdPacket fromMap(Map m) {
-    return new IdPacket.With(m['userId'], m['roomId']);
+    return new IdPacket.With(m['id'], m['channelId']);
   }
 }

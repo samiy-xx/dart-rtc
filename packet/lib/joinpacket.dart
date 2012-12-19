@@ -2,21 +2,21 @@ part of signaling_packets;
 
 class JoinPacket implements Packet {
   JoinPacket();
-  JoinPacket.With(this.roomId, this.userId);
+  JoinPacket.With(this.channelId, this.id);
   
   String packetType = PacketType.JOIN;
-  String roomId = "";
-  String userId = "";
+  String channelId = "";
+  String id = "";
   
   Map toJson() {
     return {
       'packetType': packetType,
-      'roomId': roomId,
-      'userId': userId
+      'channelId': channelId,
+      'id': id
     };
   }
   
   static JoinPacket fromMap(Map m) {
-    return new JoinPacket.With(m['roomId'], m['userId']);
+    return new JoinPacket.With(m['channelId'], m['id']);
   }
 }

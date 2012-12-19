@@ -17,6 +17,6 @@ class UserMessage implements Packet {
   }
   
   static UserMessage fromMap(Map m) {
-      return new UserMessage.With(m['userId'], m['message']);
+      return new UserMessage.With(m['id'], m['message']);
   }
 }

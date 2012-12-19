@@ -78,10 +78,27 @@ class ChannelServer extends Server {
   }
 
   void handleUserMessage(UserMessage um, WebSocketConnection c) {
-    User user = _container.findUserByConn(c);
-    User other = _container.findUserById(um.id);
-    
-    um.id = user.id;
-    sendToClient(other.connection, PacketFactory.get(um));
+    try {
+      if (um.id == null || um.id.isEmpty) {
+        print ("id was null or empty");
+        return;
+      }
+      User user = _container.findUserByConn(c);
+      User other = _container.findUserById(um.id);
+      
+      if (user == null || other == null) {
+        print("user wass not found");
+        return;
+      }
+      
+      um.id = user.id;
+      print("handling user message 2");
+      sendToClient(other.connection, PacketFactory.get(um));
+      print("handling user message 3");
+    } on NoSuchMethodError catch(e) {
+      print("Somethign was null: $e");
+    } catch(e) {
+      print(e);
+    }
   }
 }

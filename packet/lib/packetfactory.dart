@@ -50,7 +50,9 @@ class PacketFactory {
         case "route":
           p = RoutePacket.fromMap(m);
           break;
-        
+        case "usermessage":
+          p = UserMessage.fromMap(m);
+          break;
         default:
           print("Unkown packet");
           p = null;
