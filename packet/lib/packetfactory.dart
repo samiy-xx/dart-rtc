@@ -29,8 +29,8 @@ class PacketFactory {
         case "ice":
           p = ICEPacket.fromMap(m);
           break;
-        case "ack":
-          p = AckPacket.fromMap(m);
+        case "connected":
+          p = ConnectionSuccessPacket.fromMap(m);
           break;
         case "id":
           p = IdPacket.fromMap(m);
@@ -50,9 +50,7 @@ class PacketFactory {
         case "route":
           p = RoutePacket.fromMap(m);
           break;
-        case "connected":
-          p = ConnectedPacket.fromMap(m);
-          break;
+        
         default:
           print("Unkown packet");
           p = null;
@@ -66,9 +64,5 @@ class PacketFactory {
   
   static String get(Packet p) {
     return JSON.stringify(p); 
-  }
-  
-  static Packet createIcePacket() {
-    
   }
 }

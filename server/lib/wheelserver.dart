@@ -9,11 +9,12 @@ class WheelServer extends Server {
     registerHandler("helo", handleIncomingHelo);
     registerHandler("bye", handleIncomingBye);
     registerHandler("random", handleRandomUserRequest);
+    
   }
   
   void handleIncomingHelo(HeloPacket p, WebSocketConnection c) {
     User u = _container.createUser(c);
-    sendToClient(c, JSON.stringify(new AckPacket.With(u.id, "")));
+    sendToClient(c, JSON.stringify(new ConnectionSuccessPacket.With(u.id)));
   }
   
   void handleIncomingBye(HeloPacket p, WebSocketConnection c) {

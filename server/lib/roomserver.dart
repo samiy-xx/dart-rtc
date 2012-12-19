@@ -12,7 +12,7 @@ class RoomServer extends Server {
   RoomServer() : super() {
     registerHandler("helo", handleIncomingHelo);
     registerHandler("bye", handleIncomingBye);
-    registerHandler("connected", handleIncomingConnected);
+    registerHandler("peercreated", handleIncomingConnected);
     
     _container = new RoomUserContainer(this);
   }
@@ -41,7 +41,8 @@ class RoomServer extends Server {
       if (r != null && r.canJoin) {
         logger.Debug("room found, joining.");
         //c.send(JSON.stringify(new AckPacket.With(u.id, r.id)));
-        sendToClient(c, JSON.stringify(new AckPacket.With(u.id, r.id)));
+        sendToClient(c, JSON.stringify(new ConnectionSuccessPacket.With(u.id)));
+        sendToClient(c, JSON.stringify(new JoinPacket.With(u.id, r.id)));
         //u.room = r;
         r.join(u);
       } else {
@@ -50,7 +51,8 @@ class RoomServer extends Server {
         if (r != null && r.canJoin) {
           logger.Debug("room created joining with");
           //c.send(JSON.stringify(new AckPacket.With(u.id, r.id)));
-          sendToClient(c, JSON.stringify(new AckPacket.With(u.id, r.id)));
+          sendToClient(c, JSON.stringify(new ConnectionSuccessPacket.With(u.id)));
+          sendToClient(c, JSON.stringify(new JoinPacket.With(u.id, r.id)));
           //u.room = r;
           r.join(u);
         }
@@ -74,11 +76,11 @@ class RoomServer extends Server {
     logger.Debug("User terminated");
   }
   
-  void handleIncomingConnected(ConnectedPacket p, WebSocketConnection c) {
+  void handleIncomingConnected(PeerCreatedPacket p, WebSocketConnection c) {
     RoomUser sender = _container.findUserByConn(c);
     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
     
-    RoomUser receiver = _container.findUserById(p.target);
+    RoomUser receiver = _container.findUserById(p.id);
     receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
     
     sender.talkTo(receiver);

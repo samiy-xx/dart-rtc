@@ -22,16 +22,16 @@ class PeerManager {
       throw new Exception("VideoManager is null, forgot to set it?");
     return _videoManager;
   }
+  
   SignalHandler getSignalHandler() {
     if (_signalHandler == null)
       throw new Exception("SignalHandler is null, forgot to set it?");
     return _signalHandler;
   }
+  
   PeerWrapper createPeer() {
     RtcPeerConnection peer = new RtcPeerConnection({'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]});
     PeerWrapper wrapper = new PeerWrapper(this, peer);
-    peer.on.iceCandidate.add(onIceCandidate);
-    peer.on.iceChange.add(onIceChange);
     peer.on.addStream.add(onAddStream);
     peer.on.removeStream.add(onRemoveStream);
     peer.on.negotiationNeeded.add(onNegotiationNeeded);
@@ -77,7 +77,12 @@ class PeerManager {
   }
   
   void onAddStream(MediaStreamEvent e) {
-    
+    PeerWrapper wrapper = getWrapperForPeer(e.target);
+    getVideoManager().addRemoteStream(e.stream, wrapper.id, true);
+  }
+  
+  void remove(PeerWrapper p) {
+    p.close();
   }
   
   void onStateChanged(Event e) {

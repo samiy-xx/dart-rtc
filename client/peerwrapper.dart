@@ -5,12 +5,17 @@ part of rtc_client;
  * Wraps the peer connection comfortably
  */
 class PeerWrapper {
+  
+  final READYSTATE_CLOSED = "closed";
+  final READYSTATE_OPEN = "open";
+  
   /** Session Description type offer */
   final String SDP_OFFER = 'offer';
   
   /** Session Description type answer */
   final String SDP_ANSWER = 'answer';
   
+  RtcDataChannel _channel;
   /* The connection !! */
   RtcPeerConnection _peer;
   
@@ -54,6 +59,9 @@ class PeerWrapper {
     _peer.on.removeStream.add(_onRemoveStream);
     _peer.on.negotiationNeeded.add(_onNegotiationNeeded);
     _peer.on.open.add((Event e) => _isOpen = true);
+    
+    _channel = _peer.createDataChannel("1");
+    //_channel.on.message.add(listener, useCapture)
   }
   
   void setSessionDescription(RtcSessionDescription sdp) {
@@ -126,7 +134,8 @@ class PeerWrapper {
   }
   
   void _onAddStream(MediaStreamEvent e) {
-    _manager.getVideoManager().addRemoteStream(e.stream, id, true);
+    //handle in manager?
+    //_manager.getVideoManager().addRemoteStream(e.stream, id, true);
   }
   
   void _onRemoveStream(Event e) {
@@ -145,8 +154,14 @@ class PeerWrapper {
     log.Error(error);
   }
   
+  void close() {
+    if (_peer.readyState != READYSTATE_CLOSED)
+      _peer.close();  
+  }
+  
   void dispose() {
-    _peer.close();
+    if (_peer.readyState != READYSTATE_CLOSED)
+      _peer.close();
     _peer = null;
   }
 }

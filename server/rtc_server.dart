@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:json';
 import 'dart:math';
 import 'dart:isolate';
+
+
 import '../packet/packet.dart';
 import '../util/rtc_utils.dart';
 import 'package:uuid/uuid.dart';
@@ -12,17 +14,24 @@ import 'package:args/args.dart';
 part "src/server.dart";
 part "src/user.dart";
 part "src/util.dart";
-part "src/room.dart";
+part "src/channel.dart";
+part "src/basecontainer.dart";
+part "src/basechannelcontainer.dart";
+part "src/baseusercontainer.dart";
+
 part "src/roomusercontainer.dart";
 part "src/usercontainer.dart";
+part "src/channelcontainer.dart";
 
+part "lib/channelserver.dart";
 part "lib/roomserver.dart";
 part "lib/wheelserver.dart";
 part "lib/facebookserver.dart";
-part "lib/roomuser.dart";
+part "lib/channeluser.dart";
+part "lib/wheeluser.dart";
 
-const int DEAD_SOCKET_CHECK = 60000 * 5;
-const int DEAD_SOCKET_KILL = DEAD_SOCKET_CHECK * 2;
+const int DEAD_SOCKET_CHECK = 6000;
+const int DEAD_SOCKET_KILL = DEAD_SOCKET_CHECK * 4;
 const int RANDOM_ID_LENGTH = 8;
 
 void main() {
@@ -43,6 +52,8 @@ void main() {
     server = new WheelServer();
   } else if (type == "room") {
     server = new RoomServer();
+  } else  if (type == "channel") {
+    server = new ChannelServer();
   } else {
     //server = new FacebookServer();
   }

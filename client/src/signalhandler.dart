@@ -4,6 +4,7 @@ part of rtc_client;
  * SignalHandler
  */
 class SignalHandler {
+  /* Web socket status codes */
   //TODO: These are not all correct
   static final int CLOSE_NORMAL = 1000; 
   static final int CLOSE_GOING_AWAY = 1001; 
@@ -20,8 +21,14 @@ class SignalHandler {
   static final int HANDSHAKE_FAILURE = 1015;
   
   Logger _log = new Logger();
+  
+  /* Web socket connection */
   WebSocket _ws;
+  
+  /* Peer manager */
   PeerManager _peerManager;
+  
+  /* Video manager */
   VideoManager _videoManager;
   
   /** Getter for PeerManager */
@@ -30,8 +37,11 @@ class SignalHandler {
   /** Setter for PeerMAnager*/
   set peerManager(PeerManager p) => setPeerManager(p);
   
-  String _userId;
-  String _roomId;
+  String _id;
+  String _channelId;
+  
+  set channelId(String value) => _channelId = value;
+  
   Map<String, Function> _methodHandlers;
   
   /**
@@ -41,6 +51,14 @@ class SignalHandler {
     _videoManager = vm;
     _peerManager = new PeerManager(this, vm);
     _methodHandlers = new Map<String, Function>();
+    
+    registerHandler("ping", handlePing);
+    registerHandler("ice", handleIce);
+    registerHandler("description", handleDescription);
+    registerHandler("bye", handleBye);
+    registerHandler("connected", handleConnectionSuccess);
+    
+    
   }
   
   void registerHandler(String type, Function handler) {
@@ -57,15 +75,18 @@ class SignalHandler {
     return null;
   }
   
-  void initialize() {
+  void initialize([String host]) {
     if (_peerManager == null)
       throw new Exception("PeerManager is null");
     
-    _ws = new WebSocket(WEBSOCKET_SERVER);
-    _ws.on.open.add(onOpen);  
-    _ws.on.close.add(onClose);  
-    _ws.on.error.add(onError);  
-    _ws.on.message.add(onMessage);
+    if (_channelId == null)
+      throw new Exception("channelId is null");
+    
+    _ws = new WebSocket(?host ? host :WEBSOCKET_SERVER);
+    _ws.on.open.add(_onOpen);  
+    _ws.on.close.add(_onClose);  
+    _ws.on.error.add(_onError);  
+    _ws.on.message.add(_onMessage);
   }
   
   void setPeerManager(PeerManager p) {
@@ -79,20 +100,24 @@ class SignalHandler {
     return _peerManager;
   }
   
-  void onOpen(Event e) {
-    _log.Debug("WebSocket connection opened, sending HELO");
-    _ws.send(JSON.stringify(new HeloPacket()));
+  PeerWrapper createPeerWrapper() {
+    return _peerManager.createPeer();
   }
   
-  void onClose(CloseEvent e) {
+  void _onOpen(Event e) {
+    _log.Debug("WebSocket connection opened, sending HELO, ${_ws.readyState}");
+    _ws.send(JSON.stringify(new HeloPacket.With(_channelId, "")));
+  }
+  
+  void _onClose(CloseEvent e) {
     _log.Debug("Connection closed ${e.code.toString()} ${e.reason}");
   }
   
-  void onError(Event e) {
-
+  void _onError(Event e) {
+    _log.Error("Error $e");
   }
   
-  void onMessage(MessageEvent e) {
+  void _onMessage(MessageEvent e) {
       Packet p = PacketFactory.getPacketFromString(e.data);
       if (p.packetType == null || p.packetType.isEmpty)
         return;
@@ -103,89 +128,70 @@ class SignalHandler {
       } else {
         _log.Warning("Packet ${p.packetType} arrived but no handler set");
       }
-      /*
-      switch (p.packetType) {
-        case "join":
-          handleJoin(p);
-          break;
-        case "ack":
-          handleAck(p);
-          break;
-        case "ice":
-          handleIce(p);
-          break;
-        case "desc":
-          handleDescription(p);
-          break;
-        case "id":
-          handleId(p);
-          break;
-        case "ping":
-          handlePing(p);
-          break;
-        case "bye":
-          handleBye(p);
-          break;
-        case "route":
-          handleRouteReply(p);
-          break;
-        case "routeme":
-          handleRoute(p);
-          break;
-        default:
-          _log.Warning("Received unkown message $p");
-          break;
-      }*/
-    
   }
   
   void send(Packet p) {
     _ws.send(p.toString());
   }
   
-  void handleJoin(JoinPacket packet) {
-    _log.Debug("JoinPacket room ${packet.roomId} user ${packet.userId}");
-    PeerWrapper p = _peerManager.createPeer();
-    p.room = packet.roomId;
-    p.id = packet.userId;
-    p._isHost = true;
-    p.addStream(_videoManager.getLocalStream());
-  }
-  
-  void handleId(IdPacket id) {
-    _log.Debug("ID packet: room ${id.roomId} user ${id.userId}");
-    PeerWrapper p = _peerManager.createPeer();
-    p.id = id.userId;
-    p.room = id.roomId;
-  }
-  
-  void handleAck(AckPacket ack) {
-    _log.Debug("ACK Packet, assigning room ${ack.roomId} user ${ack.userId}");
-    _roomId = ack.roomId;
-    _userId = ack.userId;
+  void handleConnectionSuccess(ConnectionSuccessPacket p) {
+    _log.Debug("Connection successfull user ${p.id}");
+    //_roomId = ack.roomId;
+    _id = p.id;
   }
   
   void handleIce(ICEPacket p) {
+    RtcIceCandidate candidate = new RtcIceCandidate({
+      'candidate': p.candidate,
+      'sdpMid': p.sdpMid,
+      'sdpMLineIndex': p.sdpMLineIndex
+    });
     
+    PeerWrapper peer = _peerManager.findWrapper(p.userId);
+    //Peer peer = findPeer(p.roomId, p.userId);
+    if (peer != null) {
+      peer.addRemoteIceCandidate(candidate);
+    }
   }
   
   void handleDescription(DescriptionPacket p) {
-    
+    _log.Debug("DescriptionPacket room ${p.roomId} user ${p.userId} sdp ${p.sdp}");
+   
+    RtcSessionDescription t = new RtcSessionDescription({
+      'sdp':p.sdp,
+      'type':p.type
+    });
+    PeerWrapper peer = _peerManager.findWrapper(p.userId);
+    //Peer p = findPeer(packet.roomId, packet.userId);
+   
+    if (peer != null) {
+      _log.Debug("Setting remote description to peer");
+      peer.setRemoteSessionDescription(t);
+    }
   }
-  
-  
   
   void handlePing(PingPacket p) {
     _log.Debug("Received PING, answering with PONG");
-    send(new PongPacket());
+    _ws.send(JSON.stringify(new PongPacket()));
   }
+  
   void handleBye(ByePacket p) {
-    
+    //_vm.removeVideoContainerById(p.userId);
+    PeerWrapper peer = _peerManager.findWrapper(p.userId);
+    //Peer peer = findPeer(p.roomId, p.userId);
+    if (peer != null) {
+      peer.close();
+    }
   }
-  void handleRouteReply(RoutePacket p) {
-    
-  }
-  void handleRoute(RoutePacket p) {
+  
+  void close() {
+    print ("readystate ${_ws.readyState}");
+    if (_ws.readyState != WebSocket.CLOSED) {
+      _ws.send(JSON.stringify(new ByePacket.With(_id)));
+      
+      _log.Debug("Closing socket");
+      _ws.close(1000, "window unload");
+    }
     
   }
 }

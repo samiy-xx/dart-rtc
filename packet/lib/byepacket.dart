@@ -2,21 +2,20 @@ part of signaling_packets;
 
 class ByePacket implements Packet {
   ByePacket();
-  ByePacket.With(this.userId, this.roomId);
+  ByePacket.With(this.id);
   
   String packetType = PacketType.BYE;
-  String roomId = "";
-  String userId = "";
+ 
+  String id = "";
   
   Map toJson() {
     return {
       'packetType': packetType,
-      'roomId': roomId,
-      'userId': userId
+      'uid': id
     };
   }
   
   static ByePacket fromMap(Map m) {
-    return new ByePacket.With(m['userId'], m['roomId']);
+    return new ByePacket.With(m['id']);
   }
 }

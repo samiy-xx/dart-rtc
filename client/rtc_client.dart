@@ -11,6 +11,7 @@ part "videomanager.dart";
 part "peermanager.dart";
 part "peerwrapper.dart";
 part "src/signalhandler.dart";
+part "lib/simplesignalhandler.dart";
 
 const bool DEBUG = true;
 String WEBSOCKET_SERVER = DEBUG 

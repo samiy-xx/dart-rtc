@@ -1,27 +1,16 @@
 part of rtc_server;
 
-class UserContainer {
+class UserContainer extends BaseUserContainer {
   /* Store users */
   List<User> _users;
-  
-  /* Reference to Server */
-  Server _server;
   
   /* logger singleton instance */
   Logger logger = new Logger();
   
   int get userCount => _users.length;
   
-  UserContainer(Server s) {
-    _users = new List<RoomUser>();
-    _server = s;
-  }
-  
-  /**
-   * Method to return instance of the Server
-   */
-  Server getServer() {
-    return _server; 
+  UserContainer(Server s) : super(s){
+    _users = new List<User>();
   }
   
   /*
@@ -30,7 +19,10 @@ class UserContainer {
   static String genId() {
     return Util.generateId();
   }
-  
+  ChannelUser createChannelUser(WebSocketConnection c) {
+    String id = genId();
+    return createChannelUserFromId(id, c);
+  }
   User createUser(WebSocketConnection c) {
     String id = genId();
     return createUserFromId(id, c);
@@ -51,7 +43,21 @@ class UserContainer {
     };
     return u;
   }
-  
+  ChannelUser createChannelUserFromId(String id, WebSocketConnection c) {
+    
+    ChannelUser u = findUserById(id);
+    
+    if (u != null) 
+      return u;
+    
+    u = new ChannelUser(id, c);
+    _users.add(u);
+    
+    u.connection.onClosed = (int code, String reason) {
+      removeUser(u);
+    };
+    return u;
+  }
   void removeUser(User u) {
     if (_users.contains(u)) {
       _users.removeAt(_users.indexOf(u));
@@ -99,7 +105,7 @@ class UserContainer {
     return u;
   }
   void cleanUp() {
-    logger.Debug("Users active: ${_users.length}");
+    //logger.Debug("Users active: ${_users.length}");
     
     int currentTime = new Date.now().millisecondsSinceEpoch;
     
@@ -111,6 +117,10 @@ class UserContainer {
         try {
           logger.Debug("Closing dead socket");
           u.connection.close(1000, "Closing dead socket");
+          if (u is ChannelUser) {
+            (u as ChannelUser).channel.leave(u);
+            
+          }
         } catch (e) {
           logger.Error("Closing dead socket threw $e");
         }

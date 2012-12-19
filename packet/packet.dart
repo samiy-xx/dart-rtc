@@ -5,6 +5,9 @@ part 'src/packettype.dart';
 part 'src/basepacket.dart';
 part 'src/InvalidPacketException.dart';
 
+part 'lib/peercreatedpacket.dart';
+part 'lib/usermessage.dart';
+
 part 'lib/helopacket.dart';
 part 'lib/descpacket.dart';
 part 'lib/icepacket.dart';
@@ -13,12 +16,11 @@ part 'lib/roompacket.dart';
 part 'lib/byepacket.dart';
 part 'lib/joinpacket.dart';
 part 'lib/idpacket.dart';
-part 'lib/ackpacket.dart';
+part 'lib/connectionsuccesspacket.dart';
 part 'lib/pingpacket.dart';
 part 'lib/pongpacket.dart';
 part 'lib/packetfactory.dart';
 part 'lib/routepacket.dart';
-part 'lib/connectedpacket.dart';
 part 'lib/random.dart';
 
 

@@ -23,7 +23,7 @@ class Server {
   int _sessionTimeout = 2;
   
   // 1 minute
-  int _timerTickInterval = 60000;
+  int _timerTickInterval = 6000;
   
   Logger logger = new Logger();
   
@@ -108,6 +108,7 @@ class Server {
           
           Function f = getHandler(p.packetType);
           if (f != null) {
+            print ("handler found");
             f(p, conn);
           } else {
             logger.Warning("Incoming packet ${p.packetType} but no handler registered");
@@ -130,16 +131,18 @@ class Server {
   }
   
   String displayStatus() {
-    StringBuffer buffer = new StringBuffer();
-    if (_container is RoomUserContainer)
-      buffer.add("Users: ${_container.userCount} Rooms: ${(_container as RoomUserContainer).roomCount}");
-    else
-      buffer.add("Users: ${_container.userCount}");
-    return buffer.toString();
+    print("Users: ${_container.userCount}");
   }
   
   void onTimerTick(Timer t) {
+    print("tick");
+    try {
+      displayStatus();
     _container.cleanUp();
+    
+    } catch(e) {
+      print(e);
+    }
   }
   
   void sendToClient(WebSocketConnection c, String p) {
@@ -148,10 +151,10 @@ class Server {
     } catch(e) {
       logger.Debug("Socket Dead? removing connection");
       try {
-        RoomUser u = _container.findUserByConn(c);
+        ChannelUser u = _container.findUserByConn(c) as ChannelUser;
         if (u != null) {
           _container.removeUser(u);
-          u.room = null;
+          u.channel.leave(u);
           u = null;
         }
         c.close(1000, "Assuming dead");

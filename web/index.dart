@@ -1,10 +1,11 @@
 library webclient;
 
+/*
 import 'dart:html';
 import '../client/rtc_client.dart';
 import '../util/logger.dart';
 
-part "websignalhandler.dart";
+part "single/websignalhandler.dart";
 part "webvideomanager.dart";
 part "webvideocontainer.dart";
 
@@ -42,4 +43,4 @@ void main() {
     log.Error("failed to get userMedia");
   });
 }
-
+*/
