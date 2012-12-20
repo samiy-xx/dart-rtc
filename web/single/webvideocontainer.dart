@@ -1,7 +1,7 @@
 part of single_client;
 
 class WebVideoContainer extends VideoContainer {
-  VideoManager _manager;
+  WebVideoManager _manager;
   VideoElement _video;
   DivElement _div;
   
@@ -19,7 +19,7 @@ class WebVideoContainer extends VideoContainer {
   /**
    * Constructor
    */
-  VideoContainer(VideoManager manager, String id) {
+  WebVideoContainer(VideoManager manager, String id) {
     _manager = manager;
     _id = id;
     _video = new VideoElement();
@@ -69,9 +69,9 @@ class WebVideoContainer extends VideoContainer {
     matcher.remove();
   }
   
-  void setOverlay(Overlay o) {
-    _overlay = o;
-  }
+  //void setOverlay(Overlay o) {
+  //  _overlay = o;
+  //}
   
   /**
    * Set initial Css properties

@@ -42,7 +42,7 @@ class Server {
     _methodHandlers = new Map<String, Function>();
     
     registerHandler("pong", handleIncomingPong);
-    registerHandler("description", handleIncomingDescription);
+    registerHandler("desc", handleIncomingDescription);
     registerHandler("ice", handleIncomingIce);
   }
   
@@ -169,7 +169,7 @@ class Server {
     User sender = _container.findUserByConn(c);
     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
     
-    User receiver = _container.findUserById(p.userId);
+    User receiver = _container.findUserById(p.id);
     receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
     
     if (sender == null || receiver == null) {

@@ -57,10 +57,11 @@ class SignalHandler {
     
     registerHandler("ping", handlePing);
     registerHandler("ice", handleIce);
-    registerHandler("description", handleDescription);
+    registerHandler("desc", handleDescription);
     registerHandler("bye", handleBye);
     registerHandler("connected", handleConnectionSuccess);
     registerHandler("join", handleJoin);
+    registerHandler("id", handleId);
   }
   
   void registerHandler(String type, Function handler) {
@@ -143,11 +144,25 @@ class SignalHandler {
     _ws.send(p);
   }
   
-  void handleJoin(JoinPacket p) {
-    if (p.id == _id)
-      _channelId = p.channelId;
+  
+  void handleJoin(JoinPacket packet) {
+    if (packet.id == _id)
+      _channelId = packet.channelId;
+    
+    _log.Debug("JoinPacket channel ${packet.channelId} user ${packet.id}");
+    PeerWrapper p = createPeerWrapper();
+    p.channel = packet.channelId;
+    p.id = packet.id;
+    p._isHost = true;
+    p.addStream(_videoManager.getLocalStream());
   }
   
+  void handleId(IdPacket id) {
+    _log.Debug("ID packet: channel ${id.channelId} user ${id.id}");
+    PeerWrapper p = createPeerWrapper();
+    p.id = id.id;
+    p.channel = id.channelId;
+  }
   void handleConnectionSuccess(ConnectionSuccessPacket p) {
     _log.Debug("Connection successfull user ${p.id}");
     _id = p.id;
@@ -168,13 +183,13 @@ class SignalHandler {
   }
   
   void handleDescription(DescriptionPacket p) {
-    _log.Debug("DescriptionPacket room ${p.roomId} user ${p.userId} sdp ${p.sdp}");
+    _log.Debug("DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
    
     RtcSessionDescription t = new RtcSessionDescription({
       'sdp':p.sdp,
       'type':p.type
     });
-    PeerWrapper peer = _peerManager.findWrapper(p.userId);
+    PeerWrapper peer = _peerManager.findWrapper(p.id);
     //Peer p = findPeer(packet.roomId, packet.userId);
    
     if (peer != null) {
@@ -190,7 +205,7 @@ class SignalHandler {
   
   void handleBye(ByePacket p) {
     //_vm.removeVideoContainerById(p.userId);
-    PeerWrapper peer = _peerManager.findWrapper(p.userId);
+    PeerWrapper peer = _peerManager.findWrapper(p.id);
     //Peer peer = findPeer(p.roomId, p.userId);
     if (peer != null) {
       peer.close();

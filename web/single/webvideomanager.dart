@@ -19,6 +19,7 @@ class WebVideoManager extends VideoManager {
   /* Smaller video elements */
   DivElement _childHost;
   
+  LocalMediaStream _localStream;
   /**
    * Factory constructor
    */
@@ -56,11 +57,18 @@ class WebVideoManager extends VideoManager {
   
   void addStream(MediaStream ms, String id, [bool main]) {
     VideoContainer vc;
-    if (?main)
+    if (?main) {
       vc = addVideoContainer(id, "main");
-    else
+    } else {
       vc = addVideoContainer(id);
+    }
     vc.setStream(ms);
+  }
+  void setLocalStream(MediaStream ms) {
+    _localStream = ms;
+  }
+  MediaStream getLocalStream() {
+    return _localStream;
   }
   /**
    * Adds a remote stream, creates elements.
@@ -112,7 +120,7 @@ class WebVideoManager extends VideoManager {
    * Creates the videocontainer object
    */
   VideoContainer createContainer(String id) {
-    var v = new VideoContainer(this, id);
+    var v = new WebVideoContainer(this, id);
     v.matcher.on.click.add(_onContainerClick);
     _containers.add(v);
     return v;
