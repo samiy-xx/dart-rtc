@@ -55,6 +55,10 @@ class WebVideoManager extends VideoManager {
     _childHost = query(c);
   }
   
+  void setStream(MediaStream ms, VideoContainer vc) {
+    vc.setStream(ms);
+  }
+  
   void addStream(MediaStream ms, String id, [bool main]) {
     VideoContainer vc;
     if (?main) {

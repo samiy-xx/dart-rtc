@@ -10,6 +10,7 @@ part "videocontainer.dart";
 part "videomanager.dart";
 part "peermanager.dart";
 part "peerwrapper.dart";
+part "datapeerwrapper.dart";
 part "src/signalhandler.dart";
 part "lib/simplesignalhandler.dart";
 

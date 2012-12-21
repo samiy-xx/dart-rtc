@@ -12,8 +12,7 @@ abstract class VideoManager {
   VideoContainer addVideoContainer(String id);
   
   /** Removes a video container with id */
-  void removeVideoContainer(String id);
-  
+  void removeVideoContainer(VideoContainer vc);
   MediaStream getLocalStream();
   
 }
