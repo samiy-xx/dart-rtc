@@ -1,6 +1,18 @@
+/**
+ * util.dart
+ * Copyright (c) 2013 Sami Ylönen sami.ylonen@gmail.com
+ */
+
 part of rtc_utils;
 
+/**
+ * Utility class
+ */
 class Util {
+  
+  /**
+   * Method to return aspectratio based on width and height
+   */
   static String aspectRatio(int x, int y) {
     double value = x.toDouble() / y.toDouble();
     if (value > 1.7)
@@ -19,8 +31,21 @@ class Util {
     return aspectRatio == "4:3" ? height * 4 ~/ 3 : height * 16 ~/ 9;
   }
   
+  /**
+   * Generates more or less random string
+   * @param length of the requied random string
+   */
   static String generateId(int length) {
-    var chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','o','p','q','r'];
+    // Characters used in string generation
+    // TODO: Is there some other way to get all characters?
+    var chars = ['a','b','c','d','e',
+                 'f','g','h','i','j',
+                 'k','l','m','o','p',
+                 'q','r','s','t','u',
+                 'v','w','x','y','z'
+                 '0','1','2','3','4'
+                 '5','6','7','8','9'];
+    
     int max = chars.length - 1;
     
     StringBuffer buf = new StringBuffer();

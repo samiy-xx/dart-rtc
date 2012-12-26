@@ -4,22 +4,6 @@ part of rtc_client;
  * SignalHandler
  */
 class SignalHandler {
-  /* Web socket status codes */
-  //TODO: These are not all correct
-  static final int CLOSE_NORMAL = 1000; 
-  static final int CLOSE_GOING_AWAY = 1001; 
-  static final int CLOSE_PROTOCOL_ERROR = 1002; 
-  static final int CLOSE_UNSUPPORTED = 1003;
-  static final int RESERVED = 1004;
-  static final int NO_STATUS = 1005;
-  static final int ABNORMAL_CLOSE = 1006;
-  static final int DATA_NOT_CONSISTENT = 1007;
-  static final int POLICY_VIOLATION = 1008;
-  static final int MESSAGE_TOO_LARGE = 1009;
-  static final int NEGOTIATIONS_FAILED = 1010;
-  static final int UNEXPECTED_CONDITION = 1011;
-  static final int HANDSHAKE_FAILURE = 1015;
-  
   Logger _log = new Logger();
   
   /* Web socket connection */
@@ -31,21 +15,25 @@ class SignalHandler {
   /* Video manager */
   VideoManager _videoManager;
   
+  /* Id for the local user */
+  String _id;
+  
+  /* id for the channel */
+  String _channelId;
+  
+  /* List containing all thje message method handlers */
+  Map<String, List<Function>> _methodHandlers;
+  
   /** Getter for PeerManager */
   PeerManager get peerManager => getPeerManager();
   
-  /** Setter for PeerMAnager*/
+  /** Setter for PeerManager*/
   set peerManager(PeerManager p) => setPeerManager(p);
-  
-  String _id;
-  String _channelId;
   
   set channelId(String value) => _channelId = value;
   
   String get id => _id;
   String get channelId => _channelId;
-  
-  Map<String, List<Function>> _methodHandlers;
   
   /**
    * Constructor
@@ -64,12 +52,22 @@ class SignalHandler {
     registerHandler("id", handleId);
   }
   
+  /**
+   * Registers a handler for specified message type
+   * @param type the message type
+   * @param handler the function handling this message
+   */
   void registerHandler(String type, Function handler) {
     if (!_methodHandlers.containsKey(type))
       _methodHandlers[type] = new List<Function>();
     _methodHandlers[type].add(handler);
   }
   
+  /**
+   * Returns a list of functions handling given message type
+   * @param type the message type
+   * @return List<Function> the message handler functions
+   */
   List<Function> getHandlers(String type) {
     if (_methodHandlers.containsKey(type))
       return _methodHandlers[type];
@@ -77,6 +75,11 @@ class SignalHandler {
     return null;
   }
   
+  /**
+   * Initializes the connection to the web socket server
+   * If no host parameter is given, uses the default one from lib
+   * @param optional parameter host
+   */
   void initialize([String host]) {
     if (_peerManager == null)
       throw new Exception("PeerManager is null");
@@ -85,12 +88,16 @@ class SignalHandler {
       throw new Exception("channelId is null");
     
     _ws = new WebSocket(?host ? host :WEBSOCKET_SERVER);
-    _ws.on.open.add(_onOpen);  
-    _ws.on.close.add(_onClose);  
-    _ws.on.error.add(_onError);  
+    _ws.on.open.add(onOpen);  
+    _ws.on.close.add(onClose);  
+    _ws.on.error.add(onError);  
     _ws.on.message.add(_onMessage);
   }
   
+  /**
+   * Sets the PeerManager
+   * @param p PeerManager
+   */
   void setPeerManager(PeerManager p) {
     if (p == null)
       throw new Exception("PeerManager is null");
@@ -98,52 +105,66 @@ class SignalHandler {
     _peerManager = p;
   }
   
+  /**
+   * Returns the peer manager
+   * @return PeerManager
+   */
   PeerManager getPeerManager() {
     return _peerManager;
   }
   
+  /**
+   * Creates a peer wrapper instance
+   * @return PeerWrapper
+   */
   PeerWrapper createPeerWrapper() {
     return _peerManager.createPeer();
   }
   
-  void _onOpen(Event e) {
+  /**
+   * Callback for websocket onopen
+   */
+  void onOpen(Event e) {
     _log.Debug("WebSocket connection opened, sending HELO, ${_ws.readyState}");
     _ws.send(JSON.stringify(new HeloPacket.With(_channelId, "")));
   }
   
-  void _onClose(CloseEvent e) {
+  /**
+   * Callback for webscoket onclose
+   */
+  void onClose(CloseEvent e) {
     _log.Debug("Connection closed ${e.code.toString()} ${e.reason}");
   }
   
-  void _onError(Event e) {
+  /**
+   * Callback for websocket onerror
+   */
+  void onError(Event e) {
     _log.Error("Error $e");
   }
   
+  /*
+   * Private callback for websocket onmessage
+   */
   void _onMessage(MessageEvent e) {
-      Packet p = PacketFactory.getPacketFromString(e.data);
-      if (p.packetType == null || p.packetType.isEmpty)
-        return;
-      
-      List<Function> handlers = getHandlers(p.packetType);
-      if (handlers != null) {
-        for (Function f in handlers)
-          f(p);
-      } else {
-        _log.Warning("Packet ${p.packetType} arrived but no handler set");
-      }
-        
-      //Function f = getHandler(p.packetType);
-      //if (f != null) {
-      //  f(p);
-      //} else {
-      //  _log.Warning("Packet ${p.packetType} arrived but no handler set");
-      //}
+    // Get the packet via PacketFactory
+    Packet p = PacketFactory.getPacketFromString(e.data);
+    if (p.packetType == null || p.packetType.isEmpty)
+      return;
+    
+    // Get the handlers for this message
+    List<Function> handlers = getHandlers(p.packetType);
+    if (handlers != null) {
+      for (Function f in handlers)
+        f(p);
+    } else {
+      _log.Warning("Packet ${p.packetType} arrived but no handler set");
+    }
   }
   
   void send(String p) {
     _ws.send(p);
   }
-  
   
   void handleJoin(JoinPacket packet) {
     if (packet.id == _id)
@@ -163,6 +184,7 @@ class SignalHandler {
     p.id = id.id;
     p.channel = id.channelId;
   }
+  
   void handleConnectionSuccess(ConnectionSuccessPacket p) {
     _log.Debug("Connection successfull user ${p.id}");
     _id = p.id;
