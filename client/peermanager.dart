@@ -1,22 +1,48 @@
 part of rtc_client;
 
 class PeerManager {
+  static PeerManager _instance;
   final READYSTATE_CLOSED = "closed";
   final READYSTATE_OPEN = "open";
   final Logger log = new Logger();
+  bool _dataChannelsEnabled = false;
   
-  SignalHandler _signalHandler;
-  VideoManager _videoManager;
+  //SignalHandler _signalHandler;
+  //VideoManager _videoManager;
   List<PeerWrapper> _peers;
+  List<PeerEventListener> _listeners;
+  List<PeerMediaEventListenerType> _listenerDynamics;
   
-  VideoManager get videoManager => getVideoManager();
+  //VideoManager get videoManager => getVideoManager();
+  set dataChannelsEnabled(bool value) => _dataChannelsEnabled = value;
   
-  PeerManager(SignalHandler sh, VideoManager vm) {
-    _signalHandler = sh;
-    _videoManager = vm;
-    _peers = new List<PeerWrapper>();
+  factory PeerManager() {
+    if (_instance == null)
+      _instance = new PeerManager._internal();
+    
+    return _instance;
   }
   
+  PeerManager._internal() {
+    //_signalHandler = sh;
+    //_videoManager = vm;
+    _peers = new List<PeerWrapper>();
+    _listeners = new List<PeerEventListener>();
+    _listenerDynamics = new List<PeerMediaEventListenerType>();
+  }
+  
+  void subscribe(Object listener) {
+    print ("got listener");
+    if (listener is PeerEventListener) {
+      print ("got listener PeerEventListener");
+      if (!_listeners.contains(listener))
+        _listeners.add(listener);
+    } else {
+      if (!_listenerDynamics.contains(listener))
+        _listenerDynamics.add(listener);
+    }
+  }
+  /*
   VideoManager getVideoManager() {
     if (_videoManager == null)
       throw new Exception("VideoManager is null, forgot to set it?");
@@ -27,14 +53,18 @@ class PeerManager {
     if (_signalHandler == null)
       throw new Exception("SignalHandler is null, forgot to set it?");
     return _signalHandler;
+  }*/
+  
+  void setLocalStream(LocalMediaStream ms) {
+    _peers.forEach((PeerWrapper p) {
+      p.addStream(ms);
+    });
   }
   
   PeerWrapper createPeer() {
     RtcPeerConnection peer = new RtcPeerConnection({'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]});
-    PeerWrapper wrapper = new PeerWrapper(this, peer);
+    PeerWrapper wrapper = _dataChannelsEnabled ? new DataPeerWrapper(this, peer) : new PeerWrapper(this, peer);
     peer.on.addStream.add(onAddStream);
-    peer.on.removeStream.add(onRemoveStream);
-    peer.on.negotiationNeeded.add(onNegotiationNeeded);
     peer.on.open.add(onOpen);
     peer.on.stateChange.add(onStateChanged);
     
@@ -60,25 +90,21 @@ class PeerManager {
     return null;
   }
   
-  void onOfferSuccess(RtcSessionDescription sdp) {
-    
-  }
-  
-  void onAnswerSuccess(RtcSessionDescription sdp) {
-    
-  }
-  
-  void onIceCandidate(RtcIceCandidateEvent c) {
-    
-  }
-  
-  void onIceChange(RtcIceCandidateEvent c) {
-    
-  }
-  
   void onAddStream(MediaStreamEvent e) {
     PeerWrapper wrapper = getWrapperForPeer(e.target);
-    getVideoManager().addRemoteStream(e.stream, wrapper.id, true);
+    _listeners.filter((l) => l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
+      l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
+    });
+    
+    _listenerDynamics.forEach((dyn) => dyn(e.stream, wrapper.id, true));
+  }
+  
+  void _sendPacket(String p) {
+    print("SADASDSADASD");
+    _listeners.filter((l) => l is PeerPacketEventListener).forEach((PeerPacketEventListener l) {
+      print("SADASDSADASD11111");
+      l.onPacketToSend(p);
+    });
   }
   
   void remove(PeerWrapper p) {
@@ -100,23 +126,5 @@ class PeerManager {
     log.Debug("Peer connection is open");
   }
   
-  void onNegotiationNeeded(Event e) {
-    
-  }
   
-  void onRemoveStream(Event e) {
-    
-  }
-  
-  void onLocalDescriptionSuccess() {
-    
-  }
-  
-  void onRemoteDescriptionSuccess() {
-    
-  }
-  
-  void onRTCError(String error) {
-    
-  }
 }

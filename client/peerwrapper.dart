@@ -49,10 +49,12 @@ class PeerWrapper {
   /** returns current readystate */
   String get state => _peer.readyState;
   
+  List<PeerEventListener> _listeners;
+  
   PeerWrapper(PeerManager pm, RtcPeerConnection p) {
     _peer = p;
     _manager = pm;
-    
+    _listeners = new List<PeerEventListener>();
     _peer.on.iceCandidate.add(_onIceCandidate);
     _peer.on.iceChange.add(_onIceChange);
     _peer.on.addStream.add(_onAddStream);
@@ -64,6 +66,11 @@ class PeerWrapper {
     //_channel.on.message.add(listener, useCapture)
   }
   
+  void subscribe(PeerEventListener listener) {
+    if (!_listeners.contains(listener))
+      _listeners.add(listener);
+  }
+  
   void setSessionDescription(RtcSessionDescription sdp) {
     log.Debug("Creating local description");
     _peer.setLocalDescription(sdp, _onLocalDescriptionSuccess, _onRTCError);
@@ -73,9 +80,11 @@ class PeerWrapper {
       log.Debug("Creating remote description ${sdp.type} ${sdp.sdp} ");
       _peer.setRemoteDescription(sdp, _onRemoteDescriptionSuccess, _onRTCError);
       
-      if (!isHost)
-        addStream(_manager.getVideoManager().getLocalStream());
-      
+      /*if (!isHost) {
+        MediaStream ms = _manager.getVideoManager().getLocalStream();
+        if (ms != null)
+        addStream(ms);
+      }*/
       if (sdp.type == SDP_OFFER)
         _sendAnswer();
       
@@ -105,14 +114,14 @@ class PeerWrapper {
   void _onOfferSuccess(RtcSessionDescription sdp) {
     log.Debug("Offer created, sending");
     setSessionDescription(sdp);
-    _manager.getSignalHandler().send(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'offer', _id, _channelId)));
+    _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'offer', _id, _channelId)));
     //_offerSent = true;
   }
   
   void _onAnswerSuccess(RtcSessionDescription sdp) {
     log.Debug("Answer created, sending");
     setSessionDescription(sdp);
-    _manager.getSignalHandler().send(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'answer', _id, _channelId)));
+    _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'answer', _id, _channelId)));
   }
   
   void addRemoteIceCandidate(RtcIceCandidate candidate) {
@@ -127,7 +136,7 @@ class PeerWrapper {
     if (c.candidate != null) {
       log.Debug("Sending local ICE Candidate ${c.candidate.candidate}");
       ICEPacket ice = new ICEPacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id, channel);
-      _manager.getSignalHandler().send(PacketFactory.get(ice));
+      _manager._sendPacket(PacketFactory.get(ice));
     } else {
       log.Warning("Local ICE Candidate was null");
       

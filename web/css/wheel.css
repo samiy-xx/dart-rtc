@@ -1,0 +1,28 @@
+#chatText {
+  width: 800px;
+  height: 100px;
+  overflow:auto;
+  border: 1px solid #000; 
+}
+
+#videocontainer {
+  width: 800px;
+  height: 400px;
+  border: 1px solid #000; 
+}
+
+.vid {
+  border: 1px solid #000;
+  width: 400px;
+  display: inline-block; 
+}
+
+#chatText div {
+  background: #eee;
+  margin: 2px;
+  padding: 2px;  
+}
+
+#chatText span {
+  margin-right: 5px;  
+}

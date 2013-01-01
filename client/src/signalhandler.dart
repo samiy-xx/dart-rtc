@@ -3,7 +3,7 @@ part of rtc_client;
 /**
  * SignalHandler
  */
-class SignalHandler {
+class SignalHandler implements PeerPacketEventListener {
   Logger _log = new Logger();
   
   /* Web socket connection */
@@ -12,14 +12,15 @@ class SignalHandler {
   /* Peer manager */
   PeerManager _peerManager;
   
-  /* Video manager */
-  VideoManager _videoManager;
+  
   
   /* Id for the local user */
   String _id;
   
   /* id for the channel */
   String _channelId;
+  
+  bool _dataChannelsEnabled = false;
   
   /* List containing all thje message method handlers */
   Map<String, List<Function>> _methodHandlers;
@@ -31,6 +32,7 @@ class SignalHandler {
   set peerManager(PeerManager p) => setPeerManager(p);
   
   set channelId(String value) => _channelId = value;
+  set dataChannelsEnabled(bool value) => setDataChannelsEnabled(value);
   
   String get id => _id;
   String get channelId => _channelId;
@@ -38,9 +40,10 @@ class SignalHandler {
   /**
    * Constructor
    */
-  SignalHandler(VideoManager vm) {
-    _videoManager = vm;
-    _peerManager = new PeerManager(this, vm);
+  SignalHandler() {
+    
+    _peerManager = new PeerManager();
+    _peerManager.subscribe(this);
     _methodHandlers = new Map<String, List<Function>>();
     
     registerHandler("ping", handlePing);
@@ -52,6 +55,10 @@ class SignalHandler {
     registerHandler("id", handleId);
   }
   
+  void setDataChannelsEnabled(bool value) {
+    _dataChannelsEnabled = value;
+    _peerManager.dataChannelsEnabled = value;
+  }
   /**
    * Registers a handler for specified message type
    * @param type the message type
@@ -94,6 +101,7 @@ class SignalHandler {
     _ws.on.message.add(_onMessage);
   }
   
+  //TODO : Remove?
   /**
    * Sets the PeerManager
    * @param p PeerManager
@@ -104,7 +112,7 @@ class SignalHandler {
     
     _peerManager = p;
   }
-  
+  //TODO : Remove?
   /**
    * Returns the peer manager
    * @return PeerManager
@@ -130,7 +138,7 @@ class SignalHandler {
   }
   
   /**
-   * Callback for webscoket onclose
+   * Callback for websocket onclose
    */
   void onClose(CloseEvent e) {
     _log.Debug("Connection closed ${e.code.toString()} ${e.reason}");
@@ -166,6 +174,11 @@ class SignalHandler {
     _ws.send(p);
   }
   
+  void onPacketToSend(String p) {
+    print("PACKET needs to be sent");
+    send(p);
+  }
+  
   void handleJoin(JoinPacket packet) {
     if (packet.id == _id)
       _channelId = packet.channelId;
@@ -175,7 +188,10 @@ class SignalHandler {
     p.channel = packet.channelId;
     p.id = packet.id;
     p._isHost = true;
-    p.addStream(_videoManager.getLocalStream());
+    
+    /*MediaStream ms = _videoManager.getLocalStream();
+    if (ms != null)
+      p.addStream(ms);*/
   }
   
   void handleId(IdPacket id) {

@@ -8,3 +8,4 @@ import '../../util/rtc_utils.dart';
 part "websignalhandler.dart";
 part "webvideocontainer.dart";
 part "webvideomanager.dart";
+part "notifier.dart";

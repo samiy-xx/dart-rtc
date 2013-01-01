@@ -11,6 +11,7 @@ part "videomanager.dart";
 part "peermanager.dart";
 part "peerwrapper.dart";
 part "datapeerwrapper.dart";
+part "peereventlistener.dart";
 part "src/signalhandler.dart";
 part "lib/simplesignalhandler.dart";
 
@@ -33,3 +34,5 @@ const bool DEBUG = true;
 String WEBSOCKET_SERVER = DEBUG 
     ? "ws://127.0.0.1:8234/ws" 
     : "ws://app.faceseer.com:8234/ws";
+
+typedef void PeerMediaEventListenerType(MediaStream ms, String id, bool main);

@@ -3,7 +3,7 @@ part of single_client;
 class WebSignalHandler extends SignalHandler {
   String other = null;
   
-  WebSignalHandler(VideoManager vm) : super(vm) {
+  WebSignalHandler() : super() {
     registerHandler("connected", onConnect);
     registerHandler("join", onJoinChannel);
     registerHandler("id", onIdExistingChannelUser);
