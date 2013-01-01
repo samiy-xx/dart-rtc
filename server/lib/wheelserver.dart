@@ -9,7 +9,6 @@ class WheelServer extends Server {
     registerHandler("helo", handleIncomingHelo);
     registerHandler("bye", handleIncomingBye);
     registerHandler("random", handleRandomUserRequest);
-    
   }
   
   void handleIncomingHelo(HeloPacket p, WebSocketConnection c) {
@@ -22,7 +21,7 @@ class WheelServer extends Server {
     if (user.isTalking) {
       for (int i = 0; i < user.talkers.length; i++) {
         User talker = user.talkers[i];
-        sendToClient(talker.connection, JSON.stringify(new ByePacket.With(user.id, "")));
+        sendToClient(talker.connection, JSON.stringify(new ByePacket.With(user.id)));
       }
     }
     _container.removeUser(user);
@@ -30,6 +29,17 @@ class WheelServer extends Server {
   }
   
   void handleRandomUserRequest(RandomUserPacket p, WebSocketConnection c) {
+    User user = _container.findUserByConn(c);
     
+    if (user.isTalking) {
+      for (int i = 0; i < user.talkers.length; i++) {
+        User other = user.talkers[i];
+        sendToClient(other.connection, PacketFactory.get(new Disconnected.With(user.id)));
+      }
+      user.talkers.clear();
+    }
+    
+    User rnd = _container.findRandomUser();
+    sendToClient(user.connection, PacketFactory.get(new IdPacket.With(rnd.id, "")));
   }
 }

@@ -15,4 +15,5 @@ class PacketType {
   static final String ROUTE = "route";
   static final String CONNECTED = "connected";
   static final String RANDOM = "random";
+  static final String DISCONNECTED = "disconnected";
 }

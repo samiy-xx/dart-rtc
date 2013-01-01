@@ -19,10 +19,12 @@ class UserContainer extends BaseUserContainer {
   static String genId() {
     return Util.generateId();
   }
+  
   ChannelUser createChannelUser(WebSocketConnection c) {
     String id = genId();
     return createChannelUserFromId(id, c);
   }
+  
   User createUser(WebSocketConnection c) {
     String id = genId();
     return createUserFromId(id, c);
@@ -43,6 +45,7 @@ class UserContainer extends BaseUserContainer {
     };
     return u;
   }
+  
   ChannelUser createChannelUserFromId(String id, WebSocketConnection c) {
     
     ChannelUser u = findUserById(id);
@@ -58,6 +61,7 @@ class UserContainer extends BaseUserContainer {
     };
     return u;
   }
+  
   void removeUser(User u) {
     if (_users.contains(u)) {
       _users.removeAt(_users.indexOf(u));

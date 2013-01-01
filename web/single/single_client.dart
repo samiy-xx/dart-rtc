@@ -9,3 +9,4 @@ part "websignalhandler.dart";
 part "webvideocontainer.dart";
 part "webvideomanager.dart";
 part "notifier.dart";
+part "wheelsignalhandler.dart";

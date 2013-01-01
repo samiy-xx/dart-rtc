@@ -22,6 +22,7 @@ part 'lib/pongpacket.dart';
 part 'lib/packetfactory.dart';
 part 'lib/routepacket.dart';
 part 'lib/random.dart';
+part 'lib/disconnected.dart';
 
 
 
