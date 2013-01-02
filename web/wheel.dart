@@ -42,6 +42,15 @@ void main() {
   
   sh.registerHandler("connected", (ConnectionSuccessPacket p) {
     notify.display("Connected to signaling server succesfully!");
+    notify.display("Requesting random user..."); 
+  });
+  
+  sh.registerHandler("disconnected", (Disconnected p) {
+    notify.display("User disconnected...");
+  });
+  
+  sh.registerHandler("id", (IdPacket p) {
+    notify.display("User connected...");
   });
   
   sh.initialize();

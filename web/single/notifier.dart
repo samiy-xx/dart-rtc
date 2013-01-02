@@ -8,8 +8,11 @@ class Notifier {
   int _width = 800;
   int _height = 60;
   int _id;
+  int _interval = 2000;
   int _timeout = 5000;
+  bool _visible = false;
   Element get element => _element;
+  List<String> _messages;
   
   factory Notifier() {
     if (_instance == null)
@@ -30,7 +33,7 @@ class Notifier {
       document.body.children.add(e);
     }
     _element = e;
-    
+    _messages = new List<String>();
     setInitialStyle();
   }
   
@@ -58,24 +61,47 @@ class Notifier {
   }
   
   void popup() {
-    if (_id != null) {
+    _visible = true;
+    _element.style.display = "block";
+    _text.text = _messages.removeAt(0);
+    int i = 0;
+    _id = window.setInterval(() {
+      i++;
+      if (_messages.length > 0) {
+        _text.text = _messages.removeAt(0);
+      }
+      
+      if (i >= 5) {
+        i = 0;
+        hide();
+      }
+    }, _interval);
+    
+    /*if (_id != null) {
       window.clearTimeout(_id);
     }
     
     _id = window.setTimeout(() {
       hide();
     }, _timeout);
+    */
     
-    _element.style.display = "block";
   }
   
   void hide() {
+    if (_id != null) {
+      window.clearInterval(_id);
+      _id = null;
+    }
+    _visible = false;
     _element.style.display = "none";
   }
   
   void display(String message) {
-    _text.text = message;
-    popup();
+    //_text.text = message;
+    _messages.addLast(message);
+    if (!_visible)
+      popup();
   }
   
 }

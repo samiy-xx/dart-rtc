@@ -1,21 +1,14 @@
 part of single_client;
 
-class WheelSignalhandler {
+class WheelSignalhandler extends SignalHandler {
   String other = null;
   
   WheelSignalhandler() : super() {
     registerHandler("connected", onConnect);
-    registerHandler("join", onJoinChannel);
+    registerHandler("disconnected", onUserDisconnect);
+    
     registerHandler("id", onIdExistingChannelUser);
     registerHandler("usermessage", onUserMessage);
-  }
-  
-  void onJoinChannel(JoinPacket p) {
-    if (channelId != "")
-      print("got channel id channelId");
-    
-    if (p.id != id)
-      other = p.id;
   }
   
   void onIdExistingChannelUser(IdPacket p) {
@@ -27,11 +20,20 @@ class WheelSignalhandler {
     print("Connected, my id is ${p.id}");
   }
   
-  void sendMessage(String id, String message) {
-    send(PacketFactory.get(new UserMessage.With(other, message)));
+  void onUserDisconnect(Disconnected d) {
+    PeerWrapper peer = getPeerManager().findWrapper(d.id);
+    if (peer != null) {
+      peer.close();
+    }
   }
   
   void onUserMessage(UserMessage m) {
     print("user message");
   }
+  
+  void sendMessage(String id, String message) {
+    send(PacketFactory.get(new UserMessage.With(other, message)));
+  }
+  
+  
 }
