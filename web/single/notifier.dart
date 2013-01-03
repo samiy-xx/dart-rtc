@@ -10,7 +10,7 @@ class Notifier {
   int _width = 800;
   int _height = 60;
   int _id;
-  int _interval = 2000;
+  int _interval = 1000;
   int _timeout = 5000;
   bool _visible = false;
   Element get element => _element;
@@ -51,7 +51,7 @@ class Notifier {
   
   void setInitialStyle() {
     hide();
-    _element.style.background = "#eee";
+    _element.style.background = "#00CCFF";
     _element.style.zIndex = "9999";
     _element.style.width = "${_width.toString()}px";
     _element.style.height = "${_height.toString()}px";
@@ -61,7 +61,7 @@ class Notifier {
     //_element.style.left = "${((window.innerWidth ~/ 2) - (_width ~/ 2)).toString()}px";
     _element.style.left = "${computeLeft().toString()}px";
     _element.style.top = "${computeTop().toString()}px";
-    _element.style.boxShadow = "0 0 5px 5px #888";
+    _element.style.boxShadow = "0 0 5px 5px #ccc";
     _element.style.padding = "10px";
     _element.style.textAlign = "center";
     _text = new HeadingElement.h2();
