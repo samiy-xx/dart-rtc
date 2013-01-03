@@ -1,9 +1,9 @@
 part of single_client;
 
-class WheelSignalhandler extends SignalHandler {
+class WheelSignalHandler extends SignalHandler {
   String other = null;
   
-  WheelSignalhandler() : super() {
+  WheelSignalHandler() : super() {
     registerHandler("connected", onConnect);
     registerHandler("disconnected", onUserDisconnect);
     
@@ -31,8 +31,23 @@ class WheelSignalhandler extends SignalHandler {
     print("user message");
   }
   
+  void requestRandomUser() {
+    send(PacketFactory.get(new RandomUserPacket.With(id)));
+  }
+  
   void sendMessage(String id, String message) {
     send(PacketFactory.get(new UserMessage.With(other, message)));
+  }
+  
+  void handleJoin(JoinPacket join) {
+    super.handleJoin(join);
+    PeerWrapper pw = peerManager.findWrapper(join.id);
+    pw.initialize();
+  }
+  void handleId(IdPacket id) {
+    super.handleId(id);
+    PeerWrapper pw = peerManager.findWrapper(id.id);
+    pw.initialize();
   }
   
   

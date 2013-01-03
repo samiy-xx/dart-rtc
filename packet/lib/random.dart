@@ -2,19 +2,19 @@ part of signaling_packets;
 
 class RandomUserPacket implements Packet {
   RandomUserPacket();
-  RandomUserPacket.With(this.userId);
+  RandomUserPacket.With(this.id);
   
   String packetType = PacketType.RANDOM;
-  String userId = "";
+  String id = "";
   
   Map toJson() {
     return {
       'packetType': packetType,
-      'userId': userId
+      'id': id
     };
   }
   
   static RandomUserPacket fromMap(Map m) {
-      return new RandomUserPacket.With(m['userId']);
+      return new RandomUserPacket.With(m['id']);
   }
 }

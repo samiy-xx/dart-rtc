@@ -12,7 +12,7 @@ class Notifier {
   int _timeout = 5000;
   bool _visible = false;
   Element get element => _element;
-  List<String> _messages;
+  List<Message> _messages;
   
   factory Notifier() {
     if (_instance == null)
@@ -33,7 +33,7 @@ class Notifier {
       document.body.children.add(e);
     }
     _element = e;
-    _messages = new List<String>();
+    _messages = new List<Message>();
     setInitialStyle();
   }
   
@@ -63,12 +63,18 @@ class Notifier {
   void popup() {
     _visible = true;
     _element.style.display = "block";
-    _text.text = _messages.removeAt(0);
+    Message m = _messages.removeAt(0);
+    _text.text = m.message;
+    if (m.callback != null)
+      m.callback();
     int i = 0;
     _id = window.setInterval(() {
       i++;
       if (_messages.length > 0) {
-        _text.text = _messages.removeAt(0);
+        m = _messages.removeAt(0);
+        _text.text = m.message;
+        if (m.callback != null)
+          m.callback();
       }
       
       if (i >= 5) {
@@ -97,11 +103,17 @@ class Notifier {
     _element.style.display = "none";
   }
   
-  void display(String message) {
+  void display(String message, [Function callback]) {
     //_text.text = message;
-    _messages.addLast(message);
+    _messages.addLast(new Message(message, callback));
     if (!_visible)
       popup();
   }
   
+}
+class Message {
+  String message;
+  Function callback;
+  
+  Message(this.message, this.callback);
 }

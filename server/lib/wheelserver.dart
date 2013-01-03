@@ -29,17 +29,25 @@ class WheelServer extends Server {
   }
   
   void handleRandomUserRequest(RandomUserPacket p, WebSocketConnection c) {
-    User user = _container.findUserByConn(c);
-    
-    if (user.isTalking) {
-      for (int i = 0; i < user.talkers.length; i++) {
-        User other = user.talkers[i];
-        sendToClient(other.connection, PacketFactory.get(new Disconnected.With(user.id)));
+    try {
+      User user = _container.findUserByConn(c);
+      
+      if (user.isTalking) {
+        for (int i = 0; i < user.talkers.length; i++) {
+          User other = user.talkers[i];
+          sendToClient(other.connection, PacketFactory.get(new Disconnected.With(user.id)));
+        }
+        user.talkers.clear();
       }
-      user.talkers.clear();
+      
+      User rnd = _container.findRandomUser(user);
+      if (rnd != null) {
+        // TODO: Fix. use user id as first parameter on both packets
+        sendToClient(user.connection, PacketFactory.get(new JoinPacket.With("", rnd.id)));
+        sendToClient(rnd.connection, PacketFactory.get(new IdPacket.With(user.id, "")));
+      }
+    } catch(e) {
+      print("Fucked up: $e");
     }
-    
-    User rnd = _container.findRandomUser();
-    sendToClient(user.connection, PacketFactory.get(new IdPacket.With(rnd.id, "")));
   }
 }

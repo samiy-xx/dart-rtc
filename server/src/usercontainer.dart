@@ -72,10 +72,10 @@ class UserContainer extends BaseUserContainer {
     return _users.filter((User u) => u == userToFind).length > 0; 
   }
   
-  User findRandomUser() {
+  User findRandomUser(User caller) {
     for (int i = 0; i < _users.length; i++) {
       User u = _users[i];
-      if (!u.isTalking) {
+      if (!u.isTalking && u != caller) {
         return u;
       }
     }

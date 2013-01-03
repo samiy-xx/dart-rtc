@@ -56,6 +56,9 @@ class PacketFactory {
         case "disconnected":
           p = Disconnected.fromMap(m);
           break;
+        case "random":
+          p = RandomUserPacket.fromMap(m);
+          break;
         default:
           print("Unkown packet");
           p = null;

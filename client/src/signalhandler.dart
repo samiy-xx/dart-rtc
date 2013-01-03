@@ -199,6 +199,7 @@ class SignalHandler implements PeerPacketEventListener {
     PeerWrapper p = createPeerWrapper();
     p.id = id.id;
     p.channel = id.channelId;
+    
   }
   
   void handleConnectionSuccess(ConnectionSuccessPacket p) {

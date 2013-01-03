@@ -7,7 +7,7 @@ import '../packet/packet.dart';
 
 void main() {
   Notifier notify = new Notifier();
-  WebSignalHandler sh = new WebSignalHandler();
+  WheelSignalHandler sh = new WheelSignalHandler();
   PeerManager pm = new PeerManager();
   sh.channelId = "123";
   
@@ -42,7 +42,10 @@ void main() {
   
   sh.registerHandler("connected", (ConnectionSuccessPacket p) {
     notify.display("Connected to signaling server succesfully!");
-    notify.display("Requesting random user..."); 
+    notify.display("Requesting random user...", () {
+      sh.requestRandomUser();
+    });
+    
   });
   
   sh.registerHandler("disconnected", (Disconnected p) {

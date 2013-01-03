@@ -166,51 +166,60 @@ class Server {
   }
   
   void handleIncomingDescription(DescriptionPacket p, WebSocketConnection c) {
-    User sender = _container.findUserByConn(c);
-    sender.lastActivity = new Date.now().millisecondsSinceEpoch;
-    
-    User receiver = _container.findUserById(p.id);
-    receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
-    
-    if (sender == null || receiver == null) {
-      logger.Warning("Sender or Receiver not found");
-      return;
+    try {
+      User sender = _container.findUserByConn(c);
+      User receiver = _container.findUserById(p.id);
+      
+      if (sender == null || receiver == null) {
+        logger.Warning("Sender or Receiver not found");
+        return;
+      }
+      sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+      
+      if (sender == receiver) {
+        logger.Warning("Sending to self, abort");
+        return;
+      }
+      receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
+      
+      logger.Debug("Desc from ${sender.id} to ${receiver.id}");
+      receiver.send(JSON.stringify(new DescriptionPacket.With(p.sdp, p.type, sender.id, "")));
+    } catch (e) {
+      logger.Error("handleIncomingDescription: $e");
     }
-    
-    if (sender == receiver) {
-      logger.Warning("Sending to self, abort");
-      return;
-    }
-    
-    logger.Debug("Desc from ${sender.id} to ${receiver.id}");
-    receiver.send(JSON.stringify(new DescriptionPacket.With(p.sdp, p.type, sender.id, "")));
   }
   
   void handleIncomingIce(ICEPacket ice, WebSocketConnection c) {
-    User sender = _container.findUserByConn(c);
-    sender.lastActivity = new Date.now().millisecondsSinceEpoch;
-    
-    User receiver = _container.findUserById(ice.userId);
-    receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
-    
-    if (sender == null || receiver == null) {
-      logger.Warning("Sender or Receiver not found");
-      return;
+    try {
+      User sender = _container.findUserByConn(c);
+      User receiver = _container.findUserById(ice.userId);
+      
+      if (sender == null || receiver == null) {
+        logger.Warning("Sender or Receiver not found");
+        return;
+      }
+      sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+      
+      if (sender == receiver) {
+        logger.Warning("Sending to self, abort");
+        return;
+      }
+      receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
+      
+      logger.Debug("Ice from ${sender.id} to ${receiver.id}");
+      receiver.send(JSON.stringify(new ICEPacket.With(ice.candidate, ice.sdpMid, ice.sdpMLineIndex, sender.id, "")));
+    } catch(e) {
+      logger.Error("handleIncomingIce: $e");
     }
-    
-    if (sender == receiver) {
-      logger.Warning("Sending to self, abort");
-      return;
-    }
-    
-    logger.Debug("Ice from ${sender.id} to ${receiver.id}");
-    receiver.send(JSON.stringify(new ICEPacket.With(ice.candidate, ice.sdpMid, ice.sdpMLineIndex, sender.id, "")));
   }
   
   void handleIncomingPong(PongPacket p, c) {
-    logger.Debug("Handling pong");
-    User sender = _container.findUserByConn(c);
-    sender.lastActivity = new Date.now().millisecondsSinceEpoch;
-    
+    try {
+      logger.Debug("Handling pong");
+      User sender = _container.findUserByConn(c);
+      sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+    } catch(e) {
+      logger.Error("handleIncomingPong: $e");
+    }
   }
 }

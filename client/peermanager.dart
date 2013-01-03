@@ -100,9 +100,7 @@ class PeerManager {
   }
   
   void _sendPacket(String p) {
-    print("SADASDSADASD");
     _listeners.filter((l) => l is PeerPacketEventListener).forEach((PeerPacketEventListener l) {
-      print("SADASDSADASD11111");
       l.onPacketToSend(p);
     });
   }

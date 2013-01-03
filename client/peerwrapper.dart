@@ -89,6 +89,12 @@ class PeerWrapper {
         _sendAnswer();
       
   }
+  void initialize() {
+    if (isHost)
+      _sendOffer();
+    else
+      _sendAnswer();
+  }
   
   void _sendOffer() {
     _peer.createOffer(_onOfferSuccess, _onRTCError, null);
