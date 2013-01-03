@@ -11,11 +11,17 @@ class WheelServer extends Server {
     registerHandler("random", handleRandomUserRequest);
   }
   
+  /**
+   * Handle Helo packet
+   */
   void handleIncomingHelo(HeloPacket p, WebSocketConnection c) {
     User u = _container.createUser(c);
     sendToClient(c, JSON.stringify(new ConnectionSuccessPacket.With(u.id)));
   }
   
+  /**
+   * Handle Bye packet
+   */
   void handleIncomingBye(HeloPacket p, WebSocketConnection c) {
     User user = _container.findUserByConn(c);
     if (user.isTalking) {
@@ -28,6 +34,9 @@ class WheelServer extends Server {
     user.terminate();
   }
   
+  /**
+   * Handle random user request packet
+   */
   void handleRandomUserRequest(RandomUserPacket p, WebSocketConnection c) {
     try {
       User user = _container.findUserByConn(c);

@@ -3,6 +3,8 @@ part of single_client;
 class Notifier {
   static Notifier _instance;
   String _elementId = "#xzy_notifier";
+  String _parentId;
+  Element _parent;
   DivElement _element;
   HeadingElement _text;
   int _width = 800;
@@ -37,6 +39,12 @@ class Notifier {
     setInitialStyle();
   }
   
+  void setParent(String id) {
+    _parentId = id;
+    _parent = query(id);
+    setInitialStyle();
+  }
+  
   void setBackground(String bg) {
     _element.style.background = bg;
   }
@@ -49,8 +57,10 @@ class Notifier {
     _element.style.height = "${_height.toString()}px";
     _element.style.border = "1px solid #000";
     _element.style.position = "absolute";
-    _element.style.top = "${((window.innerHeight ~/ 2) - (_height ~/ 2)).toString()}px";
-    _element.style.left = "${((window.innerWidth ~/ 2) - (_width ~/ 2)).toString()}px";
+    //_element.style.top = "${((window.innerHeight ~/ 2) - (_height ~/ 2)).toString()}px";
+    //_element.style.left = "${((window.innerWidth ~/ 2) - (_width ~/ 2)).toString()}px";
+    _element.style.left = "${computeLeft().toString()}px";
+    _element.style.top = "${computeTop().toString()}px";
     _element.style.boxShadow = "0 0 5px 5px #888";
     _element.style.padding = "10px";
     _element.style.textAlign = "center";
@@ -60,6 +70,30 @@ class Notifier {
     document.on.click.add((_) => hide());
   }
   
+  int computeLeft() {
+    int left;
+    
+    if (_parent != null) {
+      left = ((_parent.clientWidth ~/2) + _parent.offsetLeft) - (_width ~/ 2);
+     
+    } else {
+      left = (window.innerWidth ~/ 2) - (_width ~/ 2);
+    }
+    
+    return left;
+  }
+  
+  int computeTop() {
+    int top;
+    
+    if (_parent != null) {
+      top = ((_parent.clientHeight ~/ 2) + _parent.clientTop) - (_height ~/ 2); 
+    } else {
+      top = (window.innerHeight ~/ 2) - (_height ~/ 2);
+    }
+    
+    return top;
+  }
   void popup() {
     _visible = true;
     _element.style.display = "block";

@@ -72,7 +72,31 @@ class UserContainer extends BaseUserContainer {
     return _users.filter((User u) => u == userToFind).length > 0; 
   }
   
+  User findLongestIdUser(User caller) {
+    List<User> toPick = _users.filter((u) => u != caller && !u.isTalking);
+    
+    if (toPick.length > 0) {
+      toPick.sort((a, b) => a.compareTo(b));
+      return toPick.last;
+    }
+    
+    return null;
+  }
+  
   User findRandomUser(User caller) {
+    List<User> toPick = _users.filter((u) => u != caller && !u.isTalking);
+    
+    if (toPick.length > 0) {
+      Random r = new Random();
+      int n = r.nextInt(toPick.length);
+      
+      return toPick[n > 0 ? n - 1 : n];
+    }
+    
+    return null;
+  }
+  
+  User findRandomUser_old(User caller) {
     for (int i = 0; i < _users.length; i++) {
       User u = _users[i];
       if (!u.isTalking && u != caller) {

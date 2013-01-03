@@ -6,12 +6,13 @@ class PeerManager {
   final READYSTATE_OPEN = "open";
   final Logger log = new Logger();
   bool _dataChannelsEnabled = false;
-  
+  LocalMediaStream _ms;
   //SignalHandler _signalHandler;
   //VideoManager _videoManager;
   List<PeerWrapper> _peers;
   List<PeerEventListener> _listeners;
   List<PeerMediaEventListenerType> _listenerDynamics;
+  
   
   //VideoManager get videoManager => getVideoManager();
   set dataChannelsEnabled(bool value) => _dataChannelsEnabled = value;
@@ -56,9 +57,13 @@ class PeerManager {
   }*/
   
   void setLocalStream(LocalMediaStream ms) {
+    _ms = ms;
     _peers.forEach((PeerWrapper p) {
       p.addStream(ms);
     });
+  }
+  MediaStream getLocalStream() {
+    return _ms;
   }
   
   PeerWrapper createPeer() {

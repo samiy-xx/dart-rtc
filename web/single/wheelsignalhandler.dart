@@ -42,11 +42,17 @@ class WheelSignalHandler extends SignalHandler {
   void handleJoin(JoinPacket join) {
     super.handleJoin(join);
     PeerWrapper pw = peerManager.findWrapper(join.id);
+    MediaStream ms = peerManager.getLocalStream();
+    pw.addStream(ms);
     pw.initialize();
   }
+  
   void handleId(IdPacket id) {
     super.handleId(id);
     PeerWrapper pw = peerManager.findWrapper(id.id);
+    
+    MediaStream ms = peerManager.getLocalStream();
+    pw.addStream(ms);
     pw.initialize();
   }
   
