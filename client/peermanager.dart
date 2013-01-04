@@ -10,8 +10,8 @@ class PeerManager {
   //SignalHandler _signalHandler;
   //VideoManager _videoManager;
   List<PeerWrapper> _peers;
-  List<PeerEventListener> _listeners;
-  List<PeerMediaEventListenerType> _listenerDynamics;
+  List<Object> _listeners;
+  //List<PeerMediaEventListenerType> _listenerDynamics;
   
   
   //VideoManager get videoManager => getVideoManager();
@@ -28,20 +28,22 @@ class PeerManager {
     //_signalHandler = sh;
     //_videoManager = vm;
     _peers = new List<PeerWrapper>();
-    _listeners = new List<PeerEventListener>();
-    _listenerDynamics = new List<PeerMediaEventListenerType>();
+    _listeners = new List<Object>();
+    //_listenerDynamics = new List<PeerMediaEventListenerType>();
   }
   
   void subscribe(Object listener) {
-    print ("got listener");
+    if (!_listeners.contains(listener))
+      _listeners.add(listener);
+    /*
     if (listener is PeerEventListener) {
-      print ("got listener PeerEventListener");
+      
       if (!_listeners.contains(listener))
         _listeners.add(listener);
     } else {
       if (!_listenerDynamics.contains(listener))
         _listenerDynamics.add(listener);
-    }
+    }*/
   }
   /*
   VideoManager getVideoManager() {
@@ -100,8 +102,8 @@ class PeerManager {
     _listeners.filter((l) => l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
       l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
     });
-    
-    _listenerDynamics.forEach((dyn) => dyn(e.stream, wrapper.id, true));
+    _listeners.filter((l) => l is PeerMediaEventListenerType).forEach((dyn) => dyn(e.stream, wrapper.id, true));
+    //_listenerDynamics.forEach((dyn) => dyn(e.stream, wrapper.id, true));
   }
   
   void _sendPacket(String p) {

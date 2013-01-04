@@ -12,7 +12,9 @@ part "peermanager.dart";
 part "peerwrapper.dart";
 part "datapeerwrapper.dart";
 part "peereventlistener.dart";
+part "signalingeventlistener.dart";
 part "src/signalhandler.dart";
+part "src/channelsignalhandler.dart";
 part "lib/simplesignalhandler.dart";
 
 const int CLOSE_NORMAL = 1000; 

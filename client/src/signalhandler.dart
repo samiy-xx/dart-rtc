@@ -12,13 +12,8 @@ class SignalHandler implements PeerPacketEventListener {
   /* Peer manager */
   PeerManager _peerManager;
   
-  
-  
   /* Id for the local user */
   String _id;
-  
-  /* id for the channel */
-  String _channelId;
   
   bool _dataChannelsEnabled = false;
   
@@ -31,12 +26,13 @@ class SignalHandler implements PeerPacketEventListener {
   /** Setter for PeerManager*/
   set peerManager(PeerManager p) => setPeerManager(p);
   
-  set channelId(String value) => _channelId = value;
+  
   set dataChannelsEnabled(bool value) => setDataChannelsEnabled(value);
   
   String get id => _id;
-  String get channelId => _channelId;
   
+  
+  Map<String, List> _listeners;
   /**
    * Constructor
    */
@@ -45,20 +41,42 @@ class SignalHandler implements PeerPacketEventListener {
     _peerManager = new PeerManager();
     _peerManager.subscribe(this);
     _methodHandlers = new Map<String, List<Function>>();
+    _listeners = new Map<String, List>();
     
+    /* listen to ping, and respond with pong */
     registerHandler("ping", handlePing);
+    
+    /* Listen for ice, required to create the peer connection */
     registerHandler("ice", handleIce);
+    
+    /* Listen for sdp packets */
     registerHandler("desc", handleDescription);
+    
+    /* Listen for bye packets, when other user closes browser etc */
     registerHandler("bye", handleBye);
+    
+    /* Connect success to server */
     registerHandler("connected", handleConnectionSuccess);
+    
+    /* Listenfor join, when someone joins same channel as you are */
     registerHandler("join", handleJoin);
+    
+    /* Listen for id, all users in channel you joined */
     registerHandler("id", handleId);
+  }
+  
+  void subscribe(String type, Object listener) {
+    if (!_listeners.containsKey(type))
+      _listeners[type] = new List<Object>();
+    
+    _listeners[type].add(listener);
   }
   
   void setDataChannelsEnabled(bool value) {
     _dataChannelsEnabled = value;
     _peerManager.dataChannelsEnabled = value;
   }
+  
   /**
    * Registers a handler for specified message type
    * @param type the message type
@@ -68,6 +86,15 @@ class SignalHandler implements PeerPacketEventListener {
     if (!_methodHandlers.containsKey(type))
       _methodHandlers[type] = new List<Function>();
     _methodHandlers[type].add(handler);
+  }
+  
+  /**
+   * Clears all handlers associated to "type"
+   * @param type the message type
+   */
+  void clearHandlers(String type) {
+    if (_methodHandlers.containsKey(type))
+      _methodHandlers.remove(type);
   }
   
   /**
@@ -90,9 +117,6 @@ class SignalHandler implements PeerPacketEventListener {
   void initialize([String host]) {
     if (_peerManager == null)
       throw new Exception("PeerManager is null");
-    
-    if (_channelId == null)
-      throw new Exception("channelId is null");
     
     _ws = new WebSocket(?host ? host :WEBSOCKET_SERVER);
     _ws.on.open.add(onOpen);  
@@ -134,7 +158,7 @@ class SignalHandler implements PeerPacketEventListener {
    */
   void onOpen(Event e) {
     _log.Debug("WebSocket connection opened, sending HELO, ${_ws.readyState}");
-    _ws.send(JSON.stringify(new HeloPacket.With(_channelId, "")));
+    _ws.send(PacketFactory.get(new HeloPacket.With("", "")));
   }
   
   /**
@@ -166,7 +190,7 @@ class SignalHandler implements PeerPacketEventListener {
       for (Function f in handlers)
         f(p);
     } else {
-      _log.Warning("Packet ${p.packetType} arrived but no handler set");
+      _log.Warning("Packet ${p.packetType} has no handlers set");
     }
   }
   
@@ -175,17 +199,12 @@ class SignalHandler implements PeerPacketEventListener {
   }
   
   void onPacketToSend(String p) {
-    print("PACKET needs to be sent");
     send(p);
   }
   
   void handleJoin(JoinPacket packet) {
-    if (packet.id == _id)
-      _channelId = packet.channelId;
-    
     _log.Debug("JoinPacket channel ${packet.channelId} user ${packet.id}");
     PeerWrapper p = createPeerWrapper();
-    p.channel = packet.channelId;
     p.id = packet.id;
     p._isHost = true;
     
@@ -199,15 +218,20 @@ class SignalHandler implements PeerPacketEventListener {
     if (id.id != null && !id.id.isEmpty) {
       PeerWrapper p = createPeerWrapper();
       p.id = id.id;
-      p.channel = id.channelId;
     }
   }
   
+  /**
+   * handle connection success
+   */
   void handleConnectionSuccess(ConnectionSuccessPacket p) {
     _log.Debug("Connection successfull user ${p.id}");
     _id = p.id;
   }
   
+  /**
+   * Handles ice
+   */
   void handleIce(ICEPacket p) {
     RtcIceCandidate candidate = new RtcIceCandidate({
       'candidate': p.candidate,
@@ -216,12 +240,14 @@ class SignalHandler implements PeerPacketEventListener {
     });
     
     PeerWrapper peer = _peerManager.findWrapper(p.userId);
-    //Peer peer = findPeer(p.roomId, p.userId);
     if (peer != null) {
       peer.addRemoteIceCandidate(candidate);
     }
   }
   
+  /**
+   * Handles sdp description
+   */
   void handleDescription(DescriptionPacket p) {
     _log.Debug("DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
    
@@ -240,28 +266,31 @@ class SignalHandler implements PeerPacketEventListener {
     }
   }
   
+  /**
+   * Handles ping from server, responds with pong
+   */
   void handlePing(PingPacket p) {
     _log.Debug("Received PING, answering with PONG");
-    _ws.send(JSON.stringify(new PongPacket()));
+    _ws.send(PacketFactory.get(new PongPacket()));
   }
   
+  /**
+   * Handles Bye packet
+   */
   void handleBye(ByePacket p) {
-    //_vm.removeVideoContainerById(p.userId);
     PeerWrapper peer = _peerManager.findWrapper(p.id);
-    //Peer peer = findPeer(p.roomId, p.userId);
     if (peer != null) {
       peer.close();
     }
   }
   
+  /**
+   * Close the Web socket connection to the signaling server
+   */
   void close() {
-    print ("readystate ${_ws.readyState}");
     if (_ws.readyState != WebSocket.CLOSED) {
-      _ws.send(JSON.stringify(new ByePacket.With(_id)));
-      
-      _log.Debug("Closing socket");
+      _ws.send(PacketFactory.get(new ByePacket.With(_id)));
       _ws.close(1000, "window unload");
     }
-    
   }
 }
