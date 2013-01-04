@@ -32,16 +32,17 @@ class Notifier {
     if (e == null) {
       e = new DivElement();
       e.id = _elementId;
-      document.body.children.add(e);
+      //document.body.children.add(e);
     }
     _element = e;
     _messages = new List<Message>();
-    setInitialStyle();
+    //setInitialStyle();
   }
   
   void setParent(String id) {
     _parentId = id;
     _parent = query(id);
+    _parent.nodes.add(_element);
     setInitialStyle();
   }
   
@@ -53,21 +54,25 @@ class Notifier {
     hide();
     _element.style.background = "#00CCFF";
     _element.style.zIndex = "9999";
-    _element.style.width = "${_width.toString()}px";
+    //_element.style.width = "${_width.toString()}px";
     _element.style.height = "${_height.toString()}px";
     _element.style.border = "1px solid #000";
     _element.style.position = "absolute";
     //_element.style.top = "${((window.innerHeight ~/ 2) - (_height ~/ 2)).toString()}px";
     //_element.style.left = "${((window.innerWidth ~/ 2) - (_width ~/ 2)).toString()}px";
-    _element.style.left = "${computeLeft().toString()}px";
-    _element.style.top = "${computeTop().toString()}px";
+    //_element.style.left = "${computeLeft().toString()}px";
+    //_element.style.top = "${computeTop().toString()}px";
+    _element.style.left = "0px";
+    _element.style.top = "0px";
+    _element.style.width = "${_parent.clientWidth}px";
+    _element.style.height = "${_height.toString()}px";
     _element.style.boxShadow = "0 0 5px 5px #ccc";
     _element.style.padding = "10px";
     _element.style.textAlign = "center";
     _text = new HeadingElement.h2();
     _element.children.add(_text);
     
-    document.on.click.add((_) => hide());
+    //document.on.click.add((_) => hide());
   }
   
   int computeLeft() {
@@ -142,6 +147,7 @@ class Notifier {
     _messages.addLast(new Message(message, callback));
     if (!_visible)
       popup();
+    
   }
   
 }

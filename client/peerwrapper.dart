@@ -92,8 +92,7 @@ class PeerWrapper {
   void initialize() {
     if (isHost)
       _sendOffer();
-    else
-      _sendAnswer();
+    
   }
   
   void _sendOffer() {

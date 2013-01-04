@@ -10,7 +10,7 @@ const int MAX_WIDTH = 800;
 
 void main() {
   Notifier notify = new Notifier();
-  notify.setParent("#container");
+  notify.setParent("#videocontainer");
   WheelSignalHandler sh = new WheelSignalHandler();
   PeerManager pm = new PeerManager();
   LocalMediaStream ms;
@@ -18,25 +18,45 @@ void main() {
   
   VideoElement main_vid = query("#main");
   VideoElement aux_vid = query("#aux");
-  ButtonElement be = query("#chatSubmit");
-  InputElement chatInput = query("#chatTextToEnter");
+  VideoElement large = main_vid;
+  ButtonElement next = query("#next");
+  DivElement chatInput = query("#chatTextToEnter");
   DivElement chatTextContainer = query("#chatText");
   
   window.on.resize.add((e) {
-    resize();
+    resize(large);
   });
   
-  be.on.click.add((_) {
-     sh.sendMessage("123", chatInput.value);
-     appendNewMessageLine("ME", chatInput.value);
-     chatInput.value = ""; 
+  chatInput.on.keyUp.add((KeyboardEvent e) {
+    if (e.keyCode == 13 && !e.shiftKey) {
+      sh.sendMessage("123", chatInput.text);
+      appendNewMessageLine("ME", chatInput.text);
+      chatInput.text = ""; 
+    }
   });
+  
+  next.on.click.add((e) {
+    aux_vid.pause();
+    
+    //pm.closeAll();
+    sh.requestRandomUser();
+    notify.display("Requesting random user...", () {
+      //sh.requestRandomUser();
+    });
+  });
+  /*be.on.click.add((_) {
+     
+     
+  });*/
   
   pm.subscribe((MediaStream ms, String id, bool isMain) {
     notify.display("Incoming video stream");
     aux_vid.src = Url.createObjectUrl(ms);
-    setSmall(main_vid);
-    setLarge(aux_vid);
+    aux_vid.on.loadedMetadata.add((e) {
+      setSmall(main_vid);
+      setLarge(aux_vid);
+      large = aux_vid;
+    });
   });
   
   window.on.beforeUnload.add((e) {
@@ -50,21 +70,29 @@ void main() {
   
   sh.registerHandler("connected", (ConnectionSuccessPacket p) {
     notify.display("Connected to signaling server succesfully!");
-    notify.display("Requesting random user...", () {
-      sh.requestRandomUser();
-    });
-     
   });
   
   sh.registerHandler("disconnected", (Disconnected p) {
     notify.display("User disconnected...");
     setSmall(aux_vid);
     setLarge(main_vid);
+    large = main_vid;
+    chatInput.contentEditable = "false";
   });
-  
+  sh.registerHandler("bye", (ByePacket p) {
+    notify.display("User disconnected...");
+    setSmall(aux_vid);
+    setLarge(main_vid);
+    large = main_vid;
+    chatInput.contentEditable = "false";
+  });
   sh.registerHandler("id", (IdPacket p) {
-    notify.display("User connected...");
-    
+    if (p.id != null && !p.id.isEmpty) {
+      notify.display("User connected...");
+      chatInput.contentEditable = "true";
+    } else {
+      notify.display("No users available.");
+    }
   });
   
   notify.display("Allow access to web camera!");
@@ -75,13 +103,11 @@ void main() {
     main_vid.src = Url.createObjectUrl(stream);
     
     notify.display("Connecting to signaling server...");
-    
+    setLarge(main_vid);
+    setSmall(aux_vid);
     main_vid.on.loadedMetadata.add((e) {
-      main_vid.width = MAX_WIDTH;
       setLarge(main_vid);
       setSmall(aux_vid);
-      //setWidth(main_vid.videoWidth);
-      //setHeight(main_vid.videoHeight);
     });
     
   }, (e) {
@@ -92,13 +118,16 @@ void main() {
   
 }
 
-void resize() {
+void resize([VideoElement l]) {
   int w = document.documentElement.clientWidth > MAX_WIDTH ? MAX_WIDTH : document.documentElement.clientWidth;
   int containerWidth = w - (MARGIN * 2);
   
   query("#container").style.width = "${containerWidth}px";
   query("#videocontainer").style.width = "${containerWidth}px";
   query("#chatcontainer").style.width = "${containerWidth}px";
+  
+  if (?l)
+    setLarge(l);
 }
 
 void setSmall(VideoElement e) {
@@ -110,8 +139,7 @@ void setSmall(VideoElement e) {
   e.style.left = "10px";
   e.width = MAX_WIDTH ~/ 8;
   e.height = h;
-  //e.style.width = "${(e.width  ~/ 10).toString()}px";
-  //e.style.height = "${h.toString()}px";
+  e.style.zIndex = "9998";
 }
 
 void setLarge(VideoElement e) {
@@ -119,8 +147,11 @@ void setLarge(VideoElement e) {
   String aspectRatio = Util.aspectRatio(e.videoWidth, e.videoHeight);
   e.style.top = "0px";
   e.style.left = "0px";
-  e.width = w - MARGIN;
-  e.height = Util.getHeight(w- MARGIN, aspectRatio);
+  e.width = w - (MARGIN * 2);
+  e.height = Util.getHeight(w - (MARGIN * 2), aspectRatio);
+  e.style.zIndex = "9997";
+  query("#container").style.height = "${e.height}px";
+  query("#videocontainer").style.height = "${e.height}px";
 }
 
 void setWidth(int w) {

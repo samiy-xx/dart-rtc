@@ -21,8 +21,8 @@ body {
 
 #chatcontainer {
   width: 900px;
-  height: 100px;
-  overflow:auto;
+  height: 150px;
+  
   border: 1px solid #000;
   margin-top: 10px; 
 }
@@ -38,8 +38,7 @@ body {
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 100px;
-  height: 60px;  
+  
 }
 
 .vid {
@@ -47,12 +46,20 @@ body {
   width: 400px;
   display: inline-block; 
 }
-
-#chatText div {
+#chatText {
+  height: 130px;
   background: #eee;
+}
+#chatTextToEnter {
+  width: 100%;
+  }
+#chatText div {
+  
   margin: 2px;
   padding: 2px;  
+  
 }
+
 
 #chatText span {
   margin-right: 5px;  

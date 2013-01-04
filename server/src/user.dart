@@ -80,7 +80,7 @@ class User implements Comparable {
    */
   void talkTo(User u) {
     if (!_talkingTo.contains(u)) {
-      u.talkTo(this);
+      //u.talkTo(this);
       _talkingTo.add(u);
     }
   }

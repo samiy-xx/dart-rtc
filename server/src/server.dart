@@ -182,6 +182,7 @@ class Server {
       }
       receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
       
+      sender.talkTo(receiver);
       logger.Debug("Desc from ${sender.id} to ${receiver.id}");
       receiver.send(JSON.stringify(new DescriptionPacket.With(p.sdp, p.type, sender.id, "")));
     } catch (e) {

@@ -24,7 +24,9 @@ class WheelSignalHandler extends SignalHandler {
     PeerWrapper peer = getPeerManager().findWrapper(d.id);
     if (peer != null) {
       peer.close();
+      getPeerManager().remove(peer);
     }
+    
   }
   
   void onUserMessage(UserMessage m) {
@@ -44,7 +46,7 @@ class WheelSignalHandler extends SignalHandler {
     PeerWrapper pw = peerManager.findWrapper(join.id);
     MediaStream ms = peerManager.getLocalStream();
     pw.addStream(ms);
-    pw.initialize();
+    //pw.initialize();
   }
   
   void handleId(IdPacket id) {
@@ -53,7 +55,7 @@ class WheelSignalHandler extends SignalHandler {
     
     MediaStream ms = peerManager.getLocalStream();
     pw.addStream(ms);
-    pw.initialize();
+    //pw.initialize();
   }
   
   

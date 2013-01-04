@@ -110,6 +110,14 @@ class PeerManager {
     });
   }
   
+  void closeAll() {
+    //_peers.forEach((p) => p.close());
+    for (int i = 0; i < _peers.length; i++) {
+      PeerWrapper p = _peers[i];
+      p.close();
+    }
+  }
+  
   void remove(PeerWrapper p) {
     p.close();
   }

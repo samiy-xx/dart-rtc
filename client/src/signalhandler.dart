@@ -196,10 +196,11 @@ class SignalHandler implements PeerPacketEventListener {
   
   void handleId(IdPacket id) {
     _log.Debug("ID packet: channel ${id.channelId} user ${id.id}");
-    PeerWrapper p = createPeerWrapper();
-    p.id = id.id;
-    p.channel = id.channelId;
-    
+    if (id.id != null && !id.id.isEmpty) {
+      PeerWrapper p = createPeerWrapper();
+      p.id = id.id;
+      p.channel = id.channelId;
+    }
   }
   
   void handleConnectionSuccess(ConnectionSuccessPacket p) {
@@ -234,6 +235,8 @@ class SignalHandler implements PeerPacketEventListener {
     if (peer != null) {
       _log.Debug("Setting remote description to peer");
       peer.setRemoteSessionDescription(t);
+    } else {
+      _log.Debug("Peer not found with id ${p.id}");
     }
   }
   
