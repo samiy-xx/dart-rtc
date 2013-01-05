@@ -1,6 +1,6 @@
 part of single_client;
 
-class WheelSignalHandler extends SignalHandler {
+class WheelSignalHandler extends SignalHandler implements PeerMediaEventListener {
   String other = null;
   
   WheelSignalHandler() : super() {
@@ -9,6 +9,8 @@ class WheelSignalHandler extends SignalHandler {
     
     registerHandler("id", onIdExistingChannelUser);
     registerHandler("usermessage", onUserMessage);
+    
+    peerManager.subscribe(this);
   }
   
   void onIdExistingChannelUser(IdPacket p) {
@@ -27,6 +29,10 @@ class WheelSignalHandler extends SignalHandler {
       getPeerManager().remove(peer);
     }
     
+  }
+  
+  void onRemoteMediaStreamAvailable(MediaStream ms, String id, bool ismain) {
+    new Logger().Debug("WHEEL HANDLER RECEIVED");
   }
   
   void onUserMessage(UserMessage m) {
@@ -51,10 +57,12 @@ class WheelSignalHandler extends SignalHandler {
   
   void handleId(IdPacket id) {
     super.handleId(id);
-    PeerWrapper pw = peerManager.findWrapper(id.id);
     
-    MediaStream ms = peerManager.getLocalStream();
-    pw.addStream(ms);
+    if (!id.id.isEmpty) {
+      PeerWrapper pw = peerManager.findWrapper(id.id);
+      MediaStream ms = peerManager.getLocalStream();
+      pw.addStream(ms);
+    }
     //pw.initialize();
   }
   

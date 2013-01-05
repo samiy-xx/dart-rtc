@@ -57,7 +57,6 @@ class PeerWrapper {
     _listeners = new List<PeerEventListener>();
     _peer.on.iceCandidate.add(_onIceCandidate);
     _peer.on.iceChange.add(_onIceChange);
-    _peer.on.addStream.add(_onAddStream);
     _peer.on.removeStream.add(_onRemoveStream);
     _peer.on.negotiationNeeded.add(_onNegotiationNeeded);
     _peer.on.open.add((Event e) => _isOpen = true);
@@ -106,7 +105,7 @@ class PeerWrapper {
   void addStream(MediaStream ms) {
     if (ms == null)
       throw new Exception("MediaStream was null");
-    
+    log.Debug("Adding stream to peer $id");
     _peer.addStream(ms);
   }
   
@@ -152,10 +151,6 @@ class PeerWrapper {
     log.Debug("ICE Change ${c.candidate.candidate}");
   }
   
-  void _onAddStream(MediaStreamEvent e) {
-    //handle in manager?
-    //_manager.getVideoManager().addRemoteStream(e.stream, id, true);
-  }
   
   void _onRemoveStream(Event e) {
     

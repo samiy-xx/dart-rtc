@@ -108,7 +108,6 @@ class Server {
             
             Function f = getHandler(p.packetType);
             if (f != null) {
-              print ("handler found");
               f(p, conn);
             } else {
               logger.Warning("Incoming packet ${p.packetType} but no handler registered");

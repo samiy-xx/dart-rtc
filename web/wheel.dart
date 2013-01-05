@@ -9,12 +9,16 @@ const int MARGIN = 10;
 const int MAX_WIDTH = 800;
 
 void main() {
+  //WebLogger logger = new WebLogger();
+  //logger.setElement("#log");
+  
   Notifier notify = new Notifier();
   notify.setParent("#videocontainer");
   WheelSignalHandler sh = new WheelSignalHandler();
   PeerManager pm = new PeerManager();
   LocalMediaStream ms;
-  sh.channelId = "123";
+  
+  //sh.channelId = "123";
   
   VideoElement main_vid = query("#main");
   VideoElement aux_vid = query("#aux");
@@ -31,7 +35,8 @@ void main() {
     if (e.keyCode == 13 && !e.shiftKey) {
       sh.sendMessage("123", chatInput.text);
       appendNewMessageLine("ME", chatInput.text);
-      chatInput.text = ""; 
+      chatInput.text = "";
+      new Logger().Debug("Chat text entered");
     }
   });
   
@@ -43,6 +48,7 @@ void main() {
     notify.display("Requesting random user...", () {
       //sh.requestRandomUser();
     });
+    new Logger().Debug("Requesting random user");
   });
   /*be.on.click.add((_) {
      
@@ -50,6 +56,7 @@ void main() {
   });*/
   
   pm.subscribe((MediaStream ms, String id, bool isMain) {
+    new Logger().Debug("Incoming video stream");
     notify.display("Incoming video stream");
     aux_vid.src = Url.createObjectUrl(ms);
     aux_vid.on.loadedMetadata.add((e) {
@@ -65,28 +72,35 @@ void main() {
   });
   
   sh.registerHandler("usermessage", (UserMessage m) {
-      appendNewMessageLine(m.id, m.message);
+    new Logger().Debug("UserMessage");
+    appendNewMessageLine(m.id, m.message);
   });
   
   sh.registerHandler("connected", (ConnectionSuccessPacket p) {
+    new Logger().Debug("Connected to signlaing server");
     notify.display("Connected to signaling server succesfully!");
   });
   
   sh.registerHandler("disconnected", (Disconnected p) {
+    new Logger().Debug("User disconnected");
     notify.display("User disconnected...");
     setSmall(aux_vid);
     setLarge(main_vid);
     large = main_vid;
     chatInput.contentEditable = "false";
   });
+    
   sh.registerHandler("bye", (ByePacket p) {
+    new Logger().Debug("User left");
     notify.display("User disconnected...");
     setSmall(aux_vid);
     setLarge(main_vid);
     large = main_vid;
     chatInput.contentEditable = "false";
   });
+  
   sh.registerHandler("id", (IdPacket p) {
+    new Logger().Debug("User idpacket");
     if (p.id != null && !p.id.isEmpty) {
       notify.display("User connected...");
       chatInput.contentEditable = "true";
@@ -95,13 +109,19 @@ void main() {
     }
   });
   
+  sh.registerHandler("join", (JoinPacket p) {
+    new Logger().Debug("USer joinpacket");
+  });
+  
   notify.display("Allow access to web camera!");
+  new Logger().Debug("Requesting access to camerA");
   window.navigator.webkitGetUserMedia({'video': true, 'audio': true}, (LocalMediaStream stream) {
     ms = stream;
     sh.initialize();
     sh.getPeerManager().setLocalStream(ms);
     main_vid.src = Url.createObjectUrl(stream);
     
+    new Logger().Debug("Connecting to signaling server");
     notify.display("Connecting to signaling server...");
     setLarge(main_vid);
     setSmall(aux_vid);

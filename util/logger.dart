@@ -10,7 +10,7 @@ part of rtc_utils;
  */
 class Logger {
   /* instance */
-  static Logger _instance;
+  static Logger instance;
   
   /* Current logging level */
   LogLevel _logLevel;
@@ -22,10 +22,10 @@ class Logger {
    * Factory constructor
    */
   factory Logger() {
-    if (_instance == null) {
-      _instance = new Logger._internal();
+    if (instance == null) {
+      instance = new Logger._internal();
     }
-    return _instance;
+    return instance;
   }
   
   /*

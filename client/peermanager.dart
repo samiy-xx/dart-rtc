@@ -98,11 +98,16 @@ class PeerManager {
   }
   
   void onAddStream(MediaStreamEvent e) {
+    log.Debug("PM: Adding peer");
     PeerWrapper wrapper = getWrapperForPeer(e.target);
     _listeners.filter((l) => l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
+      log.Debug("PM: notify class stream available");
       l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
     });
-    _listeners.filter((l) => l is PeerMediaEventListenerType).forEach((dyn) => dyn(e.stream, wrapper.id, true));
+    _listeners.filter((l) => l is PeerMediaEventListenerType).forEach((dyn) {
+      log.Debug("PM: notify dynamic stream available");
+      dyn(e.stream, wrapper.id, true);
+    });
     //_listenerDynamics.forEach((dyn) => dyn(e.stream, wrapper.id, true));
   }
   
