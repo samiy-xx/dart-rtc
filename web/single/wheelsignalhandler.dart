@@ -1,7 +1,9 @@
 part of single_client;
 
-class WheelSignalHandler extends SignalHandler implements PeerMediaEventListener {
+class WheelSignalHandler extends SignalHandler {
   String other = null;
+  VideoElement _aux;
+  Function _test;
   
   WheelSignalHandler() : super() {
     registerHandler("connected", onConnect);
@@ -10,8 +12,10 @@ class WheelSignalHandler extends SignalHandler implements PeerMediaEventListener
     registerHandler("id", onIdExistingChannelUser);
     registerHandler("usermessage", onUserMessage);
     
-    peerManager.subscribe(this);
+    //peerManager.subscribe(this);
   }
+  
+  
   
   void onIdExistingChannelUser(IdPacket p) {
     if (p.id != id)
@@ -30,11 +34,7 @@ class WheelSignalHandler extends SignalHandler implements PeerMediaEventListener
     }
     
   }
-  
-  void onRemoteMediaStreamAvailable(MediaStream ms, String id, bool ismain) {
-    new Logger().Debug("WHEEL HANDLER RECEIVED");
-  }
-  
+
   void onUserMessage(UserMessage m) {
     print("user message");
   }

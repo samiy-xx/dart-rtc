@@ -288,6 +288,9 @@ class SignalHandler implements PeerPacketEventListener {
    * Close the Web socket connection to the signaling server
    */
   void close() {
+    if (_ws == null)
+      return;
+    
     if (_ws.readyState != WebSocket.CLOSED) {
       _ws.send(PacketFactory.get(new ByePacket.With(_id)));
       _ws.close(1000, "window unload");

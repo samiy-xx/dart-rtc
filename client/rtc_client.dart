@@ -31,10 +31,10 @@ const int NEGOTIATIONS_FAILED = 1010;
 const int UNEXPECTED_CONDITION = 1011;
 const int HANDSHAKE_FAILURE = 1015;
 
-const bool DEBUG = true;
+const bool DEBUG = false;
 
 String WEBSOCKET_SERVER = DEBUG 
     ? "ws://127.0.0.1:8234/ws" 
-    : "ws://app.faceseer.com:8234/ws";
+    : "ws://bananafarm.org:8234/ws";
 
 typedef void PeerMediaEventListenerType(MediaStream ms, String id, bool main);

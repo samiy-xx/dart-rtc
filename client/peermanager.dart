@@ -7,14 +7,9 @@ class PeerManager {
   final Logger log = new Logger();
   bool _dataChannelsEnabled = false;
   LocalMediaStream _ms;
-  //SignalHandler _signalHandler;
-  //VideoManager _videoManager;
   List<PeerWrapper> _peers;
-  List<Object> _listeners;
-  //List<PeerMediaEventListenerType> _listenerDynamics;
+  List<PeerEventListener> _listeners;
   
-  
-  //VideoManager get videoManager => getVideoManager();
   set dataChannelsEnabled(bool value) => _dataChannelsEnabled = value;
   
   factory PeerManager() {
@@ -25,38 +20,14 @@ class PeerManager {
   }
   
   PeerManager._internal() {
-    //_signalHandler = sh;
-    //_videoManager = vm;
     _peers = new List<PeerWrapper>();
-    _listeners = new List<Object>();
-    //_listenerDynamics = new List<PeerMediaEventListenerType>();
+    _listeners = new List<PeerEventListener>();
   }
   
-  void subscribe(Object listener) {
+  void subscribe(PeerEventListener listener) {
     if (!_listeners.contains(listener))
       _listeners.add(listener);
-    /*
-    if (listener is PeerEventListener) {
-      
-      if (!_listeners.contains(listener))
-        _listeners.add(listener);
-    } else {
-      if (!_listenerDynamics.contains(listener))
-        _listenerDynamics.add(listener);
-    }*/
   }
-  /*
-  VideoManager getVideoManager() {
-    if (_videoManager == null)
-      throw new Exception("VideoManager is null, forgot to set it?");
-    return _videoManager;
-  }
-  
-  SignalHandler getSignalHandler() {
-    if (_signalHandler == null)
-      throw new Exception("SignalHandler is null, forgot to set it?");
-    return _signalHandler;
-  }*/
   
   void setLocalStream(LocalMediaStream ms) {
     _ms = ms;
@@ -64,6 +35,7 @@ class PeerManager {
       p.addStream(ms);
     });
   }
+  
   MediaStream getLocalStream() {
     return _ms;
   }
@@ -104,11 +76,6 @@ class PeerManager {
       log.Debug("PM: notify class stream available");
       l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
     });
-    _listeners.filter((l) => l is PeerMediaEventListenerType).forEach((dyn) {
-      log.Debug("PM: notify dynamic stream available");
-      dyn(e.stream, wrapper.id, true);
-    });
-    //_listenerDynamics.forEach((dyn) => dyn(e.stream, wrapper.id, true));
   }
   
   void _sendPacket(String p) {
