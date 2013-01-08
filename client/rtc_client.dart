@@ -31,7 +31,7 @@ const int NEGOTIATIONS_FAILED = 1010;
 const int UNEXPECTED_CONDITION = 1011;
 const int HANDSHAKE_FAILURE = 1015;
 
-const bool DEBUG = false;
+const bool DEBUG = true;
 
 String WEBSOCKET_SERVER = DEBUG 
     ? "ws://127.0.0.1:8234/ws" 

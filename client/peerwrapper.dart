@@ -106,7 +106,7 @@ class PeerWrapper {
     if (ms == null)
       throw new Exception("MediaStream was null");
     log.Debug("Adding stream to peer $id");
-    _peer.addStream(ms);
+    _peer.addStream(ms, _manager._streamConstraints.toMap());
   }
   
   void _onNegotiationNeeded(Event e) {

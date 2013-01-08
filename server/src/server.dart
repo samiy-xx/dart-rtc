@@ -1,6 +1,6 @@
 part of rtc_server;
 
-class Server {
+class Server extends PacketHandler {
   /* The http server */
   HttpServer _httpServer;
   
@@ -30,51 +30,45 @@ class Server {
   /* Timer */
   Timer _timer;
   
-  /* Store all method handlers in list */
-  Map<String, Function> _methodHandlers;
-  
-  Server() {
+  Server() : super(){
+    // Create the HttpServer and web socket 
     _httpServer = new HttpServer();
     _httpServer.sessionTimeout = _sessionTimeout;
     _wsHandler = new WebSocketHandler();
     _container = new UserContainer(this);
     _timer = new Timer.repeating(_timerTickInterval, onTimerTick);
-    _methodHandlers = new Map<String, Function>();
     
+    
+    // Register handlers needed to handle on this low level
     registerHandler("pong", handleIncomingPong);
     registerHandler("desc", handleIncomingDescription);
     registerHandler("ice", handleIncomingIce);
   }
   
-  void registerHandler(String type, Function handler) {
-    if (_methodHandlers.containsKey(type))
-      return;
-    
-    _methodHandlers[type] = handler;
-  }
   
-  Function getHandler(String type) {
-    if (_methodHandlers.containsKey(type))
-      return _methodHandlers[type];
-    
-    return null;
-    //return (Packet p) {
-    //  logger.Error("No handler registered for packet ${p.packetType}");
-    //};
-  }
   
+  /**
+   * Stop the server
+   * TODO: Find out howto catch ctrl+c
+   */
   void stop() {
     logger.Info("Stopping server");
     _timer.cancel();
     _httpServer.close();
   }
   
+  /**
+   * Start listening on port
+   * @param ip the ip address bind to
+   * @param port the port to bind to
+   * @param path the path
+   */
   void listen([String ip="0.0.0.0", int port=8234, String path="/ws"]) {
     _ip = ip;
     _path = path;
     _port = port;
     
-    _httpServer.addRequestHandler((req) => req.path == _path, handler);
+    _httpServer.addRequestHandler((req) => req.path == _path, _handler);
  
     _httpServer.onError = (err) {
       logger.Error(err);
@@ -82,11 +76,9 @@ class Server {
     run();
   }
   
-  void handler(HttpRequest request, HttpResponse response) {
-    
+  void _handler(HttpRequest request, HttpResponse response) {
     print("Incoming connection from: ${request.connectionInfo.remoteHost}");
     _wsHandler.onRequest(request, response);
-  
   }
 
   void run() {
@@ -95,8 +87,9 @@ class Server {
     _wsHandler.onOpen = (WebSocketConnection conn) {
       try {
         conn.onMessage = (message) {
-          logger.Debug("Raw message $message");
+          
           Packet p = PacketFactory.getPacketFromString(message);
+          logger.Debug("Incoming packet (${p.packetType})");
           if (p != null) {
             if (p.packetType == "helo") {
               User u = _container.findUserByConn(conn);
@@ -106,15 +99,12 @@ class Server {
               }
             }
             
-            Function f = getHandler(p.packetType);
-            if (f != null) {
-              f(p, conn);
-            } else {
-              logger.Warning("Incoming packet ${p.packetType} but no handler registered");
-            }
+            if (!executeHandlerFor(conn, p))
+              logger.Warning("No handler found for packet (${p.packetType})");
           }
           
         };
+        
         conn.onClosed = (int status, String reason) {
           logger.Debug('closed with $status for $reason');
           logger.Info(displayStatus());
@@ -135,7 +125,6 @@ class Server {
   }
   
   void onTimerTick(Timer t) {
-    print("tick");
     try {
       displayStatus();
     _container.cleanUp();
@@ -145,6 +134,21 @@ class Server {
     }
   }
   
+  /**
+   * Sends a packet to the WebSocketConnection
+   * @param c WebSocketConnection
+   * @param p Packet to send
+   */
+  void sendPacket(WebSocketConnection c, Packet p) {
+    logger.Debug("Sending packet (${p.packetType})");
+    sendToClient(c, PacketFactory.get(p));
+  }
+  
+  /**
+   * Send a stringified json to receiving web socket connection
+   * @param c WebSocketConnection
+   * @param p Packet to send
+   */
   void sendToClient(WebSocketConnection c, String p) {
     try {
       c.send(p);
@@ -164,6 +168,9 @@ class Server {
     }
   }
   
+  /**
+   * Handle the incoming sdp description
+   */
   void handleIncomingDescription(DescriptionPacket p, WebSocketConnection c) {
     try {
       User sender = _container.findUserByConn(c);
@@ -183,12 +190,16 @@ class Server {
       
       sender.talkTo(receiver);
       logger.Debug("Desc from ${sender.id} to ${receiver.id}");
-      receiver.send(JSON.stringify(new DescriptionPacket.With(p.sdp, p.type, sender.id, "")));
+      //receiver.send(JSON.stringify(new DescriptionPacket.With(p.sdp, p.type, sender.id, "")));
+      sendPacket(receiver.connection, new DescriptionPacket.With(p.sdp, p.type, sender.id, ""));
     } catch (e) {
       logger.Error("handleIncomingDescription: $e");
     }
   }
   
+  /**
+   * Handle incoming ice packets
+   */
   void handleIncomingIce(ICEPacket ice, WebSocketConnection c) {
     try {
       User sender = _container.findUserByConn(c);
@@ -207,12 +218,16 @@ class Server {
       receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
       
       logger.Debug("Ice from ${sender.id} to ${receiver.id}");
-      receiver.send(JSON.stringify(new ICEPacket.With(ice.candidate, ice.sdpMid, ice.sdpMLineIndex, sender.id, "")));
+      //receiver.send(JSON.stringify(new ICEPacket.With(ice.candidate, ice.sdpMid, ice.sdpMLineIndex, sender.id, "")));
+      sendPacket(receiver.connection, new ICEPacket.With(ice.candidate, ice.sdpMid, ice.sdpMLineIndex, sender.id, ""));
     } catch(e) {
       logger.Error("handleIncomingIce: $e");
     }
   }
   
+  /**
+   * handle incoming pong replies
+   */
   void handleIncomingPong(PongPacket p, c) {
     try {
       logger.Debug("Handling pong");

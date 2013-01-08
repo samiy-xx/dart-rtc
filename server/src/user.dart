@@ -99,9 +99,11 @@ class User implements Comparable {
   }
   
   /**
+   * Obsolete
    * Send data to this user over web socket connection
    */
   void send(String p) {
+    throw new Exception("Dont use");
    _conn.send(p); 
   }
   

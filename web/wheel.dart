@@ -15,12 +15,14 @@ class QuickHandler implements PeerMediaEventListener {
   VideoElement _remote;
   VideoElement _current;
   ButtonElement _next;
+  ButtonElement _close;
   
   Notifier _notify;
   
   set local(VideoElement e) => _local = e;
   set remote(VideoElement e) => _remote = e;
   set next(ButtonElement e) => setNextButton(e);
+  set close(ButtonElement e) => setCloseButton(e);
   
   QuickHandler() {
     _current = _local;
@@ -44,11 +46,23 @@ class QuickHandler implements PeerMediaEventListener {
     _next.on.click.add(nextButtonClicked);
   }
   
+  void setCloseButton(ButtonElement e) {
+    _close = e;
+    _close.on.click.add(closeButtonClicked);
+  }
+  
   void nextButtonClicked(Event e) {
     _pm.closeAll();
     _sh.send(PacketFactory.get(new RandomUserPacket.With(_sh.id)));
     _remote.pause();
-    _remote.src = null;
+    _current = _local;
+    resize();
+  }
+  
+  void closeButtonClicked(Event e) {
+    _pm.closeAll();
+    _sh.send(PacketFactory.get(new Disconnected.With(_sh.id)));
+    _remote.pause();
     _current = _local;
     resize();
   }
@@ -68,8 +82,16 @@ class QuickHandler implements PeerMediaEventListener {
   }
   
   void resizeLarge(VideoElement e) {
+    if (e == null)
+      return;
+    
     int w = document.documentElement.clientWidth > MAX_WIDTH ? MAX_WIDTH : document.documentElement.clientWidth;
-    String aspectRatio = Util.aspectRatio(e.videoWidth, e.videoHeight);
+    String aspectRatio;
+    if (e != null && e.videoWidth != null && e.videoHeight != null)
+      aspectRatio = Util.aspectRatio(e.videoWidth, e.videoHeight);
+    else
+      aspectRatio = "16:9";
+    
     e.style.top = "0px";
     e.style.left = "0px";
     e.width = w - (MARGIN * 2);
@@ -156,6 +178,7 @@ void main() {
   q.local = query("#main");
   q.remote = query("#aux");
   q.next = query("#next");
+  q.close = query("#close");
   
   window.on.resize.add((e) {
     int w = document.documentElement.clientWidth > MAX_WIDTH ? MAX_WIDTH : document.documentElement.clientWidth;
@@ -174,8 +197,9 @@ void main() {
  
   new Notifier().display("Allow access to web camera!");
   new Logger().Debug("Requesting access to camerA");
+  Constraints constraints = new VideoConstraints();
   
-  window.navigator.webkitGetUserMedia({'video': true, 'audio': true}, (LocalMediaStream stream) {
+  window.navigator.webkitGetUserMedia(constraints.toMap(), (LocalMediaStream stream) {
     q.initialize();
     q.setMainVideo(stream);
     new PeerManager().setLocalStream(stream); 

@@ -9,6 +9,7 @@ class PeerManager {
   LocalMediaStream _ms;
   List<PeerWrapper> _peers;
   List<PeerEventListener> _listeners;
+  StreamConstraints _streamConstraints;
   
   set dataChannelsEnabled(bool value) => _dataChannelsEnabled = value;
   
@@ -22,6 +23,11 @@ class PeerManager {
   PeerManager._internal() {
     _peers = new List<PeerWrapper>();
     _listeners = new List<PeerEventListener>();
+    _streamConstraints = new StreamConstraints();
+  }
+  
+  void setMaxBitRate(int b) {
+    _streamConstraints.bitRate = b;
   }
   
   void subscribe(PeerEventListener listener) {

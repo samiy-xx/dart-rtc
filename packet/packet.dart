@@ -4,7 +4,7 @@ import 'dart:json';
 part 'src/packettype.dart';
 part 'src/basepacket.dart';
 part 'src/InvalidPacketException.dart';
-
+part 'src/packethandler.dart';
 part 'lib/peercreatedpacket.dart';
 part 'lib/usermessage.dart';
 

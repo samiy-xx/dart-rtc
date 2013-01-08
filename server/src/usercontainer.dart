@@ -140,7 +140,7 @@ class UserContainer extends BaseUserContainer {
     for (int i = 0; i < _users.length; i++) {
       User u = _users[i];
       if (currentTime >= u.lastActivity + DEAD_SOCKET_CHECK && currentTime < u.lastActivity + DEAD_SOCKET_KILL) {
-        _server.sendToClient(u.connection, JSON.stringify(new PingPacket.With(u.id)));
+        _server.sendPacket(u.connection, new PingPacket.With(u.id));
       } else if(currentTime >= u.lastActivity + DEAD_SOCKET_KILL) {
         try {
           logger.Debug("Closing dead socket");

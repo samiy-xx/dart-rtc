@@ -10,6 +10,7 @@ class WheelServer extends Server {
     registerHandler("bye", handleIncomingBye);
     registerHandler("random", handleRandomUserRequest);
     registerHandler("usermessage", handleUserMessage);
+    registerHandler("disconnected", handleDisconnect);
   }
   
   /**
@@ -17,7 +18,7 @@ class WheelServer extends Server {
    */
   void handleIncomingHelo(HeloPacket p, WebSocketConnection c) {
     User u = _container.createUser(c);
-    sendToClient(c, JSON.stringify(new ConnectionSuccessPacket.With(u.id)));
+    sendPacket(c, new ConnectionSuccessPacket.With(u.id));
   }
   
   /**
@@ -28,13 +29,28 @@ class WheelServer extends Server {
     if (user.isTalking) {
       for (int i = 0; i < user.talkers.length; i++) {
         User talker = user.talkers[i];
-        sendToClient(talker.connection, JSON.stringify(new ByePacket.With(user.id)));
+        sendPacket(talker.connection, new ByePacket.With(user.id));
       }
     }
     _container.removeUser(user);
     user.terminate();
   }
   
+  void handleDisconnect(Disconnected dc, WebSocketConnection c) {
+    try {
+      User user = _container.findUserByConn(c);
+      if (user.isTalking) {
+        for (int i = 0; i < user.talkers.length; i++) {
+          User other = user.talkers[i];
+          sendPacket(other.connection, new Disconnected.With(user.id));
+          other.talkers.clear();
+        }
+        user.talkers.clear();
+      }
+    } catch (e) {
+      print("handleDisconnect: Fucked up: $e");
+    }
+  }
   /**
    * Handle random user request packet
    */
@@ -45,7 +61,8 @@ class WheelServer extends Server {
       if (user.isTalking) {
         for (int i = 0; i < user.talkers.length; i++) {
           User other = user.talkers[i];
-          sendToClient(other.connection, PacketFactory.get(new Disconnected.With(user.id)));
+          sendPacket(other.connection, new Disconnected.With(user.id));
+          other.talkers.clear();
         }
         user.talkers.clear();
       }
@@ -53,10 +70,10 @@ class WheelServer extends Server {
       User rnd = _container.findRandomUser(user);
       if (rnd != null) {
         // TODO: Fix. use user id as first parameter on both packets
-        sendToClient(user.connection, PacketFactory.get(new JoinPacket.With("", rnd.id)));
-        sendToClient(rnd.connection, PacketFactory.get(new IdPacket.With(user.id, "")));
+        sendPacket(user.connection, new JoinPacket.With("", rnd.id));
+        sendPacket(rnd.connection, new IdPacket.With(user.id, ""));
       } else {
-        sendToClient(user.connection, PacketFactory.get(new IdPacket.With("", "")));
+        sendPacket(user.connection, new IdPacket.With("", ""));
       }
     } catch(e) {
       print("Fucked up: $e");
@@ -78,9 +95,9 @@ class WheelServer extends Server {
       }
       
       um.id = user.id;
-      print("handling user message 2");
-      sendToClient(other.connection, PacketFactory.get(um));
-      print("handling user message 3");
+      
+      sendPacket(other.connection, um);
+      
     } on NoSuchMethodError catch(e) {
       print("Somethign was null: $e");
     } catch(e) {
