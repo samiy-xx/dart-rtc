@@ -14,8 +14,8 @@ class ChannelContainer extends BaseChannelContainer {
     _channels = new List<Channel>();
   }
   
-  List<ChannelUser> usersInChannel(Channel r) {
-    
+  List<ChannelUser> usersInChannel(Channel c) {
+    return c._users;
   }
   
   bool removeChannel(Channel c) {
@@ -49,7 +49,7 @@ class ChannelContainer extends BaseChannelContainer {
   
   Channel createChannelWithId(String id) {
     if (channelExists(id))
-      return false;
+      return findChannel(id);
     
     Channel r = new Channel(this, id, _channelLimit);
     _channels.add(r);

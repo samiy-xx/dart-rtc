@@ -19,14 +19,11 @@ part "src/basecontainer.dart";
 part "src/basechannelcontainer.dart";
 part "src/baseusercontainer.dart";
 
-part "src/roomusercontainer.dart";
 part "src/usercontainer.dart";
 part "src/channelcontainer.dart";
 
 part "lib/channelserver.dart";
-part "lib/roomserver.dart";
 part "lib/wheelserver.dart";
-part "lib/facebookserver.dart";
 part "lib/channeluser.dart";
 part "lib/wheeluser.dart";
 
@@ -50,8 +47,6 @@ void main() {
   Server server = null;
   if (type == "wheel") {
     server = new WheelServer();
-  } else if (type == "room") {
-    server = new RoomServer();
   } else  if (type == "channel") {
     server = new ChannelServer();
   } else {

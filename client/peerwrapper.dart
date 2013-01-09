@@ -132,8 +132,10 @@ class PeerWrapper {
     if (candidate == null)
       throw new Exception("RtcIceCandidate was null");
     
-    log.Debug("Receiving remote ICE Candidate ${candidate.candidate}");
-    _peer.addIceCandidate(candidate);
+    if (_peer.readyState != READYSTATE_CLOSED) {
+      log.Debug("Receiving remote ICE Candidate ${candidate.candidate}");
+      _peer.addIceCandidate(candidate);
+    }
   }
   
   void _onIceCandidate(RtcIceCandidateEvent c) {
@@ -147,8 +149,8 @@ class PeerWrapper {
     }
   }
   
-  void _onIceChange(RtcIceCandidateEvent c) {
-    log.Debug("ICE Change ${c.candidate.candidate}");
+  void _onIceChange(Event c) {
+    log.Debug("ICE Change ${c}");
   }
   
   

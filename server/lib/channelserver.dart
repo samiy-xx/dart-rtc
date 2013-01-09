@@ -14,7 +14,7 @@ class ChannelServer extends Server {
   
   String displayStatus() {
     
-    
+  
     print("Users: ${_container.userCount} Channels: ${_channelContainer.channelCount}");
     
   }
@@ -92,9 +92,9 @@ class ChannelServer extends Server {
       }
       
       um.id = user.id;
-      print("handling user message 2");
+      
       sendToClient(other.connection, PacketFactory.get(um));
-      print("handling user message 3");
+      
     } on NoSuchMethodError catch(e) {
       print("Somethign was null: $e");
     } catch(e) {

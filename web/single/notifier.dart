@@ -1,5 +1,7 @@
 part of single_client;
-
+/**
+ * Very messy notifier class
+ */
 class Notifier {
   static Notifier _instance;
   String _elementId = "#xzy_notifier";
@@ -32,11 +34,9 @@ class Notifier {
     if (e == null) {
       e = new DivElement();
       e.id = _elementId;
-      //document.body.children.add(e);
     }
     _element = e;
     _messages = new List<Message>();
-    //setInitialStyle();
   }
   
   void setParent(String id) {
@@ -50,22 +50,28 @@ class Notifier {
     _element.style.background = bg;
   }
   
+  void setSize() {
+    _element.style.left = "0px";
+    _element.style.top = "0px";
+    _element.style.width = "${_parent.clientWidth}px";
+    _element.style.height = "${_height.toString()}px";
+    
+    print("set width to ${_parent.clientWidth}");
+  }
+  
   void setInitialStyle() {
     hide();
     _element.style.background = "#00CCFF";
     _element.style.zIndex = "9999";
     //_element.style.width = "${_width.toString()}px";
-    _element.style.height = "${_height.toString()}px";
+    //_element.style.height = "${_height.toString()}px";
     _element.style.border = "1px solid #000";
     _element.style.position = "absolute";
     //_element.style.top = "${((window.innerHeight ~/ 2) - (_height ~/ 2)).toString()}px";
     //_element.style.left = "${((window.innerWidth ~/ 2) - (_width ~/ 2)).toString()}px";
     //_element.style.left = "${computeLeft().toString()}px";
     //_element.style.top = "${computeTop().toString()}px";
-    _element.style.left = "0px";
-    _element.style.top = "0px";
-    _element.style.width = "${_parent.clientWidth}px";
-    _element.style.height = "${_height.toString()}px";
+    setSize();
     _element.style.boxShadow = "0 0 5px 5px #ccc";
     _element.style.padding = "10px";
     _element.style.textAlign = "center";
@@ -75,45 +81,34 @@ class Notifier {
     //document.on.click.add((_) => hide());
   }
   
-  int computeLeft() {
-    int left;
+  bool popMessage() {
+    if (_messages.isEmpty)
+      return false;
     
-    if (_parent != null) {
-      left = ((_parent.clientWidth ~/2) + _parent.offsetLeft) - (_width ~/ 2);
-     
-    } else {
-      left = (window.innerWidth ~/ 2) - (_width ~/ 2);
-    }
-    
-    return left;
+    Message m = _messages.removeAt(0);
+    _text.text = m.message;
+      
+    if (m.callback != null)
+      m.callback();
+      
+    return true;
   }
   
-  int computeTop() {
-    int top;
-    
-    if (_parent != null) {
-      top = ((_parent.clientHeight ~/ 2) + _parent.clientTop) - (_height ~/ 2); 
-    } else {
-      top = (window.innerHeight ~/ 2) - (_height ~/ 2);
-    }
-    
-    return top;
-  }
   void popup() {
     _visible = true;
     _element.style.display = "block";
-    Message m = _messages.removeAt(0);
-    _text.text = m.message;
-    if (m.callback != null)
-      m.callback();
+    if (_id != null)
+      window.clearInterval(_id);
+    
+    popMessage();
     int i = 0;
+    
     _id = window.setInterval(() {
-      i++;
-      if (_messages.length > 0) {
-        m = _messages.removeAt(0);
-        _text.text = m.message;
-        if (m.callback != null)
-          m.callback();
+      if (!popMessage()) {
+        i++;
+        print("i++");
+      } else {
+        
       }
       
       if (i >= 5) {
@@ -121,16 +116,6 @@ class Notifier {
         hide();
       }
     }, _interval);
-    
-    /*if (_id != null) {
-      window.clearTimeout(_id);
-    }
-    
-    _id = window.setTimeout(() {
-      hide();
-    }, _timeout);
-    */
-    
   }
   
   void hide() {
@@ -143,11 +128,10 @@ class Notifier {
   }
   
   void display(String message, [Function callback]) {
-    //_text.text = message;
+    setSize();
     _messages.addLast(new Message(message, callback));
     if (!_visible)
       popup();
-    
   }
   
 }

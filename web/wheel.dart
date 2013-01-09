@@ -52,6 +52,7 @@ class QuickHandler implements PeerMediaEventListener {
   }
   
   void nextButtonClicked(Event e) {
+    _notify.display("Requesting new partner...");
     _pm.closeAll();
     _sh.send(PacketFactory.get(new RandomUserPacket.With(_sh.id)));
     _remote.pause();
@@ -60,6 +61,7 @@ class QuickHandler implements PeerMediaEventListener {
   }
   
   void closeButtonClicked(Event e) {
+    _notify.display("Disconnected");
     _pm.closeAll();
     _sh.send(PacketFactory.get(new Disconnected.With(_sh.id)));
     _remote.pause();
@@ -79,6 +81,7 @@ class QuickHandler implements PeerMediaEventListener {
   void resize() {
     resizeLarge(_current);
     resizeSmall(_current == _remote ? _local : _remote);
+    _notify.setSize();
   }
   
   void resizeLarge(VideoElement e) {
@@ -139,7 +142,6 @@ class QuickHandler implements PeerMediaEventListener {
     new Logger().Debug("User disconnected");
     _notify.display("User disconnected...");
     _remote.pause();
-    _remote.src = null;
     _current = _local;
     resize();
   }
@@ -189,6 +191,7 @@ void main() {
     query("#chatcontainer").style.width = "${containerWidth}px";
     
     q.resize();
+    
   });
   
   window.on.beforeUnload.add((e) {
@@ -205,7 +208,8 @@ void main() {
     new PeerManager().setLocalStream(stream); 
   }, (e) {
     Logger log = new Logger();
-    log.Error("failed to get userMedia");
+    log.Error("failed to get userMedia: $e");
+    new Notifier().display("Error: Failed to access camera: $e");
   });
   
   

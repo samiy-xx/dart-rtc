@@ -42,18 +42,18 @@ class Channel {
     Server server = _container.getServer();
     
     // Create a join packet to notify existing users in room
-    String jp = JSON.stringify(new JoinPacket.With(_id, newUser.id));
-    
+    //String jp = JSON.stringify(new JoinPacket.With(_id, newUser.id));
+    Packet jp = new JoinPacket.With(_id, newUser.id);
     // Iterate trough all the users in this room
     _users.forEach((User u) {
       // If the newUser is not the current user in container 
       if (u != newUser) {
         // Create a Id packet sent to the newUser telling it all existing users in room
-        String ip = JSON.stringify(new IdPacket.With(u.id, _id));
+        Packet ip = new IdPacket.With(u.id, _id);
         
         // Send to client handles errors
-        server.sendToClient(u.connection, jp);
-        server.sendToClient(newUser.connection, ip);
+        server.sendPacket(u.connection, jp);
+        server.sendPacket(newUser.connection, ip);
       }
     });
   }
@@ -61,6 +61,7 @@ class Channel {
   void killAll() {
      
   }
+  
   void leave(ChannelUser u) {
     u.channel = null;
     if (_users.contains(u))
