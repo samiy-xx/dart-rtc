@@ -3,19 +3,19 @@ library rtc_client;
 import 'dart:html';
 import 'dart:json';
 
-import '../util/rtc_utils.dart';
-import '../rtc_common/lib/rtc_common.dart';
+import '../../rtc_util/lib/rtc_util.dart';
+import '../../rtc_common/lib/rtc_common.dart';
 
-part "videocontainer.dart";
-part "videomanager.dart";
-part "peermanager.dart";
-part "peerwrapper.dart";
-part "datapeerwrapper.dart";
-part "peereventlistener.dart";
-part "signalingeventlistener.dart";
-part "src/signalhandler.dart";
-part "src/channelsignalhandler.dart";
-part "lib/simplesignalhandler.dart";
+part 'src/videocontainer.dart';
+part 'src/videomanager.dart';
+part 'src/peermanager.dart';
+part 'src/peerwrapper.dart';
+part 'src/datapeerwrapper.dart';
+part 'src/event/peereventlistener.dart';
+part 'src/event/signalingeventlistener.dart';
+part 'src/signalhandler.dart';
+part 'src/channelsignalhandler.dart';
+part 'src/simplesignalhandler.dart';
 
 const int CLOSE_NORMAL = 1000; 
 const int CLOSE_GOING_AWAY = 1001; 

@@ -1,0 +1,813 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SignalHandler class / rtc_client Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_client" data-type="SignalHandler">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_client.html">rtc_client</a> &rsaquo; <a href="../rtc_client/SignalHandler.html">SignalHandler</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><ul class="icon">
+<li><a href="../rtc_client/ChannelSignalHandler.html"><div class="icon-class"></div>ChannelSignalHandler</a></li>
+<li><a href="../rtc_client/DataPeerWrapper.html"><div class="icon-class"></div>DataPeerWrapper</a></li>
+<li><a href="../rtc_client/PeerDataEventListener.html"><div class="icon-class"></div>PeerDataEventListener</a></li>
+<li><a href="../rtc_client/PeerEventListener.html"><div class="icon-class"></div>PeerEventListener</a></li>
+<li><a href="../rtc_client/PeerManager.html"><div class="icon-class"></div>PeerManager</a></li>
+<li><a href="../rtc_client/PeerMediaEventListener.html"><div class="icon-class"></div>PeerMediaEventListener</a></li>
+<li><a href="../rtc_client/PeerMediaEventListenerType.html"><div class="icon-interface"></div>PeerMediaEventListenerType</a></li>
+<li><a href="../rtc_client/PeerPacketEventListener.html"><div class="icon-class"></div>PeerPacketEventListener</a></li>
+<li><a href="../rtc_client/PeerWrapper.html"><div class="icon-class"></div>PeerWrapper</a></li>
+<li><div class="icon-class"></div><strong>SignalHandler</strong></li>
+<li><a href="../rtc_client/SignalingConnectionEventListener.html"><div class="icon-class"></div>SignalingConnectionEventListener</a></li>
+<li><a href="../rtc_client/SignalingConnectionEventListenerType.html"><div class="icon-interface"></div>SignalingConnectionEventListenerType</a></li>
+<li><a href="../rtc_client/SignalingEventListener.html"><div class="icon-class"></div>SignalingEventListener</a></li>
+<li><a href="../rtc_client/SimpleSignalHandler.html"><div class="icon-class"></div>SimpleSignalHandler</a></li>
+<li><a href="../rtc_client/VideoContainer.html"><div class="icon-class"></div>VideoContainer</a></li>
+<li><a href="../rtc_client/VideoManager.html"><div class="icon-class"></div>VideoManager</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<div class="content">
+        <h2><strong>SignalHandler</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>SignalHandler</p>
+<pre class="source">
+class SignalHandler implements PeerPacketEventListener {
+ Logger _log = new Logger();
+ 
+ /* Web socket connection */
+ WebSocket _ws;
+ 
+ /* Peer manager */
+ PeerManager _peerManager;
+ 
+ /* Id for the local user */
+ String _id;
+ 
+ bool _dataChannelsEnabled = false;
+ 
+ /* List containing all thje message method handlers */
+ Map&lt;String, List&lt;Function&gt;&gt; _methodHandlers;
+ 
+ /** Getter for PeerManager */
+ PeerManager get peerManager =&gt; getPeerManager();
+ 
+ /** Setter for PeerManager*/
+ set peerManager(PeerManager p) =&gt; setPeerManager(p);
+ 
+ 
+ set dataChannelsEnabled(bool value) =&gt; setDataChannelsEnabled(value);
+ 
+ String get id =&gt; _id;
+ 
+ 
+ Map&lt;String, List&gt; _listeners;
+ /**
+  * Constructor
+  */
+ SignalHandler() {
+   
+   _peerManager = new PeerManager();
+   _peerManager.subscribe(this);
+   _methodHandlers = new Map&lt;String, List&lt;Function&gt;&gt;();
+   _listeners = new Map&lt;String, List&gt;();
+   
+   /* listen to ping, and respond with pong */
+   registerHandler("ping", handlePing);
+   
+   /* Listen for ice, required to create the peer connection */
+   registerHandler("ice", handleIce);
+   
+   /* Listen for sdp packets */
+   registerHandler("desc", handleDescription);
+   
+   /* Listen for bye packets, when other user closes browser etc */
+   registerHandler("bye", handleBye);
+   
+   /* Connect success to server */
+   registerHandler("connected", handleConnectionSuccess);
+   
+   /* Listenfor join, when someone joins same channel as you are */
+   registerHandler("join", handleJoin);
+   
+   /* Listen for id, all users in channel you joined */
+   registerHandler("id", handleId);
+ }
+ 
+ void subscribe(String type, Object listener) {
+   if (!_listeners.containsKey(type))
+     _listeners[type] = new List&lt;Object&gt;();
+   
+   _listeners[type].add(listener);
+ }
+ 
+ void setDataChannelsEnabled(bool value) {
+   _dataChannelsEnabled = value;
+   _peerManager.dataChannelsEnabled = value;
+ }
+ 
+ /**
+  * Registers a handler for specified message type
+  * @param type the message type
+  * @param handler the function handling this message
+  */
+ void registerHandler(String type, Function handler) {
+   if (!_methodHandlers.containsKey(type))
+     _methodHandlers[type] = new List&lt;Function&gt;();
+   _methodHandlers[type].add(handler);
+ }
+ 
+ /**
+  * Clears all handlers associated to "type"
+  * @param type the message type
+  */
+ void clearHandlers(String type) {
+   if (_methodHandlers.containsKey(type))
+     _methodHandlers.remove(type);
+ }
+ 
+ /**
+  * Returns a list of functions handling given message type
+  * @param type the message type
+  * @return List&lt;Function&gt; the message handler functions
+  */
+ List&lt;Function&gt; getHandlers(String type) {
+   if (_methodHandlers.containsKey(type))
+     return _methodHandlers[type];
+   
+   return null;
+ }
+ 
+ /**
+  * Initializes the connection to the web socket server
+  * If no host parameter is given, uses the default one from lib
+  * @param optional parameter host
+  */
+ void initialize([String host]) {
+   if (_peerManager == null)
+     throw new Exception("PeerManager is null");
+   
+   _ws = new WebSocket(?host ? host :WEBSOCKET_SERVER);
+   _ws.on.open.add(onOpen);  
+   _ws.on.close.add(onClose);  
+   _ws.on.error.add(onError);  
+   _ws.on.message.add(_onMessage);
+ }
+ 
+ //TODO : Remove?
+ /**
+  * Sets the PeerManager
+  * @param p PeerManager
+  */
+ void setPeerManager(PeerManager p) {
+   if (p == null)
+     throw new Exception("PeerManager is null");
+   
+   _peerManager = p;
+ }
+ //TODO : Remove?
+ /**
+  * Returns the peer manager
+  * @return PeerManager
+  */
+ PeerManager getPeerManager() {
+   return _peerManager;
+ }
+ 
+ /**
+  * Creates a peer wrapper instance
+  * @return PeerWrapper
+  */
+ PeerWrapper createPeerWrapper() {
+   return _peerManager.createPeer();
+ }
+ 
+ /**
+  * Callback for websocket onopen
+  */
+ void onOpen(Event e) {
+   _log.Debug("WebSocket connection opened, sending HELO, ${_ws.readyState}");
+   _ws.send(PacketFactory.get(new HeloPacket.With("", "")));
+ }
+ 
+ /**
+  * Callback for websocket onclose
+  */
+ void onClose(CloseEvent e) {
+   _log.Debug("Connection closed ${e.code.toString()} ${e.reason}");
+ }
+ 
+ /**
+  * Callback for websocket onerror
+  */
+ void onError(Event e) {
+   _log.Error("Error $e");
+ }
+ 
+ /*
+  * Private callback for websocket onmessage
+  */
+ void _onMessage(MessageEvent e) {
+   // Get the packet via PacketFactory
+   Packet p = PacketFactory.getPacketFromString(e.data);
+   if (p.packetType == null || p.packetType.isEmpty)
+     return;
+   
+   // Get the handlers for this message
+   List&lt;Function&gt; handlers = getHandlers(p.packetType);
+   if (handlers != null) {
+     for (Function f in handlers)
+       f(p);
+   } else {
+     _log.Warning("Packet ${p.packetType} has no handlers set");
+   }
+ }
+ 
+ void send(String p) {
+   _ws.send(p);
+ }
+ 
+ void onPacketToSend(String p) {
+   send(p);
+ }
+ 
+ void handleJoin(JoinPacket packet) {
+   _log.Debug("JoinPacket channel ${packet.channelId} user ${packet.id}");
+   PeerWrapper p = createPeerWrapper();
+   p.id = packet.id;
+   p._isHost = true;
+   
+   /*MediaStream ms = _videoManager.getLocalStream();
+   if (ms != null)
+     p.addStream(ms);*/
+ }
+ 
+ void handleId(IdPacket id) {
+   _log.Debug("ID packet: channel ${id.channelId} user ${id.id}");
+   if (id.id != null &amp;&amp; !id.id.isEmpty) {
+     PeerWrapper p = createPeerWrapper();
+     p.id = id.id;
+   }
+ }
+ 
+ /**
+  * handle connection success
+  */
+ void handleConnectionSuccess(ConnectionSuccessPacket p) {
+   _log.Debug("Connection successfull user ${p.id}");
+   _id = p.id;
+ }
+ 
+ /**
+  * Handles ice
+  */
+ void handleIce(IcePacket p) {
+   RtcIceCandidate candidate = new RtcIceCandidate({
+     'candidate': p.candidate,
+     'sdpMid': p.sdpMid,
+     'sdpMLineIndex': p.sdpMLineIndex
+   });
+   
+   PeerWrapper peer = _peerManager.findWrapper(p.id);
+   if (peer != null) {
+     peer.addRemoteIceCandidate(candidate);
+   }
+ }
+ 
+ /**
+  * Handles sdp description
+  */
+ void handleDescription(DescriptionPacket p) {
+   _log.Debug("DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
+  
+   RtcSessionDescription t = new RtcSessionDescription({
+     'sdp':p.sdp,
+     'type':p.type
+   });
+   PeerWrapper peer = _peerManager.findWrapper(p.id);
+   //Peer p = findPeer(packet.roomId, packet.userId);
+  
+   if (peer != null) {
+     _log.Debug("Setting remote description to peer");
+     peer.setRemoteSessionDescription(t);
+   } else {
+     _log.Debug("Peer not found with id ${p.id}");
+   }
+ }
+ 
+ /**
+  * Handles ping from server, responds with pong
+  */
+ void handlePing(PingPacket p) {
+   _log.Debug("Received PING, answering with PONG");
+   _ws.send(PacketFactory.get(new PongPacket()));
+ }
+ 
+ /**
+  * Handles Bye packet
+  */
+ void handleBye(ByePacket p) {
+   PeerWrapper peer = _peerManager.findWrapper(p.id);
+   if (peer != null) {
+     peer.close();
+   }
+ }
+ 
+ /**
+  * Close the Web socket connection to the signaling server
+  */
+ void close() {
+   if (_ws == null)
+     return;
+   
+   if (_ws.readyState != WebSocket.CLOSED) {
+     _ws.send(PacketFactory.get(new ByePacket.With(_id)));
+     _ws.close(1000, "window unload");
+   }
+ }
+}
+</pre>
+</div>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_client/ChannelSignalHandler.html">ChannelSignalHandler</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_client/SimpleSignalHandler.html">SimpleSignalHandler</a></span></p>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_client/PeerPacketEventListener.html">PeerPacketEventListener</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="SignalHandler">
+<button class="show-code">Code</button>
+new <strong>SignalHandler</strong>() <a class="anchor-link" href="#SignalHandler"
+              title="Permalink to SignalHandler.SignalHandler">#</a></h4>
+<div class="doc">
+<p>Constructor</p>
+<pre class="source">
+SignalHandler() {
+ 
+ _peerManager = new PeerManager();
+ _peerManager.subscribe(this);
+ _methodHandlers = new Map&lt;String, List&lt;Function&gt;&gt;();
+ _listeners = new Map&lt;String, List&gt;();
+ 
+ /* listen to ping, and respond with pong */
+ registerHandler("ping", handlePing);
+ 
+ /* Listen for ice, required to create the peer connection */
+ registerHandler("ice", handleIce);
+ 
+ /* Listen for sdp packets */
+ registerHandler("desc", handleDescription);
+ 
+ /* Listen for bye packets, when other user closes browser etc */
+ registerHandler("bye", handleBye);
+ 
+ /* Connect success to server */
+ registerHandler("connected", handleConnectionSuccess);
+ 
+ /* Listenfor join, when someone joins same channel as you are */
+ registerHandler("join", handleJoin);
+ 
+ /* Listen for id, all users in channel you joined */
+ registerHandler("id", handleId);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="method"><h4 id="dataChannelsEnabled=">
+<button class="show-code">Code</button>
+<strong>set dataChannelsEnabled</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> value) <a class="anchor-link" href="#dataChannelsEnabled="
+              title="Permalink to SignalHandler.set dataChannelsEnabled">#</a></h4>
+<div class="doc">
+<pre class="source">
+set dataChannelsEnabled(bool value) =&gt; setDataChannelsEnabled(value);
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="id">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>id</strong> <a class="anchor-link"
+            href="#id"
+            title="Permalink to SignalHandler.id">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+String get id =&gt; _id;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="peerManager">
+<button class="show-code">Code</button>
+<a href="../rtc_client/PeerManager.html">PeerManager</a> <strong>get peerManager</strong> <a class="anchor-link" href="#peerManager"
+              title="Permalink to SignalHandler.get peerManager">#</a></h4>
+<div class="doc">
+<p>Getter for PeerManager</p>
+<pre class="source">
+PeerManager get peerManager =&gt; getPeerManager();
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="peerManager=">
+<button class="show-code">Code</button>
+<strong>set peerManager</strong>(<a href="../rtc_client/PeerManager.html">PeerManager</a> p) <a class="anchor-link" href="#peerManager="
+              title="Permalink to SignalHandler.set peerManager">#</a></h4>
+<div class="doc">
+<p>Setter for PeerManager</p>
+<pre class="source">
+set peerManager(PeerManager p) =&gt; setPeerManager(p);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="clearHandlers">
+<button class="show-code">Code</button>
+void <strong>clearHandlers</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type) <a class="anchor-link" href="#clearHandlers"
+              title="Permalink to SignalHandler.clearHandlers">#</a></h4>
+<div class="doc">
+<p>Clears all handlers associated to "type"
+@param type the message type</p>
+<pre class="source">
+void clearHandlers(String type) {
+ if (_methodHandlers.containsKey(type))
+   _methodHandlers.remove(type);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="close">
+<button class="show-code">Code</button>
+void <strong>close</strong>() <a class="anchor-link" href="#close"
+              title="Permalink to SignalHandler.close">#</a></h4>
+<div class="doc">
+<p>Close the Web socket connection to the signaling server</p>
+<pre class="source">
+void close() {
+ if (_ws == null)
+   return;
+ 
+ if (_ws.readyState != WebSocket.CLOSED) {
+   _ws.send(PacketFactory.get(new ByePacket.With(_id)));
+   _ws.close(1000, "window unload");
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="createPeerWrapper">
+<button class="show-code">Code</button>
+<a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> <strong>createPeerWrapper</strong>() <a class="anchor-link" href="#createPeerWrapper"
+              title="Permalink to SignalHandler.createPeerWrapper">#</a></h4>
+<div class="doc">
+<p>Creates a peer wrapper instance
+@return PeerWrapper</p>
+<pre class="source">
+PeerWrapper createPeerWrapper() {
+ return _peerManager.createPeer();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getHandlers">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/Function.html">Function</a>&gt; <strong>getHandlers</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type) <a class="anchor-link" href="#getHandlers"
+              title="Permalink to SignalHandler.getHandlers">#</a></h4>
+<div class="doc">
+<p>Returns a list of functions handling given message type
+@param type the message type
+@return List&lt;Function> the message handler functions</p>
+<pre class="source">
+List&lt;Function&gt; getHandlers(String type) {
+ if (_methodHandlers.containsKey(type))
+   return _methodHandlers[type];
+ 
+ return null;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getPeerManager">
+<button class="show-code">Code</button>
+<a href="../rtc_client/PeerManager.html">PeerManager</a> <strong>getPeerManager</strong>() <a class="anchor-link" href="#getPeerManager"
+              title="Permalink to SignalHandler.getPeerManager">#</a></h4>
+<div class="doc">
+<p>Returns the peer manager
+@return PeerManager</p>
+<pre class="source">
+PeerManager getPeerManager() {
+ return _peerManager;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleBye">
+<button class="show-code">Code</button>
+void <strong>handleBye</strong>(<a href="../rtc_common/ByePacket.html">ByePacket</a> p) <a class="anchor-link" href="#handleBye"
+              title="Permalink to SignalHandler.handleBye">#</a></h4>
+<div class="doc">
+<p>Handles Bye packet</p>
+<pre class="source">
+void handleBye(ByePacket p) {
+ PeerWrapper peer = _peerManager.findWrapper(p.id);
+ if (peer != null) {
+   peer.close();
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleConnectionSuccess">
+<button class="show-code">Code</button>
+void <strong>handleConnectionSuccess</strong>(<a href="../rtc_common/ConnectionSuccessPacket.html">ConnectionSuccessPacket</a> p) <a class="anchor-link" href="#handleConnectionSuccess"
+              title="Permalink to SignalHandler.handleConnectionSuccess">#</a></h4>
+<div class="doc">
+<p>handle connection success</p>
+<pre class="source">
+void handleConnectionSuccess(ConnectionSuccessPacket p) {
+ _log.Debug("Connection successfull user ${p.id}");
+ _id = p.id;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleDescription">
+<button class="show-code">Code</button>
+void <strong>handleDescription</strong>(<a href="../rtc_common/DescriptionPacket.html">DescriptionPacket</a> p) <a class="anchor-link" href="#handleDescription"
+              title="Permalink to SignalHandler.handleDescription">#</a></h4>
+<div class="doc">
+<p>Handles sdp description</p>
+<pre class="source">
+void handleDescription(DescriptionPacket p) {
+ _log.Debug("DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
+
+ RtcSessionDescription t = new RtcSessionDescription({
+   'sdp':p.sdp,
+   'type':p.type
+ });
+ PeerWrapper peer = _peerManager.findWrapper(p.id);
+ //Peer p = findPeer(packet.roomId, packet.userId);
+
+ if (peer != null) {
+   _log.Debug("Setting remote description to peer");
+   peer.setRemoteSessionDescription(t);
+ } else {
+   _log.Debug("Peer not found with id ${p.id}");
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleIce">
+<button class="show-code">Code</button>
+void <strong>handleIce</strong>(<a href="../rtc_common/IcePacket.html">IcePacket</a> p) <a class="anchor-link" href="#handleIce"
+              title="Permalink to SignalHandler.handleIce">#</a></h4>
+<div class="doc">
+<p>Handles ice</p>
+<pre class="source">
+void handleIce(IcePacket p) {
+ RtcIceCandidate candidate = new RtcIceCandidate({
+   'candidate': p.candidate,
+   'sdpMid': p.sdpMid,
+   'sdpMLineIndex': p.sdpMLineIndex
+ });
+ 
+ PeerWrapper peer = _peerManager.findWrapper(p.id);
+ if (peer != null) {
+   peer.addRemoteIceCandidate(candidate);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleId">
+<button class="show-code">Code</button>
+void <strong>handleId</strong>(<a href="../rtc_common/IdPacket.html">IdPacket</a> id) <a class="anchor-link" href="#handleId"
+              title="Permalink to SignalHandler.handleId">#</a></h4>
+<div class="doc">
+<pre class="source">
+void handleId(IdPacket id) {
+ _log.Debug("ID packet: channel ${id.channelId} user ${id.id}");
+ if (id.id != null &amp;&amp; !id.id.isEmpty) {
+   PeerWrapper p = createPeerWrapper();
+   p.id = id.id;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleJoin">
+<button class="show-code">Code</button>
+void <strong>handleJoin</strong>(<a href="../rtc_common/JoinPacket.html">JoinPacket</a> packet) <a class="anchor-link" href="#handleJoin"
+              title="Permalink to SignalHandler.handleJoin">#</a></h4>
+<div class="doc">
+<pre class="source">
+void handleJoin(JoinPacket packet) {
+ _log.Debug("JoinPacket channel ${packet.channelId} user ${packet.id}");
+ PeerWrapper p = createPeerWrapper();
+ p.id = packet.id;
+ p._isHost = true;
+ 
+ /*MediaStream ms = _videoManager.getLocalStream();
+ if (ms != null)
+   p.addStream(ms);*/
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handlePing">
+<button class="show-code">Code</button>
+void <strong>handlePing</strong>(<a href="../rtc_common/PingPacket.html">PingPacket</a> p) <a class="anchor-link" href="#handlePing"
+              title="Permalink to SignalHandler.handlePing">#</a></h4>
+<div class="doc">
+<p>Handles ping from server, responds with pong</p>
+<pre class="source">
+void handlePing(PingPacket p) {
+ _log.Debug("Received PING, answering with PONG");
+ _ws.send(PacketFactory.get(new PongPacket()));
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="initialize">
+<button class="show-code">Code</button>
+void <strong>initialize</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> host]) <a class="anchor-link" href="#initialize"
+              title="Permalink to SignalHandler.initialize">#</a></h4>
+<div class="doc">
+<p>Initializes the connection to the web socket server
+If no host parameter is given, uses the default one from lib
+@param optional parameter host</p>
+<pre class="source">
+void initialize([String host]) {
+ if (_peerManager == null)
+   throw new Exception("PeerManager is null");
+ 
+ _ws = new WebSocket(?host ? host :WEBSOCKET_SERVER);
+ _ws.on.open.add(onOpen);  
+ _ws.on.close.add(onClose);  
+ _ws.on.error.add(onError);  
+ _ws.on.message.add(_onMessage);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onClose">
+<button class="show-code">Code</button>
+void <strong>onClose</strong>(<a href="http://api.dartlang.org/dart_html/CloseEvent.html">CloseEvent</a> e) <a class="anchor-link" href="#onClose"
+              title="Permalink to SignalHandler.onClose">#</a></h4>
+<div class="doc">
+<p>Callback for websocket onclose</p>
+<pre class="source">
+void onClose(CloseEvent e) {
+ _log.Debug("Connection closed ${e.code.toString()} ${e.reason}");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onError">
+<button class="show-code">Code</button>
+void <strong>onError</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onError"
+              title="Permalink to SignalHandler.onError">#</a></h4>
+<div class="doc">
+<p>Callback for websocket onerror</p>
+<pre class="source">
+void onError(Event e) {
+ _log.Error("Error $e");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onOpen">
+<button class="show-code">Code</button>
+void <strong>onOpen</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onOpen"
+              title="Permalink to SignalHandler.onOpen">#</a></h4>
+<div class="doc">
+<p>Callback for websocket onopen</p>
+<pre class="source">
+void onOpen(Event e) {
+ _log.Debug("WebSocket connection opened, sending HELO, ${_ws.readyState}");
+ _ws.send(PacketFactory.get(new HeloPacket.With("", "")));
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onPacketToSend">
+<button class="show-code">Code</button>
+void <strong>onPacketToSend</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> p) <a class="anchor-link" href="#onPacketToSend"
+              title="Permalink to SignalHandler.onPacketToSend">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onPacketToSend(String p) {
+ send(p);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="registerHandler">
+<button class="show-code">Code</button>
+void <strong>registerHandler</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type, <a href="http://api.dartlang.org/dart_core/Function.html">Function</a> handler) <a class="anchor-link" href="#registerHandler"
+              title="Permalink to SignalHandler.registerHandler">#</a></h4>
+<div class="doc">
+<p>Registers a handler for specified message type
+@param type the message type
+@param handler the function handling this message</p>
+<pre class="source">
+void registerHandler(String type, Function handler) {
+ if (!_methodHandlers.containsKey(type))
+   _methodHandlers[type] = new List&lt;Function&gt;();
+ _methodHandlers[type].add(handler);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="send">
+<button class="show-code">Code</button>
+void <strong>send</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> p) <a class="anchor-link" href="#send"
+              title="Permalink to SignalHandler.send">#</a></h4>
+<div class="doc">
+<pre class="source">
+void send(String p) {
+ _ws.send(p);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setDataChannelsEnabled">
+<button class="show-code">Code</button>
+void <strong>setDataChannelsEnabled</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> value) <a class="anchor-link" href="#setDataChannelsEnabled"
+              title="Permalink to SignalHandler.setDataChannelsEnabled">#</a></h4>
+<div class="doc">
+<pre class="source">
+void setDataChannelsEnabled(bool value) {
+ _dataChannelsEnabled = value;
+ _peerManager.dataChannelsEnabled = value;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setPeerManager">
+<button class="show-code">Code</button>
+void <strong>setPeerManager</strong>(<a href="../rtc_client/PeerManager.html">PeerManager</a> p) <a class="anchor-link" href="#setPeerManager"
+              title="Permalink to SignalHandler.setPeerManager">#</a></h4>
+<div class="doc">
+<p>Sets the PeerManager
+@param p PeerManager</p>
+<pre class="source">
+void setPeerManager(PeerManager p) {
+ if (p == null)
+   throw new Exception("PeerManager is null");
+ 
+ _peerManager = p;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="subscribe">
+<button class="show-code">Code</button>
+void <strong>subscribe</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type, <a href="http://api.dartlang.org/dart_core/Object.html">Object</a> listener) <a class="anchor-link" href="#subscribe"
+              title="Permalink to SignalHandler.subscribe">#</a></h4>
+<div class="doc">
+<pre class="source">
+void subscribe(String type, Object listener) {
+ if (!_listeners.containsKey(type))
+   _listeners[type] = new List&lt;Object&gt;();
+ 
+ _listeners[type].add(listener);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-10 18:36:45.263</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

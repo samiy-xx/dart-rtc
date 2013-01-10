@@ -1,0 +1,119 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>StreamConstraints class / rtc_util Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_util" data-type="StreamConstraints">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_util.html">rtc_util</a> &rsaquo; <a href="../rtc_util/StreamConstraints.html">StreamConstraints</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2><ul class="icon">
+<li><a href="../rtc_util/Constraints.html"><div class="icon-class"></div>Constraints</a></li>
+<li><a href="../rtc_util/Logger.html"><div class="icon-class"></div>Logger</a></li>
+<li><a href="../rtc_util/LogLevel.html"><div class="icon-class"></div>LogLevel</a></li>
+<li><div class="icon-class"></div><strong>StreamConstraints</strong></li>
+<li><a href="../rtc_util/Util.html"><div class="icon-class"></div>Util</a></li>
+<li><a href="../rtc_util/VideoConstraints.html"><div class="icon-class"></div>VideoConstraints</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>StreamConstraints</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class StreamConstraints implements Constraints {
+ int _bitRate;
+ set bitRate(int value) =&gt; _bitRate = value;
+ 
+ StreamConstraints() {
+   _bitRate = 1000;
+ }
+ 
+ Map toMap() {
+   return {
+     'mandatory' : {},
+     'optional' : [{'bandwidth': _bitRate}]
+   };
+ }
+}
+</pre>
+</div>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_util/Constraints.html">Constraints</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="StreamConstraints">
+<button class="show-code">Code</button>
+new <strong>StreamConstraints</strong>() <a class="anchor-link" href="#StreamConstraints"
+              title="Permalink to StreamConstraints.StreamConstraints">#</a></h4>
+<div class="doc">
+<pre class="source">
+StreamConstraints() {
+ _bitRate = 1000;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="method"><h4 id="bitRate=">
+<button class="show-code">Code</button>
+<strong>set bitRate</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#bitRate="
+              title="Permalink to StreamConstraints.set bitRate">#</a></h4>
+<div class="doc">
+<pre class="source">
+set bitRate(int value) =&gt; _bitRate = value;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toMap">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toMap</strong>() <a class="anchor-link" href="#toMap"
+              title="Permalink to StreamConstraints.toMap">#</a></h4>
+<div class="doc">
+<pre class="source">
+Map toMap() {
+ return {
+   'mandatory' : {},
+   'optional' : [{'bandwidth': _bitRate}]
+ };
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-10 18:36:45.841</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

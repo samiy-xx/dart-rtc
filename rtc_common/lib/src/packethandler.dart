@@ -33,22 +33,31 @@ class PacketHandler {
     return null;
   }
   
-  /**
-   * Executes packet handlers for given packet if any
-   */
-  bool executeHandlerFor(Object c, Packet p) {
-    try {
+  bool executeHandler(Packet p) {
     List<Function> handlers = getHandlers(p.packetType);
     
     if (handlers == null || handlers.length == 0)
       return false;
-    
+      
     for (Function f in handlers)
-      f(p, c);
-        
+      f(p);
+          
     return true;
-    } catch(e) {
-      print("execute: $e");
-    }
+  }
+  /**
+   * Executes packet handlers for given packet if any
+   */
+  bool executeHandlerFor(Object c, Packet p) {
+    
+      List<Function> handlers = getHandlers(p.packetType);
+      
+      if (handlers == null || handlers.length == 0)
+        return false;
+      
+      for (Function f in handlers)
+        f(p, c);
+          
+      return true;
+    
   }
 }

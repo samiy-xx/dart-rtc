@@ -1,5 +1,5 @@
-name:  sample_pubspec
-description:  A sample application
+name:  rtc_server
+description:  A server
 
 dependencies:
   uuid: 0.0.8

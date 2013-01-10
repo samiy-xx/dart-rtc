@@ -92,6 +92,8 @@ class PeerManager {
   
   void closeAll() {
     //_peers.forEach((p) => p.close());
+    // TODO: Closing the peer modifies the collection
+    // avoid foreach
     for (int i = 0; i < _peers.length; i++) {
       PeerWrapper p = _peers[i];
       p.close();

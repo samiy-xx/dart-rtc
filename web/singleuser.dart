@@ -1,8 +1,8 @@
 import 'dart:html';
 
-import '../util/rtc_utils.dart';
+import '../rtc_util/lib/rtc_util.dart';
 import 'single/single_client.dart';
-import '../client/rtc_client.dart';
+import '../rtc_client/lib/rtc_client.dart';
 import '../rtc_common/lib/rtc_common.dart';
 
 void main() {

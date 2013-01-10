@@ -3,7 +3,7 @@
  * Copyright (c) 2013 Sami Ylönen sami.ylonen@gmail.com
  */
 
-part of rtc_utils;
+part of rtc_util;
 
 /**
  * Enum like class to define logging levels

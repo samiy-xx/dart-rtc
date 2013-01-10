@@ -1,0 +1,236 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>IcePacket class / rtc_common Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_common" data-type="IcePacket">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_common.html">rtc_common</a> &rsaquo; <a href="../rtc_common/IcePacket.html">IcePacket</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><ul class="icon">
+<li><a href="../rtc_common/ByePacket.html"><div class="icon-class"></div>ByePacket</a></li>
+<li><a href="../rtc_common/ConnectionSuccessPacket.html"><div class="icon-class"></div>ConnectionSuccessPacket</a></li>
+<li><a href="../rtc_common/DescriptionPacket.html"><div class="icon-class"></div>DescriptionPacket</a></li>
+<li><a href="../rtc_common/Disconnected.html"><div class="icon-class"></div>Disconnected</a></li>
+<li><a href="../rtc_common/HeloPacket.html"><div class="icon-class"></div>HeloPacket</a></li>
+<li><div class="icon-class"></div><strong>IcePacket</strong></li>
+<li><a href="../rtc_common/IdPacket.html"><div class="icon-class"></div>IdPacket</a></li>
+<li><a href="../rtc_common/JoinPacket.html"><div class="icon-class"></div>JoinPacket</a></li>
+<li><a href="../rtc_common/Packet.html"><div class="icon-class"></div>Packet</a></li>
+<li><a href="../rtc_common/PacketFactory.html"><div class="icon-class"></div>PacketFactory</a></li>
+<li><a href="../rtc_common/PacketHandler.html"><div class="icon-class"></div>PacketHandler</a></li>
+<li><a href="../rtc_common/PacketType.html"><div class="icon-class"></div>PacketType</a></li>
+<li><a href="../rtc_common/PeerCreatedPacket.html"><div class="icon-class"></div>PeerCreatedPacket</a></li>
+<li><a href="../rtc_common/PingPacket.html"><div class="icon-class"></div>PingPacket</a></li>
+<li><a href="../rtc_common/PongPacket.html"><div class="icon-class"></div>PongPacket</a></li>
+<li><a href="../rtc_common/RandomUserPacket.html"><div class="icon-class"></div>RandomUserPacket</a></li>
+<li><a href="../rtc_common/Roompacket.html"><div class="icon-class"></div>Roompacket</a></li>
+<li><a href="../rtc_common/RoutePacket.html"><div class="icon-class"></div>RoutePacket</a></li>
+<li><a href="../rtc_common/UserMessage.html"><div class="icon-class"></div>UserMessage</a></li>
+<li><a href="../rtc_common/Userpacket.html"><div class="icon-class"></div>Userpacket</a></li>
+<li><a href="../rtc_common/InvalidPacketException.html"><div class="icon-exception"></div>InvalidPacketException</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<div class="content">
+        <h2><strong>IcePacket</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class IcePacket implements Packet{
+ IcePacket() : super();
+ IcePacket.With(this.candidate, this.sdpMid, this.sdpMLineIndex, this.id) : super();
+ 
+ String candidate;
+ String sdpMid;
+ int sdpMLineIndex;
+ String id;
+ String packetType = PacketType.ICE;
+ 
+ Map toJson() {
+   return {
+     'candidate':candidate,
+     'sdpMid':sdpMid,
+     'sdpMLineIndex':sdpMLineIndex,
+     'packetType':packetType,
+     'id':id
+   };
+ }
+ 
+ static IcePacket fromMap(Map m) {
+   return new IcePacket.With(m['candidate'], m['sdpMid'], m['sdpMLineIndex'], m['id']);
+ }
+}
+</pre>
+</div>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/Packet.html">Packet</a></span></p>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="fromMap">
+<button class="show-code">Code</button>
+<a href="../rtc_common/IcePacket.html">IcePacket</a> <strong>fromMap</strong>(<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> m) <a class="anchor-link" href="#fromMap"
+              title="Permalink to IcePacket.fromMap">#</a></h4>
+<div class="doc">
+<pre class="source">
+static IcePacket fromMap(Map m) {
+ return new IcePacket.With(m['candidate'], m['sdpMid'], m['sdpMLineIndex'], m['id']);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="IcePacket">
+<button class="show-code">Code</button>
+new <strong>IcePacket</strong>() <a class="anchor-link" href="#IcePacket"
+              title="Permalink to IcePacket.IcePacket">#</a></h4>
+<div class="doc">
+<pre class="source">
+IcePacket() : super();
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="IcePacket.With">
+<button class="show-code">Code</button>
+new <strong>IcePacket.With</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> candidate, <a href="http://api.dartlang.org/dart_core/String.html">String</a> sdpMid, <a href="http://api.dartlang.org/dart_core/int.html">int</a> sdpMLineIndex, <a href="http://api.dartlang.org/dart_core/String.html">String</a> id) <a class="anchor-link" href="#IcePacket.With"
+              title="Permalink to IcePacket.IcePacket.With">#</a></h4>
+<div class="doc">
+<pre class="source">
+IcePacket.With(this.candidate, this.sdpMid, this.sdpMLineIndex, this.id) : super();
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="candidate">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>candidate</strong> <a class="anchor-link"
+            href="#candidate"
+            title="Permalink to IcePacket.candidate">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+candidate
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="id">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>id</strong> <a class="anchor-link"
+            href="#id"
+            title="Permalink to IcePacket.id">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+id
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="packetType">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>packetType</strong> <a class="anchor-link"
+            href="#packetType"
+            title="Permalink to IcePacket.packetType">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+packetType = PacketType.ICE
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="sdpMid">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>sdpMid</strong> <a class="anchor-link"
+            href="#sdpMid"
+            title="Permalink to IcePacket.sdpMid">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+sdpMid
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="sdpMLineIndex">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>sdpMLineIndex</strong> <a class="anchor-link"
+            href="#sdpMLineIndex"
+            title="Permalink to IcePacket.sdpMLineIndex">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+sdpMLineIndex
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toJson">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to IcePacket.toJson">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns the object as Map.
+WebSocket sends only native objects and maps</p>
+<div class="docs-inherited-from">docs inherited from <a href="../rtc_common/Packet.html">Packet</a> </div></div>
+<pre class="source">
+Map toJson() {
+ return {
+   'candidate':candidate,
+   'sdpMid':sdpMid,
+   'sdpMLineIndex':sdpMLineIndex,
+   'packetType':packetType,
+   'id':id
+ };
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to IcePacket.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/Packet.html">Packet</a> </div><div class="doc">
+<p>Calls JSON.stringify on Map returned by toJson</p>
+<pre class="source">
+String toString() {
+ return JSON.stringify(toJson());
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-10 18:36:45.669</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

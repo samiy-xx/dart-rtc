@@ -3,7 +3,7 @@ part of rtc_client;
 /**
  * SignalHandler
  */
-class SignalHandler implements PeerPacketEventListener {
+class SignalHandler extends PacketHandler implements PeerPacketEventListener {
   Logger _log = new Logger();
   
   /* Web socket connection */
@@ -16,9 +16,6 @@ class SignalHandler implements PeerPacketEventListener {
   String _id;
   
   bool _dataChannelsEnabled = false;
-  
-  /* List containing all thje message method handlers */
-  Map<String, List<Function>> _methodHandlers;
   
   /** Getter for PeerManager */
   PeerManager get peerManager => getPeerManager();
@@ -36,11 +33,10 @@ class SignalHandler implements PeerPacketEventListener {
   /**
    * Constructor
    */
-  SignalHandler() {
+  SignalHandler() : super() {
     
     _peerManager = new PeerManager();
     _peerManager.subscribe(this);
-    _methodHandlers = new Map<String, List<Function>>();
     _listeners = new Map<String, List>();
     
     /* listen to ping, and respond with pong */
@@ -75,38 +71,6 @@ class SignalHandler implements PeerPacketEventListener {
   void setDataChannelsEnabled(bool value) {
     _dataChannelsEnabled = value;
     _peerManager.dataChannelsEnabled = value;
-  }
-  
-  /**
-   * Registers a handler for specified message type
-   * @param type the message type
-   * @param handler the function handling this message
-   */
-  void registerHandler(String type, Function handler) {
-    if (!_methodHandlers.containsKey(type))
-      _methodHandlers[type] = new List<Function>();
-    _methodHandlers[type].add(handler);
-  }
-  
-  /**
-   * Clears all handlers associated to "type"
-   * @param type the message type
-   */
-  void clearHandlers(String type) {
-    if (_methodHandlers.containsKey(type))
-      _methodHandlers.remove(type);
-  }
-  
-  /**
-   * Returns a list of functions handling given message type
-   * @param type the message type
-   * @return List<Function> the message handler functions
-   */
-  List<Function> getHandlers(String type) {
-    if (_methodHandlers.containsKey(type))
-      return _methodHandlers[type];
-    
-    return null;
   }
   
   /**
@@ -184,11 +148,8 @@ class SignalHandler implements PeerPacketEventListener {
     if (p.packetType == null || p.packetType.isEmpty)
       return;
     
-    // Get the handlers for this message
-    List<Function> handlers = getHandlers(p.packetType);
-    if (handlers != null) {
-      for (Function f in handlers)
-        f(p);
+    if (executeHandler(p)) {
+      
     } else {
       _log.Warning("Packet ${p.packetType} has no handlers set");
     }
