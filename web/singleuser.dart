@@ -3,13 +3,13 @@ import 'dart:html';
 import '../util/rtc_utils.dart';
 import 'single/single_client.dart';
 import '../client/rtc_client.dart';
-import '../packet/packet.dart';
+import '../rtc_common/lib/rtc_common.dart';
 
 void main() {
   // READ https://webrtc-demos.appspot.com/html/constraints-and-stats.html
   
   WebVideoManager vm = new WebVideoManager();
-  WebSignalHandler sh = new WebSignalHandler(vm);
+  WebSignalHandler sh = new WebSignalHandler();
   //sh.setDataChannelsEnabled(true);
   sh.channelId = "123";
   
@@ -36,9 +36,9 @@ void main() {
   String host = "ws://127.0.0.1:8234/ws";
   //sh.initialize(host);
   
-  pm.subscribe((MediaStream ms, String id, bool isMain) {
-    print ("GOT STREAM FROM PeerMANAGER!!!!!!!!!");
-  });
+  //pm.subscribe((MediaStream ms, String id, bool isMain) {
+  //  print ("GOT STREAM FROM PeerMANAGER!!!!!!!!!");
+  //});
   
   window.on.beforeUnload.add((e) {
     sh.close();

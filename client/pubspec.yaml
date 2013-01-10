@@ -1,5 +1,5 @@
-name:  sample_pubspec
-description:  A sample application
+name:  rtc_client
+description: Client clibrary for webrtc on dart
 
 #dependencies:
 #  js: any

@@ -232,14 +232,14 @@ class SignalHandler implements PeerPacketEventListener {
   /**
    * Handles ice
    */
-  void handleIce(ICEPacket p) {
+  void handleIce(IcePacket p) {
     RtcIceCandidate candidate = new RtcIceCandidate({
       'candidate': p.candidate,
       'sdpMid': p.sdpMid,
       'sdpMLineIndex': p.sdpMLineIndex
     });
     
-    PeerWrapper peer = _peerManager.findWrapper(p.userId);
+    PeerWrapper peer = _peerManager.findWrapper(p.id);
     if (peer != null) {
       peer.addRemoteIceCandidate(candidate);
     }

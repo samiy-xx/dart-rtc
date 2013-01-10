@@ -1,9 +1,9 @@
 import 'dart:html';
 
-import '../util/rtc_utils.dart';
+import '../rtc_util/lib/rtc_util.dart';
 import 'single/single_client.dart';
 import '../client/rtc_client.dart';
-import '../packet/packet.dart';
+import '../rtc_common/lib/rtc_common.dart';
 
 const int MARGIN = 10;
 const int MAX_WIDTH = 800;
@@ -27,7 +27,7 @@ class QuickHandler implements PeerMediaEventListener {
   QuickHandler() {
     _current = _local;
     _notify = new Notifier();
-    _notify.setParent("#videocontainer");
+    //_notify.setParent("#videocontainer");
     _sh = new WheelSignalHandler();
     _pm = new PeerManager();
     
@@ -81,7 +81,7 @@ class QuickHandler implements PeerMediaEventListener {
   void resize() {
     resizeLarge(_current);
     resizeSmall(_current == _remote ? _local : _remote);
-    _notify.setSize();
+    //_notify.setSize();
   }
   
   void resizeLarge(VideoElement e) {

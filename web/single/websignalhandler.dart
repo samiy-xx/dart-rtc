@@ -1,6 +1,6 @@
 part of single_client;
 
-class WebSignalHandler extends SignalHandler {
+class WebSignalHandler extends ChannelSignalHandler {
   String other = null;
   
   WebSignalHandler() : super() {

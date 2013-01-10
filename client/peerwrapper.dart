@@ -141,7 +141,7 @@ class PeerWrapper {
   void _onIceCandidate(RtcIceCandidateEvent c) {
     if (c.candidate != null) {
       log.Debug("Sending local ICE Candidate ${c.candidate.candidate}");
-      ICEPacket ice = new ICEPacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id, channel);
+      IcePacket ice = new IcePacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id);
       _manager._sendPacket(PacketFactory.get(ice));
     } else {
       log.Warning("Local ICE Candidate was null");

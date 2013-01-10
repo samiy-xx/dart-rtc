@@ -4,7 +4,7 @@ import 'dart:html';
 import 'dart:json';
 
 import '../util/rtc_utils.dart';
-import '../packet/packet.dart';
+import '../rtc_common/lib/rtc_common.dart';
 
 part "videocontainer.dart";
 part "videomanager.dart";

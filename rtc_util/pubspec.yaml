@@ -1,0 +1,6 @@
+name:  rtc_util
+description:  Utils for rtc
+
+#dependencies:
+#  js: any
+#  unittest: any
