@@ -5,4 +5,4 @@ dependencies:
   uuid: 0.0.8
   args: { sdk: args }
 #  js: any
-#  unittest: { sdk: unittest }
+  unittest: { sdk: unittest }

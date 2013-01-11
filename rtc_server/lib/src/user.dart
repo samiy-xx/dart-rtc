@@ -49,10 +49,11 @@ class User implements Comparable {
   /** Logger =) */
   Logger log = new Logger();
   
+  UserContainer _container;
   /**
    * Constructor
    */
-  User(this._id, this._conn) {
+  User(this._container, this._id, this._conn) {
     _talkingTo = new List<User>();
     _conn.onClosed = _onClose;
     _lastActivity = new Date.now().millisecondsSinceEpoch;
@@ -63,7 +64,8 @@ class User implements Comparable {
    * Called when websocket connection closes
    */ 
   void _onClose(int status, String reason) {
-    log.Debug("User, connection closed");
+    log.Debug("User connection closed with status $status and reason $reason");
+    _container.removeUser(this);
     _talkingTo.forEach((User u) => u.hangup(this));
   }
   

@@ -1,6 +1,6 @@
 part of rtc_server;
 
-class WheelServer extends Server {
+class WheelServer extends WebSocketServer {
   /**
    * Constructor
    * Register all handlers here

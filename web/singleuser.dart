@@ -1,7 +1,7 @@
 import 'dart:html';
 
 import '../rtc_util/lib/rtc_util.dart';
-import 'single/single_client.dart';
+import 'single/demo_client.dart';
 import '../rtc_client/lib/rtc_client.dart';
 import '../rtc_common/lib/rtc_common.dart';
 
@@ -9,7 +9,7 @@ void main() {
   // READ https://webrtc-demos.appspot.com/html/constraints-and-stats.html
   
   WebVideoManager vm = new WebVideoManager();
-  WebSignalHandler sh = new WebSignalHandler();
+  WebSignalHandler sh = new WebSignalHandler(new WebSocketDataSource("ws://127.0.0.1:8234/ws"));
   //sh.setDataChannelsEnabled(true);
   sh.channelId = "123";
   

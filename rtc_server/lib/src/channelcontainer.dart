@@ -8,7 +8,7 @@ class ChannelContainer extends BaseChannelContainer {
   
   int get channelCount => _channels.length;
   
-  int _channelLimit = 2;
+  int _channelLimit = 20;
   
   ChannelContainer(Server s) : super(s) {
     _channels = new List<Channel>();

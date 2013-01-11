@@ -3,11 +3,11 @@ part of rtc_client;
 /**
  * SignalHandler
  */
-class SignalHandler extends PacketHandler implements PeerPacketEventListener {
+class SignalHandler extends PacketHandler implements PeerPacketEventListener, DataSourceConnectionEventListener {
   Logger _log = new Logger();
   
-  /* Web socket connection */
-  WebSocket _ws;
+  /* Datasource */
+  DataSource _dataSource;
   
   /* Peer manager */
   PeerManager _peerManager;
@@ -15,28 +15,38 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener {
   /* Id for the local user */
   String _id;
   
+  /* Enable datachannels */
   bool _dataChannelsEnabled = false;
   
   /** Getter for PeerManager */
   PeerManager get peerManager => getPeerManager();
   
+  /** Getter for data source */
+  DataSource get dataSource => _dataSource;
+  
   /** Setter for PeerManager*/
   set peerManager(PeerManager p) => setPeerManager(p);
   
-  
+  /** Enable datachannels */
   set dataChannelsEnabled(bool value) => setDataChannelsEnabled(value);
   
+  /** Id of the user */
   String get id => _id;
   
-  
   Map<String, List> _listeners;
+  
   /**
    * Constructor
    */
-  SignalHandler() : super() {
+  SignalHandler(DataSource ds) : super() {
+    /* Init the datasource */
+    _dataSource = ds;
+    _dataSource.subscribe(this);
     
+    /* Init peer manager */
     _peerManager = new PeerManager();
     _peerManager.subscribe(this);
+    
     _listeners = new Map<String, List>();
     
     /* listen to ping, and respond with pong */
@@ -82,17 +92,11 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener {
     if (_peerManager == null)
       throw new Exception("PeerManager is null");
     
-    _ws = new WebSocket(?host ? host :WEBSOCKET_SERVER);
-    _ws.on.open.add(onOpen);  
-    _ws.on.close.add(onClose);  
-    _ws.on.error.add(onError);  
-    _ws.on.message.add(_onMessage);
+    _dataSource.init();
   }
   
-  //TODO : Remove?
   /**
    * Sets the PeerManager
-   * @param p PeerManager
    */
   void setPeerManager(PeerManager p) {
     if (p == null)
@@ -118,33 +122,33 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener {
   }
   
   /**
-   * Callback for websocket onopen
+   * Implements DataSourceConnectionEventListener onOpen
    */
-  void onOpen(Event e) {
-    _log.Debug("WebSocket connection opened, sending HELO, ${_ws.readyState}");
-    _ws.send(PacketFactory.get(new HeloPacket.With("", "")));
+  void onOpen(String m) {
+    _log.Debug("Connection opened, sending HELO, ${_dataSource.readyState}");
+    _dataSource.send(PacketFactory.get(new HeloPacket.With("", "")));
   }
   
   /**
-   * Callback for websocket onclose
+   * Implements DataSourceConnectionEventListener onClose
    */
-  void onClose(CloseEvent e) {
-    _log.Debug("Connection closed ${e.code.toString()} ${e.reason}");
+  void onClose(String m) {
+    _log.Debug("Connection closed ${m}");
   }
   
   /**
-   * Callback for websocket onerror
+   * Implements DataSourceConnectionEventListener onError
    */
-  void onError(Event e) {
+  void onError(String e) {
     _log.Error("Error $e");
   }
   
-  /*
-   * Private callback for websocket onmessage
+  /**
+   * Implements DataSourceConnectionEventListener onMessage
    */
-  void _onMessage(MessageEvent e) {
+  void onMessage(String m) {
     // Get the packet via PacketFactory
-    Packet p = PacketFactory.getPacketFromString(e.data);
+    Packet p = PacketFactory.getPacketFromString(m);
     if (p.packetType == null || p.packetType.isEmpty)
       return;
     
@@ -155,14 +159,23 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener {
     }
   }
   
+  /**
+   * Send data trough datasource
+   */
   void send(String p) {
-    _ws.send(p);
+    _dataSource.send(p);
   }
   
+  /**
+   * Implements PeerPacketEventListener onPacketToSend
+   */
   void onPacketToSend(String p) {
     send(p);
   }
   
+  /**
+   * Handle join packet
+   */
   void handleJoin(JoinPacket packet) {
     _log.Debug("JoinPacket channel ${packet.channelId} user ${packet.id}");
     PeerWrapper p = createPeerWrapper();
@@ -174,6 +187,9 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener {
       p.addStream(ms);*/
   }
   
+  /**
+   * Handle id packet
+   */
   void handleId(IdPacket id) {
     _log.Debug("ID packet: channel ${id.channelId} user ${id.id}");
     if (id.id != null && !id.id.isEmpty) {
@@ -232,7 +248,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener {
    */
   void handlePing(PingPacket p) {
     _log.Debug("Received PING, answering with PONG");
-    _ws.send(PacketFactory.get(new PongPacket()));
+    _dataSource.send(PacketFactory.get(new PongPacket()));
   }
   
   /**
@@ -249,12 +265,12 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener {
    * Close the Web socket connection to the signaling server
    */
   void close() {
-    if (_ws == null)
-      return;
+    //if (_ws == null)
+    //  return;
     
-    if (_ws.readyState != WebSocket.CLOSED) {
-      _ws.send(PacketFactory.get(new ByePacket.With(_id)));
-      _ws.close(1000, "window unload");
-    }
+    //if (_ws.readyState != WebSocket.CLOSED) {
+      _dataSource.send(PacketFactory.get(new ByePacket.With(_id)));
+      _dataSource.close();
+    //}
   }
 }

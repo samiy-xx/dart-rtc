@@ -1,4 +1,4 @@
-part of single_client;
+part of demo_client;
 /**
  * Very messy notifier class
  */
@@ -90,8 +90,10 @@ class Notifier {
     hide();
     _element.style.background = "#00CCFF";
     _element.style.zIndex = "9999";
-    _element.style.border = "1px solid #000";
+    _element.style.border = "0px";
+    _element.style.borderBottom = "1px solid #000";
     _element.style.position = "absolute";
+    _element.style.margin = "0px";
     _element.style.padding = "0px";
     _element.style.textAlign = "center";
     _text = new HeadingElement.h2();
@@ -141,7 +143,6 @@ class Notifier {
     _id = window.setInterval(() {
       if (!popMessage()) {
         i++;
-        print("i++");
       } else {
         
       }

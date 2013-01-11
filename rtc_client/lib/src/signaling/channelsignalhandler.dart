@@ -7,7 +7,7 @@ class ChannelSignalHandler extends SignalHandler{
   String get channelId => _channelId;
   set channelId(String value) => _channelId = value;
   
-  ChannelSignalHandler() : super() {
+  ChannelSignalHandler(DataSource ds) : super(ds) {
     
   }
   
@@ -21,9 +21,9 @@ class ChannelSignalHandler extends SignalHandler{
   /**
    * Callback for websocket onopen
    */
-  void onOpen(Event e) {
-    _log.Debug("WebSocket connection opened, sending HELO, ${_ws.readyState}");
-    _ws.send(PacketFactory.get(new HeloPacket.With(_channelId, "")));
+  void onOpen(String e) {
+    _log.Debug("WebSocket connection opened, sending HELO, ${_dataSource.readyState}");
+    _dataSource.send(PacketFactory.get(new HeloPacket.With(_channelId, "")));
   }
   
   void handleJoin(JoinPacket packet) {

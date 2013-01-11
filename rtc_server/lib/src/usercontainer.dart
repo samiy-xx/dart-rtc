@@ -37,12 +37,10 @@ class UserContainer extends BaseUserContainer {
     if (u != null) 
       return u;
     
-    u = new User(id, c);
+    u = new User(this, id, c);
     _users.add(u);
     
-    u.connection.onClosed = (int code, String reason) {
-      removeUser(u);
-    };
+    
     return u;
   }
   
@@ -53,12 +51,10 @@ class UserContainer extends BaseUserContainer {
     if (u != null) 
       return u;
     
-    u = new ChannelUser(id, c);
+    u = new ChannelUser(this, id, c);
     _users.add(u);
     
-    u.connection.onClosed = (int code, String reason) {
-      removeUser(u);
-    };
+    
     return u;
   }
   

@@ -1,9 +1,9 @@
-part of single_client;
+part of demo_client;
 
 class WebSignalHandler extends ChannelSignalHandler {
   String other = null;
   
-  WebSignalHandler() : super() {
+  WebSignalHandler(DataSource ds) : super(ds) {
     registerHandler("connected", onConnect);
     registerHandler("join", onJoinChannel);
     registerHandler("id", onIdExistingChannelUser);
@@ -33,6 +33,25 @@ class WebSignalHandler extends ChannelSignalHandler {
   
   void onUserMessage(UserMessage m) {
     print("user message");
+  }
+  
+  void handleJoin(JoinPacket join) {
+    super.handleJoin(join);
+    PeerWrapper pw = peerManager.findWrapper(join.id);
+    MediaStream ms = peerManager.getLocalStream();
+    pw.addStream(ms);
+    //pw.initialize();
+  }
+  
+  void handleId(IdPacket id) {
+    super.handleId(id);
+    
+    if (!id.id.isEmpty) {
+      PeerWrapper pw = peerManager.findWrapper(id.id);
+      MediaStream ms = peerManager.getLocalStream();
+      pw.addStream(ms);
+    }
+    //pw.initialize();
   }
 }
 

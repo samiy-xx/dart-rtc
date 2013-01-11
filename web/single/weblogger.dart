@@ -1,4 +1,4 @@
-part of single_client;
+part of demo_client;
 
 class WebLogger extends Logger {
   DivElement _logElement;

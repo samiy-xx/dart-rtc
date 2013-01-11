@@ -6,16 +6,20 @@ import 'dart:json';
 import '../../rtc_util/lib/rtc_util.dart';
 import '../../rtc_common/lib/rtc_common.dart';
 
-part 'src/videocontainer.dart';
-part 'src/videomanager.dart';
-part 'src/peermanager.dart';
-part 'src/peerwrapper.dart';
-part 'src/datapeerwrapper.dart';
+part '../../web/single/videocontainer.dart';
+part '../../web/single/videomanager.dart';
+part 'src/peer/peermanager.dart';
+part 'src/peer/peerwrapper.dart';
+part 'src/peer/datapeerwrapper.dart';
 part 'src/event/peereventlistener.dart';
 part 'src/event/signalingeventlistener.dart';
-part 'src/signalhandler.dart';
-part 'src/channelsignalhandler.dart';
-part 'src/simplesignalhandler.dart';
+part 'src/event/datasourceeventlistener.dart';
+part 'src/signaling/signalhandler.dart';
+part 'src/signaling/channelsignalhandler.dart';
+part 'src/signaling/simplesignalhandler.dart';
+
+part 'src/datasource/datasource.dart';
+part 'src/datasource/websocketdatasource.dart';
 
 const int CLOSE_NORMAL = 1000; 
 const int CLOSE_GOING_AWAY = 1001; 
@@ -32,9 +36,7 @@ const int UNEXPECTED_CONDITION = 1011;
 const int HANDSHAKE_FAILURE = 1015;
 
 const bool DEBUG = true;
-
 String WEBSOCKET_SERVER = DEBUG 
     ? "ws://127.0.0.1:8234/ws" 
     : "ws://bananafarm.org:8234/ws";
-
 typedef void PeerMediaEventListenerType(MediaStream ms, String id, bool main);

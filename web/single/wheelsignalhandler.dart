@@ -1,11 +1,11 @@
-part of single_client;
+part of demo_client;
 
 class WheelSignalHandler extends SignalHandler {
   String other = null;
   VideoElement _aux;
   Function _test;
   
-  WheelSignalHandler() : super() {
+  WheelSignalHandler(DataSource ds) : super(ds) {
     registerHandler("connected", onConnect);
     registerHandler("disconnected", onUserDisconnect);
     

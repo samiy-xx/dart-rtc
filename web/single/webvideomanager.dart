@@ -1,4 +1,4 @@
-part of single_client;
+part of demo_client;
 
 class WebVideoManager extends VideoManager {
   /* Static instance */
@@ -262,9 +262,5 @@ class WebVideoManager extends VideoManager {
         moveVideoContainer(v, _mainHost);
     }
     
-    
-    
-    //if (_childHost.nodes.length == 0)
-    //  _childHost.style.visibility = "hidden";
   }
 }

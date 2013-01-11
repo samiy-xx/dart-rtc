@@ -1,6 +1,6 @@
 part of rtc_server;
 
-class ChannelServer extends Server {
+class ChannelServer extends WebSocketServer {
   ChannelContainer _channelContainer;
   
   ChannelServer() : super() {
@@ -13,10 +13,7 @@ class ChannelServer extends Server {
   }
   
   String displayStatus() {
-    
-  
     print("Users: ${_container.userCount} Channels: ${_channelContainer.channelCount}");
-    
   }
   
   void handleHelo(HeloPacket hp, WebSocketConnection c) {
@@ -60,8 +57,8 @@ class ChannelServer extends Server {
     
     try {
       if (user != null) {
-        user.channel.leave(user);
-        _container.removeUser(user);
+        //user.channel.leave(user);
+        //_container.removeUser(user);
         user.terminate();
       }
     } catch(e) {

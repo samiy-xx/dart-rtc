@@ -1,6 +1,12 @@
 part of rtc_server;
 
-class Server extends PacketHandler {
+abstract class Server {
+  void sendToClient(WebSocketConnection, String p);
+  void sendPacket(WebSocketConnection, Packet p);
+  void listen([String ip, int port, String path]);
+}
+
+class WebSocketServer extends PacketHandler implements Server {
   /* The http server */
   HttpServer _httpServer;
   
@@ -30,7 +36,7 @@ class Server extends PacketHandler {
   /* Timer */
   Timer _timer;
   
-  Server() : super(){
+  WebSocketServer() : super(){
     // Create the HttpServer and web socket 
     _httpServer = new HttpServer();
     _httpServer.sessionTimeout = _sessionTimeout;

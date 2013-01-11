@@ -4,7 +4,7 @@ part of rtc_server;
  * User
  * Has WebSocketConnection, id and room attached
  */
-class ChannelUser extends User{
+class ChannelUser extends User {
   
   /* Current room */
   Channel _channel = null;
@@ -18,7 +18,7 @@ class ChannelUser extends User{
   /**
    * Constructor
    */
-  ChannelUser(String id, WebSocketConnection conn) : super(id, conn);
+  ChannelUser(UserContainer c, String id, WebSocketConnection conn) : super(c, id, conn);
   
   /**
    * Sets a room for the user
@@ -31,7 +31,7 @@ class ChannelUser extends User{
   /*
    * Override
    */
-  void onClose(int status, String reason) {
+  void _onClose(int status, String reason) {
     super._onClose(status, reason);
     _channel.leave(this); 
   }

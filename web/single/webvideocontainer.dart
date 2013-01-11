@@ -1,4 +1,4 @@
-part of single_client;
+part of demo_client;
 
 class WebVideoContainer extends VideoContainer {
   WebVideoManager _manager;
@@ -82,7 +82,7 @@ class WebVideoContainer extends VideoContainer {
   
   void _onMetadata(Event e) {
     log.Debug("_onMetadata");
-    _aspectRatio = Util.aspectRatio(_video.width, _video.height);
+    _aspectRatio = Util.aspectRatio(_video.videoWidth, _video.videoHeight);
     _manager.setProportions(this);
   }
   

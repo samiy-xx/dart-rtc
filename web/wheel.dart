@@ -1,13 +1,13 @@
 import 'dart:html';
 
 import '../rtc_util/lib/rtc_util.dart';
-import 'single/single_client.dart';
+import 'single/demo_client.dart';
 import '../rtc_client/lib/rtc_client.dart';
 import '../rtc_common/lib/rtc_common.dart';
 
 const int MARGIN = 10;
 const int MAX_WIDTH = 800;
- 
+
 class QuickHandler implements PeerMediaEventListener {
   WheelSignalHandler _sh;
   PeerManager _pm;
@@ -28,7 +28,7 @@ class QuickHandler implements PeerMediaEventListener {
     _current = _local;
     _notify = new Notifier();
     //_notify.setParent("#videocontainer");
-    _sh = new WheelSignalHandler();
+    _sh = new WheelSignalHandler(new WebSocketDataSource("ws://127.0.0.1:8234/ws"));
     _pm = new PeerManager();
     
     _sh.registerHandler("usermessage", handleUserMessage);

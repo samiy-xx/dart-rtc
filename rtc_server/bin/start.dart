@@ -7,7 +7,7 @@ import '../lib/rtc_server.dart';
 import '../../rtc_util/lib/rtc_util.dart';
 import 'package:args/args.dart';
 
-void main() {
+void main() { 
   ArgParser argParser = new ArgParser();
   argParser.addOption('port', abbr: 'p', help: 'Port to use', defaultsTo: '8234');
   argParser.addOption('type', abbr: 't', help: 'Server type', defaultsTo: 'wheel');

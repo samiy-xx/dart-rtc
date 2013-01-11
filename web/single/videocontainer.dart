@@ -1,4 +1,4 @@
-part of rtc_client;
+part of demo_client;
 
 abstract class VideoContainer {
   void setStream(MediaStream ms);

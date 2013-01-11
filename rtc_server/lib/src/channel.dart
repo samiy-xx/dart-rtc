@@ -14,8 +14,10 @@ class Channel {
   bool _hasBeenJoined = false;
   
   List<ChannelUser> _users;
+  
   // returns true id users in room is less or equal than limit
   bool get canJoin => _users.length < _limit;
+  
   int get userCount => _users.length;
   String get id => _id;
   
@@ -34,8 +36,6 @@ class Channel {
    * @param User joining the room
    */
   void join(ChannelUser newUser) {
-    
-    
     newUser.channel = this;
     _users.add(newUser);
     // Get the server
@@ -63,12 +63,16 @@ class Channel {
   }
   
   void leave(ChannelUser u) {
+    print("User ${u.id} leaving channel $id");
+    
     u.channel = null;
     if (_users.contains(u))
       _users.removeAt(_users.indexOf(u));
     
-    if (userCount <= 0)
+    if (userCount <= 0) {
+      print("Usercount ${userCount} removing channel");
       _container.removeChannel(this);
+    }
   }
   
   void sendToAll(String p) {

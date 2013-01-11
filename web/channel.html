@@ -4,18 +4,22 @@
   <head>
     <meta charset="utf-8">
     <title>channel</title>
-    <link rel="stylesheet" href="channel.css">
+    <link rel="stylesheet" href="css/channel.css">
   </head>
   <body>
-    <h1>channel</h1>
-    
-    <p>Hello world from Dart!</p>
     
     <div id="container">
-      <p id="text"></p>
+      <div id="videocontainer">
+        <div id="main"></div>
+        <div id="aux"></div>
+      </div>
+      <div id="chat">
+        <div id="chatText"></div>
+        <input type="text" id="chatTextToEnter" /><button id="chatSubmit">Submit</button>
+      </div>
     </div>
 
-    <script type="application/dart" src="channel"></script>
+    <script type="application/dart" src="channel.dart"></script>
     <script src="https://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
   </body>
 </html>
