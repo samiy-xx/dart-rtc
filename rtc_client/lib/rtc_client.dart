@@ -6,8 +6,6 @@ import 'dart:json';
 import '../../rtc_util/lib/rtc_util.dart';
 import '../../rtc_common/lib/rtc_common.dart';
 
-part '../../web/single/videocontainer.dart';
-part '../../web/single/videomanager.dart';
 part 'src/peer/peermanager.dart';
 part 'src/peer/peerwrapper.dart';
 part 'src/peer/datapeerwrapper.dart';

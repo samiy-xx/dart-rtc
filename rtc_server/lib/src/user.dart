@@ -82,7 +82,6 @@ class User implements Comparable {
    */
   void talkTo(User u) {
     if (!_talkingTo.contains(u)) {
-      //u.talkTo(this);
       _talkingTo.add(u);
     }
   }
@@ -94,19 +93,25 @@ class User implements Comparable {
     try {
       _conn.close(1000, "Leaving");
     } on Exception catch(e) {
-      log.Error(e.toString());
+      log.Error("terminate Exception: $e");
     } catch (e) {
-      log.Error(e);
+      log.Error("terminate Error: $e");
     }
   }
   
   /**
-   * Obsolete
-   * Send data to this user over web socket connection
+   * Checks if the user needs to be pinged
    */
-  void send(String p) {
-    throw new Exception("Dont use");
-   _conn.send(p); 
+  bool needsPing(int currentTime) {
+    return currentTime >= lastActivity + DEAD_SOCKET_CHECK && currentTime < lastActivity + DEAD_SOCKET_KILL;
+  }
+  
+  /**
+   * Checks if the user needs to be killed
+   * User has not responded to ping with pong
+   */
+  bool needsKill(int currentTime) {
+    return currentTime >= lastActivity + DEAD_SOCKET_KILL;
   }
   
   /**

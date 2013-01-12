@@ -7,8 +7,15 @@ class UserContainer extends BaseUserContainer {
   /* logger singleton instance */
   Logger logger = new Logger();
   
+  /** Returns a list of users */
+  List<User> get users => _users;
+  
+  /** Number of users */
   int get userCount => _users.length;
   
+  /**
+   * Constructor
+   */
   UserContainer(Server s) : super(s){
     _users = new List<User>();
   }
@@ -19,6 +26,14 @@ class UserContainer extends BaseUserContainer {
   static String genId() {
     return Util.generateId();
   }
+  
+  /**
+   * Returns all users
+   */
+  List<User> getUsers() {
+    return _users;
+  }
+  
   
   ChannelUser createChannelUser(WebSocketConnection c) {
     String id = genId();
@@ -31,7 +46,6 @@ class UserContainer extends BaseUserContainer {
   }
   
   User createUserFromId(String id, WebSocketConnection c) {
-    
     User u = findUserById(id);
     
     if (u != null) 
@@ -40,12 +54,10 @@ class UserContainer extends BaseUserContainer {
     u = new User(this, id, c);
     _users.add(u);
     
-    
     return u;
   }
   
   ChannelUser createChannelUserFromId(String id, WebSocketConnection c) {
-    
     ChannelUser u = findUserById(id);
     
     if (u != null) 
@@ -53,24 +65,31 @@ class UserContainer extends BaseUserContainer {
     
     u = new ChannelUser(this, id, c);
     _users.add(u);
-    
-    
+
     return u;
   }
   
+  /**
+   * Removes the user specified
+   */
   void removeUser(User u) {
     if (_users.contains(u)) {
       _users.removeAt(_users.indexOf(u));
     }
   }
   
+  /**
+   * Returns true if user exists in users list
+   */
   bool userExist(User userToFind) {
     return _users.filter((User u) => u == userToFind).length > 0; 
   }
   
+  /**
+   * Returns user that has been inactive longest
+   */
   User findLongestIdUser(User caller) {
     List<User> toPick = _users.filter((u) => u != caller && !u.isTalking);
-    
     if (toPick.length > 0) {
       toPick.sort((a, b) => a.compareTo(b));
       return toPick.last;
@@ -79,6 +98,9 @@ class UserContainer extends BaseUserContainer {
     return null;
   }
   
+  /**
+   * Returns a random user
+   */
   User findRandomUser(User caller) {
     List<User> toPick = _users.filter((u) => u != caller && !u.isTalking);
     
@@ -92,6 +114,7 @@ class UserContainer extends BaseUserContainer {
     return null;
   }
   
+  // Obsolete
   User findRandomUser_old(User caller) {
     for (int i = 0; i < _users.length; i++) {
       User u = _users[i];
@@ -103,6 +126,9 @@ class UserContainer extends BaseUserContainer {
     return null;
   }
   
+  /**
+   * Retuns a user with matching WebSocketConnection instance
+   */
   User findUserByConn(WebSocketConnection c) {
     User u = null;
     
@@ -115,7 +141,10 @@ class UserContainer extends BaseUserContainer {
     
     return u;
   }
-// TODO: make this match both id and connection
+
+  /**
+   * Returns a user with matching id property
+   */
   User findUserById(String id) {
     User u = null;
     
@@ -128,32 +157,6 @@ class UserContainer extends BaseUserContainer {
     
     return u;
   }
-  void cleanUp() {
-    //logger.Debug("Users active: ${_users.length}");
-    
-    int currentTime = new Date.now().millisecondsSinceEpoch;
-    
-    for (int i = 0; i < _users.length; i++) {
-      User u = _users[i];
-      if (currentTime >= u.lastActivity + DEAD_SOCKET_CHECK && currentTime < u.lastActivity + DEAD_SOCKET_KILL) {
-        _server.sendPacket(u.connection, new PingPacket.With(u.id));
-      } else if(currentTime >= u.lastActivity + DEAD_SOCKET_KILL) {
-        try {
-          logger.Debug("Closing dead socket");
-          u.connection.close(1000, "Closing dead socket");
-          if (u is ChannelUser) {
-            (u as ChannelUser).channel.leave(u);
-            
-          }
-        } catch (e) {
-          logger.Error("Closing dead socket threw $e");
-        }
-        logger.Debug("Removing references to dead object");
-     
-        removeUser(u);
-        //u.room = null;
-        u = null;
-      }
-    }
-  }
+  
+  
 }

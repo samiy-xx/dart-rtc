@@ -2,7 +2,7 @@ part of rtc_client;
 
 class SimpleSignalHandler extends SignalHandler {
   
-  SimpleSignalHandler(VideoManager vm, DataSource ds) : super(ds){
+  SimpleSignalHandler(DataSource ds) : super(ds){
     registerHandler("id", handleId);
     registerHandler("join", handleJoin);
   }

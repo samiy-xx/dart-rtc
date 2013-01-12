@@ -1,13 +1,24 @@
 part of rtc_common;
 
+/**
+ * PacketHandler
+ * Signaling server and client should extend this
+ */
 class PacketHandler {
   /* Store all method handlers in list */
   Map<String, List<Function>> _methodHandlers;
   
+  /**
+   * Constructor
+   * initialize array
+   */
   PacketHandler() {
     _methodHandlers = new Map<String, List<Function>>();
   }
   
+  /**
+   * Add a new handler for given type
+   */
   void registerHandler(String type, Function handler) {
     if (!_methodHandlers.containsKey(type))
       _methodHandlers[type] = new List<Function>();
@@ -16,7 +27,6 @@ class PacketHandler {
   
   /**
    * Clears all handlers associated to "type"
-   * @param type the message type
    */
   void clearHandlers(String type) {
     if (_methodHandlers.containsKey(type))
@@ -33,9 +43,11 @@ class PacketHandler {
     return null;
   }
   
+  /**
+   * Executes packet handlers for given packet if any
+   */
   bool executeHandler(Packet p) {
     List<Function> handlers = getHandlers(p.packetType);
-    
     if (handlers == null || handlers.length == 0)
       return false;
       
@@ -44,13 +56,12 @@ class PacketHandler {
           
     return true;
   }
+ 
   /**
-   * Executes packet handlers for given packet if any
+   * Executes packet handlers for given object and packet if any
    */
   bool executeHandlerFor(Object c, Packet p) {
-    
       List<Function> handlers = getHandlers(p.packetType);
-      
       if (handlers == null || handlers.length == 0)
         return false;
       

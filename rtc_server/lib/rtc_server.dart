@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 
 part "src/server.dart";
+part "src/websocketserver.dart";
 part "src/user.dart";
 part "src/util.dart";
 part "src/channel.dart";
