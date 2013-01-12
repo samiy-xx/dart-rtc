@@ -13,3 +13,4 @@ part 'src/util.dart';
 part 'src/constraints.dart';
 part 'src/streamconstraints.dart';
 part 'src/videoconstraints.dart';
+part 'src/peerconstraints.dart';

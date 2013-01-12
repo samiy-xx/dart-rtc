@@ -4,7 +4,7 @@ import 'dart:json';
 // Base stuff
 part 'src/packethandler.dart';
 part 'src/packetfactory.dart';
-
+part 'src/eventtarget.dart';
 // Exceptions
 part 'src/exception/InvalidPacketException.dart';
 

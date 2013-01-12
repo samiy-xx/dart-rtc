@@ -4,7 +4,7 @@ part of rtc_client;
  * PeerWrapper
  * Wraps the peer connection comfortably
  */
-class PeerWrapper {
+class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   
   final READYSTATE_CLOSED = "closed";
   final READYSTATE_OPEN = "open";
@@ -49,72 +49,65 @@ class PeerWrapper {
   /** returns current readystate */
   String get state => _peer.readyState;
   
-  List<PeerEventListener> _listeners;
-  
   PeerWrapper(PeerManager pm, RtcPeerConnection p) {
     _peer = p;
     _manager = pm;
-    _listeners = new List<PeerEventListener>();
     _peer.on.iceCandidate.add(_onIceCandidate);
     _peer.on.iceChange.add(_onIceChange);
     _peer.on.removeStream.add(_onRemoveStream);
     _peer.on.negotiationNeeded.add(_onNegotiationNeeded);
     _peer.on.open.add((Event e) => _isOpen = true);
-    
-    //_Datachannel = _peer.createDataChannel("1");
-    //_channel.on.message.add(listener, useCapture)
   }
   
-  void subscribe(PeerEventListener listener) {
-    if (!_listeners.contains(listener))
-      _listeners.add(listener);
-  }
   
+  
+  /**
+   * Sets the local session description
+   * after offer created or replied with answer
+   */
   void setSessionDescription(RtcSessionDescription sdp) {
     log.Debug("Creating local description");
     _peer.setLocalDescription(sdp, _onLocalDescriptionSuccess, _onRTCError);
   }
   
+  /**
+   * Remote description comes over datasource
+   * if the type is offer, then a answer must be created
+   */
   void setRemoteSessionDescription(RtcSessionDescription sdp) {
       log.Debug("Creating remote description ${sdp.type} ${sdp.sdp} ");
       _peer.setRemoteDescription(sdp, _onRemoteDescriptionSuccess, _onRTCError);
       
-      /*if (!isHost) {
-        MediaStream ms = _manager.getVideoManager().getLocalStream();
-        if (ms != null)
-        addStream(ms);
-      }*/
       if (sdp.type == SDP_OFFER)
         _sendAnswer();
-      
   }
+  
+  /**
+   * Can be used to initialize connection if not wanting to add mediastream right away
+   */
   void initialize() {
     if (isHost)
       _sendOffer();
-    
   }
   
+  /*
+   * Creates offer and calls callback 
+   */
   void _sendOffer() {
     _peer.createOffer(_onOfferSuccess, _onRTCError, null);
   }
   
+  /*
+   * Answer for offer
+   */
   void _sendAnswer() {
     _peer.createAnswer(_onAnswerSuccess, _onRTCError, null);
   }
   
-  void addStream(MediaStream ms) {
-    if (ms == null)
-      throw new Exception("MediaStream was null");
-    log.Debug("Adding stream to peer $id");
-    _peer.addStream(ms, _manager._streamConstraints.toMap());
-  }
-  
-  void _onNegotiationNeeded(Event e) {
-    log.Info("onNegotiationNeeded");   
-    if (isHost)
-      _sendOffer();
-  }
-
+  /*
+   * Send the session description created by _sendOffer to the remote party
+   * and set is our local session description
+   */
   void _onOfferSuccess(RtcSessionDescription sdp) {
     log.Debug("Offer created, sending");
     setSessionDescription(sdp);
@@ -122,12 +115,43 @@ class PeerWrapper {
     //_offerSent = true;
   }
   
+  /*
+   * Send the session description created by _sendAnswer to the remote party
+   * and set it our local session description
+   */
   void _onAnswerSuccess(RtcSessionDescription sdp) {
     log.Debug("Answer created, sending");
     setSessionDescription(sdp);
     _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'answer', _id, _channelId)));
   }
   
+  /**
+   * Ads a MediaStream to the peer connection
+   */
+  void addStream(MediaStream ms) {
+    if (ms == null)
+      throw new Exception("MediaStream was null");
+    log.Debug("Adding stream to peer $id");
+    _peer.addStream(ms, _manager._streamConstraints.toMap());
+  }
+  
+  /*
+   * Gets fired whenever there's a change in peer connection
+   * ie. when you create a peer connection and add an mediastream there.
+   * 
+   * Send an offer if isHost property is true
+   * means we're hosting and the other party must reply with answer
+   */
+  void _onNegotiationNeeded(Event e) {
+    log.Info("onNegotiationNeeded");   
+    if (isHost)
+      _sendOffer();
+  }
+
+  /**
+   * These you get from datasource
+   * at the moment, a null RtcIceCandidate means that connection is done(tm) =P
+   */
   void addRemoteIceCandidate(RtcIceCandidate candidate) {
     if (candidate == null)
       throw new Exception("RtcIceCandidate was null");
@@ -138,6 +162,10 @@ class PeerWrapper {
     }
   }
   
+  /*
+   * Peer connection generated a ice candidate and this must be delivered to the
+   * other party via datasource
+   */
   void _onIceCandidate(RtcIceCandidateEvent c) {
     if (c.candidate != null) {
       log.Debug("Sending local ICE Candidate ${c.candidate.candidate}");
@@ -145,10 +173,12 @@ class PeerWrapper {
       _manager._sendPacket(PacketFactory.get(ice));
     } else {
       log.Warning("Local ICE Candidate was null");
-      
     }
   }
   
+  /*
+   * Not sure
+   */
   void _onIceChange(Event c) {
     log.Debug("ICE Change ${c}");
   }
@@ -170,11 +200,17 @@ class PeerWrapper {
     log.Error(error);
   }
   
+  /**
+   * Close the peer connection if not closed already
+   */
   void close() {
     if (_peer.readyState != READYSTATE_CLOSED)
       _peer.close();  
   }
   
+  /**
+   * Dispose
+   */
   void dispose() {
     if (_peer.readyState != READYSTATE_CLOSED)
       _peer.close();

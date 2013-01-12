@@ -3,7 +3,7 @@ part of rtc_client;
 /**
  * DataSource that uses websocket
  */
-class WebSocketDataSource implements DataSource {
+class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> implements DataSource {
   /* Where do we connect */
   String _connectionString;
   
@@ -11,7 +11,7 @@ class WebSocketDataSource implements DataSource {
   WebSocket _ws;
   
   /* DataSource event listeners */
-  List<DataSourceEventListener> _listeners;
+  //List<DataSourceEventListener> _listeners;
   
   /** Returns the current readystate for this datasource */
   int get readyState => getReadyState();
@@ -21,9 +21,9 @@ class WebSocketDataSource implements DataSource {
    * Expects the connectionString as parameter
    * ie. ws://127.0.0.1/ws
    */
-  WebSocketDataSource(String connectionString) {
+  WebSocketDataSource(String connectionString) : super(){
     _connectionString = connectionString;
-    _listeners = new List<DataSourceEventListener>();
+    //_listeners = new List<DataSourceEventListener>();
   }
   
   /**
@@ -47,10 +47,10 @@ class WebSocketDataSource implements DataSource {
   /**
    * Subscribe for datasource events
    */
-  void subscribe(DataSourceEventListener l) {
-    if (!_listeners.contains(l))
-      _listeners.add(l);
-  }
+  //void subscribe(DataSourceEventListener l) {
+  //  if (!listeners.contains(l))
+  //    listeners.add(l);
+  //}
   
   /**
    * Send data over web socket
@@ -70,7 +70,7 @@ class WebSocketDataSource implements DataSource {
    * Send all messages received from callback to the datasource event listeners
    */
   void onMessage(MessageEvent e) {
-    _listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
+    listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
       l.onMessage(e.data);
     });
   }
@@ -80,7 +80,7 @@ class WebSocketDataSource implements DataSource {
    * call the callback on datasource event listeners
    */
   void onOpen(Event e) {
-    _listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
+    listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
       l.onOpen("");
     });
   }
@@ -90,7 +90,7 @@ class WebSocketDataSource implements DataSource {
    * call the callback on datasource event listeners
    */
   void onClose(CloseEvent e) {
-    _listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
+    listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
       l.onClose("${e.code.toString()} ${e.reason}");
     });
   }
@@ -100,7 +100,7 @@ class WebSocketDataSource implements DataSource {
    * call the callback on datasource event listeners
    */
   void onError(Event e) {
-    _listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
+    listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
       l.onError("");
     });
   }

@@ -6,6 +6,9 @@ part of rtc_common;
  */
 class PacketFactory {
   
+  /**
+   * Returns a packet from string input
+   */
   static Packet getPacketFromString(String input) {
     try {
       return getPacketFromMap(JSON.parse(input));
@@ -14,6 +17,9 @@ class PacketFactory {
     }
   }
   
+  /**
+   * Returns a packet from map
+   */
   static Packet getPacketFromMap(Map m) {
 
     try {
@@ -70,6 +76,9 @@ class PacketFactory {
     }
   }
   
+  /**
+   * Returns a json stringified Packet for websocket send
+   */
   static String get(Packet p) {
     return JSON.stringify(p); 
   }
