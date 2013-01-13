@@ -25,7 +25,7 @@ class DataPeerWrapper extends PeerWrapper {
   void setAsHost(bool value) {
     super.setAsHost(value);
     
-    _log.Debug("Initializing datachannel now");
+    _log.Debug("(datapeerwrapper.dart) Initializing datachannel now");
     initChannel();
   }
   
@@ -56,33 +56,22 @@ class DataPeerWrapper extends PeerWrapper {
   
   void initChannel() {
     _dataChannel = _peer.createDataChannel("somelabelhere", { 'reliable' : false });
-    _log.Debug("DataChannel created");
-    /*_dataChannel.on.close.add(onDataChannelClose);
+    _log.Debug("(datapeerwrapper.dart) DataChannel created");
+    _dataChannel.on.close.add(onDataChannelClose);
     _dataChannel.on.open.add(onDataChannelOpen);
     _dataChannel.on.error.add(onDataChannelError);
-    _dataChannel.on.message.add(onDataChannelMessage);*/
+    _dataChannel.on.message.add(onDataChannelMessage);
     
-    _dataChannel.on.open.add((e) {
-      _log.Debug("DC OPEN: $e");
-    });
-    _dataChannel.on.close.add((e) {
-      _log.Debug("DC CLOSE: $e");
-    });
-    _dataChannel.on.error.add((e) {
-      _log.Debug("DC ERROR: $e");
-    });
-    _dataChannel.on.message.add((e) {
-      _log.Debug("DC MESSAGE: $e");
-    });
+    
   }
   
   void _onNewDataChannelOpen(RtcDataChannelEvent e) {
     _dataChannel = e.channel;
    
-    _log.Debug("DataChannel received");
-    _log.Debug("Channel label : ${_dataChannel.label}");
-    _log.Debug("Channel state : ${_dataChannel.readyState}");
-    _log.Debug("Channel reliable : ${_dataChannel.reliable}");
+    _log.Debug("(datapeerwrapper.dart) DataChannel received");
+    _log.Debug("(datapeerwrapper.dart) Channel label : ${_dataChannel.label}");
+    _log.Debug("(datapeerwrapper.dart) Channel state : ${_dataChannel.readyState}");
+    _log.Debug("(datapeerwrapper.dart) Channel reliable : ${_dataChannel.reliable}");
     _dataChannel.on.close.add(onDataChannelClose);
     _dataChannel.on.open.add(onDataChannelOpen);
     _dataChannel.on.error.add(onDataChannelError);
@@ -91,27 +80,27 @@ class DataPeerWrapper extends PeerWrapper {
   
   void onDataChannelOpen(Event e) {
     
-    _log.Debug("DataChannelOpen $e");
-    _log.Debug("DataChannel readystate = ${_dataChannel.readyState}");
+    _log.Debug("(datapeerwrapper.dart) DataChannelOpen $e");
+    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
     
     _dataChannel.send("I HAS OPENED");
   }
   
   void onDataChannelClose(Event e) {
-    _log.Debug("DataChannelClose $e");
-    _log.Debug("DataChannel readystate = ${_dataChannel.readyState}");
+    _log.Debug("(datapeerwrapper.dart) DataChannelClose $e");
+    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
   }
 
   void onDataChannelMessage(Event e) {
     
-    _log.Debug("DataChannelMessage $e");
-    _log.Debug("DataChannel readystate = ${_dataChannel.readyState}");
+    _log.Debug("(datapeerwrapper.dart) DataChannelMessage $e");
+    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
     
   }
 
   void onDataChannelError(Event e) {
-    _log.Debug("DataChannelError $e");
-    _log.Debug("DataChannel readystate = ${_dataChannel.readyState}");
+    _log.Debug("(datapeerwrapper.dart) DataChannelError $e");
+    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
   }
  
   void _signalStateChanged() {

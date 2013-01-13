@@ -177,10 +177,14 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * Handle join packet
    */
   void handleJoin(JoinPacket packet) {
-    _log.Debug("JoinPacket channel ${packet.channelId} user ${packet.id}");
-    PeerWrapper p = createPeerWrapper();
-    p.id = packet.id;
-    p.setAsHost(true);
+    try {
+      _log.Debug("(signalhandler.dart) JoinPacket channel ${packet.channelId} user ${packet.id}");
+      PeerWrapper p = createPeerWrapper();
+      p.id = packet.id;
+      p.setAsHost(true);
+    } catch (e) {
+      _log.Error("(signalhandler.dart) Error handleJoin $e");
+    }
     
     /*MediaStream ms = _videoManager.getLocalStream();
     if (ms != null)
@@ -191,7 +195,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * Handle id packet
    */
   void handleId(IdPacket id) {
-    _log.Debug("ID packet: channel ${id.channelId} user ${id.id}");
+    _log.Debug("(signalhandler.dart) ID packet: channel ${id.channelId} user ${id.id}");
     if (id.id != null && !id.id.isEmpty) {
       PeerWrapper p = createPeerWrapper();
       p.id = id.id;
@@ -202,7 +206,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * handle connection success
    */
   void handleConnectionSuccess(ConnectionSuccessPacket p) {
-    _log.Debug("Connection successfull user ${p.id}");
+    _log.Debug("(signalhandler.dart) Connection successfull user ${p.id}");
     _id = p.id;
   }
   
@@ -226,7 +230,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * Handles sdp description
    */
   void handleDescription(DescriptionPacket p) {
-    _log.Debug("RECV: DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
+    _log.Debug("(signalhandler.dart) RECV: DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
    
     RtcSessionDescription t = new RtcSessionDescription({
       'sdp':p.sdp,
@@ -236,10 +240,10 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     //Peer p = findPeer(packet.roomId, packet.userId);
    
     if (peer != null) {
-      _log.Debug("Setting remote description to peer");
+      _log.Debug("(signalhandler.dart) Setting remote description to peer");
       peer.setRemoteSessionDescription(t);
     } else {
-      _log.Debug("Peer not found with id ${p.id}");
+      _log.Debug("(signalhandler.dart) Peer not found with id ${p.id}");
     }
   }
   
@@ -247,7 +251,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * Handles ping from server, responds with pong
    */
   void handlePing(PingPacket p) {
-    _log.Debug("Received PING, answering with PONG");
+    _log.Debug("(signalhandler.dart) Received PING, answering with PONG");
     _dataSource.send(PacketFactory.get(new PongPacket()));
   }
   

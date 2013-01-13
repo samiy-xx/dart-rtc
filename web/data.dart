@@ -8,13 +8,15 @@ import '../rtc_common/lib/rtc_common.dart';
 void main() {
   WebDataChannelHandler wsh = new WebDataChannelHandler();
   wsh.initialize();
+  
+  
 }
 
 class WebDataChannelHandler implements PeerMediaEventListener {
   Notifier _notify;
   DataSignalHandler _sh;
   PeerManager _pm;
-  WebVideoManager _vm;
+  
   
   WebDataChannelHandler() {
    
@@ -40,7 +42,7 @@ class WebDataChannelHandler implements PeerMediaEventListener {
   void onRemoteMediaStreamAvailable(MediaStream ms, String id, bool isMain) {
     new Logger().Debug("Incoming video stream");
     _notify.display("Incoming video stream");
-    _vm.addStream(ms, id);
+    
   }
   
   void handleUserMessage(UserMessage um) {

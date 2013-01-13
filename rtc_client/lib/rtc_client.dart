@@ -13,6 +13,7 @@ part 'src/event/peereventlistener.dart';
 part 'src/event/signalingeventlistener.dart';
 part 'src/event/datasourceeventlistener.dart';
 part 'src/signaling/signalhandler.dart';
+part 'src/signaling/basesignalhandler.dart';
 part 'src/signaling/channelsignalhandler.dart';
 part 'src/signaling/simplesignalhandler.dart';
 

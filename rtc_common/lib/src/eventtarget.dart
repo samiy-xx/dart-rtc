@@ -14,7 +14,7 @@ class GenericEventTarget<T> {
    * Constructor
    */
   GenericEventTarget() {
-    _listeners = new List<T>();  
+    _listeners = new List<T>();
   }
   
   /**

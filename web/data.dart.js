@@ -1279,8 +1279,8 @@ $$.JSString = {"":"Object;",
   return receiver;
 },
  get$hashCode: function(receiver) {
-  var i, hash, hash0, hash1;
-  for (i = 0, hash = 0; i < receiver.length; ++i, hash = hash1) {
+  var hash, i, hash0, hash1;
+  for (hash = 0, i = 0; i < receiver.length; ++i, hash = hash1) {
     hash0 = 536870911 & hash + receiver.charCodeAt(i);
     hash1 = 536870911 & hash0 + ((524287 & hash0) << 10 >>> 0);
     hash1 = hash1 ^ (hash1 >> 6);
@@ -1302,14 +1302,13 @@ $$.JSString = {"":"Object;",
  is$String: true
 };
 
-$$.WebDataChannelHandler = {"":"Object;_notify,_sh,_pm,_vm",
+$$.WebDataChannelHandler = {"":"Object;_notify,_sh,_pm",
  initialize$0: function() {
   this._sh.initialize$0();
 },
  onRemoteMediaStreamAvailable$3: function(ms, id, isMain) {
   $.Logger_Logger().Debug$1("Incoming video stream");
   this._notify.display$1("Incoming video stream");
-  this._vm.addStream$2(ms, id);
 },
  handleUserMessage$1: function(um) {
   $.Logger_Logger().Debug$1("UserMessage");
@@ -2798,7 +2797,7 @@ $$.Logger = {"":"Object;_logLevel",
 },
  _liblib2$_log$2: function(level, message) {
   if (level.operator$le$1(this._logLevel))
-    $.print("[" + $.S($.Date_Date$now()) + "] [" + $.S(level._liblib2$_type) + "] " + $.S(message));
+    $.print("[" + $.S($.Date_Date$now()) + "] [" + $.S(level._liblib2$_type) + "] " + message);
 },
  Logger$_internal$0: function() {
   this._logLevel = $.CONSTANT;
@@ -2869,14 +2868,14 @@ $$.DataSignalHandler = {"":"ChannelSignalHandler;other,_channelId,_log,_dataSour
 },
  handleJoin$1: function(join) {
   $.ChannelSignalHandler.prototype.handleJoin$1.call(this, join);
-  this.get$peerManager().findWrapper$1(join.get$id()).initialize$0();
+  this.get$peerManager().findWrapper$1(join.get$id());
 },
  get$handleJoin: function() {
   return new $.BoundClosure(this, 'handleJoin$1');
 },
  handleId$1: function(id) {
   $.ChannelSignalHandler.prototype.handleId$1.call(this, id);
-  this.get$peerManager().findWrapper$1(id.get$id()).initialize$0();
+  this.get$peerManager().findWrapper$1(id.get$id());
 },
  get$handleId: function() {
   return new $.BoundClosure(this, 'handleId$1');
@@ -3000,12 +2999,20 @@ $$.PeerManager = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,log>,
   return value;
 },
  createPeer$0: function() {
-  var con, peer, wrapper, t1;
+  var con, peer, t1, t2, wrapper;
   con = $.PeerConstraints$();
   con.set$dataChannelEnabled(this._dataChannelsEnabled);
   $.print(con.toMap$0());
-  peer = $.RtcPeerConnection_RtcPeerConnection({'iceServers': [{'url': 'stun:stun.l.google.com:19302'}]}, {optional: [{RtpDataChannels: true}]});
-  wrapper = this._dataChannelsEnabled === true ? $.DataPeerWrapper$(this, peer) : $.PeerWrapper$(this, peer);
+  peer = $.RtcPeerConnection_RtcPeerConnection({iceServers: [{url: 'stun:stun.l.google.com:19302'}]},{optional: [{RtpDataChannels: true}]});
+  t1 = this._dataChannelsEnabled === true;
+  t2 = this.log;
+  if (t1) {
+    t2.Debug$1("Creating peer with data channels");
+    wrapper = $.DataPeerWrapper$(this, peer);
+  } else {
+    t2.Debug$1("Creating peer without data channels");
+    wrapper = $.PeerWrapper$(this, peer);
+  }
   t1 = peer.get$on().get$addStream();
   $.getInterceptor$JSArray(t1).add$1(t1, this.get$onAddStream());
   t1 = peer.get$on().get$open();
@@ -3076,9 +3083,12 @@ $$.PeerManager = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,log>,
 }
 };
 
-$$.PeerWrapper = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,SDP_OFFER,SDP_ANSWER,_dataChannel,_peer,_manager,_isOpen<,_isHost<,log>,_id,_channelId,_listeners",
+$$.PeerWrapper = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,SDP_OFFER,SDP_ANSWER,_dataChannel,_peer,_manager,_isOpen<,_isHost,log>,_id,_channelId,_listeners",
  get$id: function() {
   return this._id;
+},
+ get$channel: function() {
+  return this._channelId;
 },
  set$id: function(value) {
   this._id = value;
@@ -3094,12 +3104,16 @@ $$.PeerWrapper = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,SDP_O
  get$isHost: function() {
   return this._isHost;
 },
+ setAsHost$1: function(value) {
+  this.log.Debug$1("(peerwrapper.dart) Setting as host");
+  this._isHost = value;
+},
  setSessionDescription$1: function(sdp) {
-  this.log.Debug$1("Creating local description");
+  this.log.Debug$1("(peerwrapper.dart) Creating local description");
   this._peer.setLocalDescription$3(sdp, this.get$_onLocalDescriptionSuccess(), this.get$_onRTCError());
 },
  setRemoteSessionDescription$1: function(sdp) {
-  this.log.Debug$1("Creating remote description " + $.S(sdp.get$type()) + " " + $.S(sdp.get$sdp()) + " ");
+  this.log.Debug$1("(peerwrapper.dart) Setting remote description " + $.S(sdp.get$type()));
   this._peer.setRemoteDescription$3(sdp, this.get$_onRemoteDescriptionSuccess(), this.get$_onRTCError());
   if ($.eqB(sdp.get$type(), this.SDP_OFFER))
     this._sendAnswer$0();
@@ -3115,7 +3129,7 @@ $$.PeerWrapper = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,SDP_O
   this._peer.createAnswer$3(this.get$_onAnswerSuccess(), this.get$_onRTCError(), null);
 },
  _onOfferSuccess$1: function(sdp) {
-  this.log.Debug$1("Offer created, sending");
+  this.log.Debug$1("(peerwrapper.dart) Offer created, sending");
   this.setSessionDescription$1(sdp);
   this._manager._sendPacket$1($.PacketFactory_get($.DescriptionPacket$With(sdp.get$sdp(), "offer", this._id, this._channelId)));
 },
@@ -3123,7 +3137,7 @@ $$.PeerWrapper = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,SDP_O
   return new $.BoundClosure(this, '_onOfferSuccess$1');
 },
  _onAnswerSuccess$1: function(sdp) {
-  this.log.Debug$1("Answer created, sending");
+  this.log.Debug$1("(peerwrapper.dart) Answer created, sending");
   this.setSessionDescription$1(sdp);
   this._manager._sendPacket$1($.PacketFactory_get($.DescriptionPacket$With(sdp.get$sdp(), "answer", this._id, this._channelId)));
 },
@@ -3133,14 +3147,14 @@ $$.PeerWrapper = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,SDP_O
  addStream$1: function(ms) {
   if (ms == null)
     throw $.$$throw($.Exception_Exception("MediaStream was null"));
-  this.log.Debug$1("Adding stream to peer " + $.S(this.get$id()));
+  this.log.Debug$1("(peerwrapper.dart) Adding stream to peer " + $.S(this.get$id()));
   this._peer.addStream$2(ms, this._manager.get$_streamConstraints().toMap$0());
 },
  get$addStream: function() {
   return new $.BoundClosure(this, 'addStream$1');
 },
  _onNegotiationNeeded$1: function(e) {
-  this.log.Info$1("onNegotiationNeeded");
+  this.log.Info$1("(peerwrapper.dart) onNegotiationNeeded");
   if (this.get$isHost() === true)
     this._sendOffer$0();
 },
@@ -3151,28 +3165,28 @@ $$.PeerWrapper = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,SDP_O
   if (candidate == null)
     throw $.$$throw($.Exception_Exception("RtcIceCandidate was null"));
   if (!$.eqB(this._peer.get$readyState(), this.READYSTATE_CLOSED)) {
-    this.log.Debug$1("Receiving remote ICE Candidate " + $.S(candidate.get$candidate()));
+    this.log.Debug$1("(peerwrapper.dart) Receiving remote ICE Candidate " + $.S(candidate.get$candidate()));
     this._peer.addIceCandidate$1(candidate);
   }
 },
  _onIceCandidate$1: function(c) {
   var t1, t2, t3, ice;
-  t1 = c.get$candidate();
-  t2 = !(t1 == null);
-  t3 = this.log;
-  if (t2) {
-    t3.Debug$1("Sending local ICE Candidate " + $.S(t1.get$candidate()));
-    t2 = c.get$candidate();
-    ice = $.IcePacket$With(t2.get$candidate(), t2.get$sdpMid(), t2.get$sdpMLineIndex(), this.get$id());
+  t1 = !(c.get$candidate() == null);
+  t2 = this.log;
+  t3 = this._peer;
+  if (t1) {
+    t2.Debug$1("(peerwrapper.dart) (ice state " + $.S(t3.get$iceState()) + ") Sending local ICE Candidate " + $.S(c.get$candidate().get$candidate()) + " ");
+    t1 = c.get$candidate();
+    ice = $.IcePacket$With(t1.get$candidate(), t1.get$sdpMid(), t1.get$sdpMLineIndex(), this.get$id());
     this._manager._sendPacket$1($.PacketFactory_get(ice));
   } else
-    t3.Warning$1("Local ICE Candidate was null");
+    t2.Warning$1("(peerwrapper.dart) Local ICE Candidate was null  " + $.S(t3.get$iceState()));
 },
  get$_onIceCandidate: function() {
   return new $.BoundClosure(this, '_onIceCandidate$1');
 },
  _onIceChange$1: function(c) {
-  this.log.Debug$1("ICE Change " + $.S(c));
+  this.log.Debug$1("(peerwrapper.dart) ICE Change " + $.S(c));
 },
  get$_onIceChange: function() {
   return new $.BoundClosure(this, '_onIceChange$1');
@@ -3183,17 +3197,19 @@ $$.PeerWrapper = {"":"GenericEventTarget;READYSTATE_CLOSED,READYSTATE_OPEN,SDP_O
   return new $.BoundClosure(this, '_onRemoveStream$1');
 },
  _onLocalDescriptionSuccess$0: function() {
+  this.log.Debug$1("(peerwrapper.dart) Setting local description was success");
 },
  get$_onLocalDescriptionSuccess: function() {
   return new $.BoundClosure0(this, '_onLocalDescriptionSuccess$0');
 },
  _onRemoteDescriptionSuccess$0: function() {
+  this.log.Debug$1("(peerwrapper.dart) Setting remote description was success");
 },
  get$_onRemoteDescriptionSuccess: function() {
   return new $.BoundClosure0(this, '_onRemoteDescriptionSuccess$0');
 },
  _onRTCError$1: function(error) {
-  this.log.Error$1(error);
+  this.log.Error$1("(peerwrapper.dart) RTC ERROR : " + $.S(error));
 },
  get$_onRTCError: function() {
   return new $.BoundClosure(this, '_onRTCError$1');
@@ -3231,6 +3247,18 @@ $$.DataPeerWrapper = {"":"PeerWrapper;_dataChannel,_log,_channelState,READYSTATE
  _log$2: function(arg0, arg1) {
   return this._log.call$2(arg0, arg1);
 },
+ setAsHost$1: function(value) {
+  $.PeerWrapper.prototype.setAsHost$1.call(this, value);
+  this._log.Debug$1("(datapeerwrapper.dart) Initializing datachannel now");
+  this.initChannel$0();
+},
+ initialize$0: function() {
+  if (this._isHost) {
+    this.log.Debug$1("Is Host");
+    this.initChannel$0();
+    this._sendOffer$0();
+  }
+},
  _onIceCandidate$1: function(c) {
   if (c.get$candidate() == null)
     ;
@@ -3239,13 +3267,13 @@ $$.DataPeerWrapper = {"":"PeerWrapper;_dataChannel,_log,_channelState,READYSTATE
   return new $.BoundClosure(this, '_onIceCandidate$1');
 },
  _onOpen$1: function(e) {
-  this.initChannel$0();
 },
  get$_onOpen: function() {
   return new $.BoundClosure(this, '_onOpen$1');
 },
  initChannel$0: function() {
-  this._dataChannel = this._peer.createDataChannel$2("somelabelhere", $.makeLiteralMap(["reliable", false]));
+  this._dataChannel = this._peer.createDataChannel$2("somelabelhere", { 'reliable' : false });
+  this._log.Debug$1("(datapeerwrapper.dart) DataChannel created");
   var t1 = this._dataChannel.get$on().get$close();
   $.getInterceptor$JSArray(t1).add$1(t1, this.get$onDataChannelClose());
   t1 = this._dataChannel.get$on().get$open();
@@ -3255,10 +3283,30 @@ $$.DataPeerWrapper = {"":"PeerWrapper;_dataChannel,_log,_channelState,READYSTATE
   t1 = this._dataChannel.get$on().get$message();
   $.getInterceptor$JSArray(t1).add$1(t1, this.get$onDataChannelMessage());
 },
+ _onNewDataChannelOpen$1: function(e) {
+  var t1;
+  this._dataChannel = e.get$channel();
+  t1 = this._log;
+  t1.Debug$1("(datapeerwrapper.dart) DataChannel received");
+  t1.Debug$1("(datapeerwrapper.dart) Channel label : " + $.S(this._dataChannel.get$label()));
+  t1.Debug$1("(datapeerwrapper.dart) Channel state : " + $.S(this._dataChannel.get$readyState()));
+  t1.Debug$1("(datapeerwrapper.dart) Channel reliable : " + $.S(this._dataChannel.get$reliable()));
+  t1 = this._dataChannel.get$on().get$close();
+  $.getInterceptor$JSArray(t1).add$1(t1, this.get$onDataChannelClose());
+  t1 = this._dataChannel.get$on().get$open();
+  $.getInterceptor$JSArray(t1).add$1(t1, this.get$onDataChannelOpen());
+  t1 = this._dataChannel.get$on().get$error();
+  $.getInterceptor$JSArray(t1).add$1(t1, this.get$onDataChannelError());
+  t1 = this._dataChannel.get$on().get$message();
+  $.getInterceptor$JSArray(t1).add$1(t1, this.get$onDataChannelMessage());
+},
+ get$_onNewDataChannelOpen: function() {
+  return new $.BoundClosure(this, '_onNewDataChannelOpen$1');
+},
  onDataChannelOpen$1: function(e) {
   var t1 = this._log;
-  t1.Debug$1("DataChannelOpen " + $.S(e));
-  t1.Debug$1("DataChannel readystate = " + $.S(this._dataChannel.get$readyState()));
+  t1.Debug$1("(datapeerwrapper.dart) DataChannelOpen " + $.S(e));
+  t1.Debug$1("(datapeerwrapper.dart) DataChannel readystate = " + $.S(this._dataChannel.get$readyState()));
   this._dataChannel.send$1("I HAS OPENED");
 },
  get$onDataChannelOpen: function() {
@@ -3266,24 +3314,24 @@ $$.DataPeerWrapper = {"":"PeerWrapper;_dataChannel,_log,_channelState,READYSTATE
 },
  onDataChannelClose$1: function(e) {
   var t1 = this._log;
-  t1.Debug$1("DataChannelClose " + $.S(e));
-  t1.Debug$1("DataChannel readystate = " + $.S(this._dataChannel.get$readyState()));
+  t1.Debug$1("(datapeerwrapper.dart) DataChannelClose " + $.S(e));
+  t1.Debug$1("(datapeerwrapper.dart) DataChannel readystate = " + $.S(this._dataChannel.get$readyState()));
 },
  get$onDataChannelClose: function() {
   return new $.BoundClosure(this, 'onDataChannelClose$1');
 },
  onDataChannelMessage$1: function(e) {
   var t1 = this._log;
-  t1.Debug$1("DataChannelMessage " + $.S(e));
-  t1.Debug$1("DataChannel readystate = " + $.S(this._dataChannel.get$readyState()));
+  t1.Debug$1("(datapeerwrapper.dart) DataChannelMessage " + $.S(e));
+  t1.Debug$1("(datapeerwrapper.dart) DataChannel readystate = " + $.S(this._dataChannel.get$readyState()));
 },
  get$onDataChannelMessage: function() {
   return new $.BoundClosure(this, 'onDataChannelMessage$1');
 },
  onDataChannelError$1: function(e) {
   var t1 = this._log;
-  t1.Debug$1("DataChannelError " + $.S(e));
-  t1.Debug$1("DataChannel readystate = " + $.S(this._dataChannel.get$readyState()));
+  t1.Debug$1("(datapeerwrapper.dart) DataChannelError " + $.S(e));
+  t1.Debug$1("(datapeerwrapper.dart) DataChannel readystate = " + $.S(this._dataChannel.get$readyState()));
 },
  get$onDataChannelError: function() {
   return new $.BoundClosure(this, 'onDataChannelError$1');
@@ -3293,6 +3341,9 @@ $$.DataPeerWrapper = {"":"PeerWrapper;_dataChannel,_log,_channelState,READYSTATE
   $.getInterceptor$JSArray(t1).add$1(t1, this.get$_onIceCandidate());
   t1 = this._peer.get$on().get$open();
   $.getInterceptor$JSArray(t1).add$1(t1, this.get$_onOpen());
+  t1 = this._peer.get$on();
+  t1 = $.getInterceptor$JSStringJSArray(t1).operator$index$1(t1, "datachannel");
+  $.getInterceptor$JSArray(t1).add$1(t1, this.get$_onNewDataChannelOpen());
 }
 };
 
@@ -3354,19 +3405,27 @@ $$.SignalHandler = {"":"PacketHandler;",
  onPacketToSend$1: function(p) {
   this.send$1(p);
 },
- handleJoin$1: function(packet) {
-  var p;
-  this._log.Debug$1("JoinPacket channel " + $.S(packet.get$channelId()) + " user " + $.S(packet.get$id()));
-  p = this.createPeerWrapper$0();
-  p.set$id(packet.get$id());
-  p.set$_isHost(true);
+ handleJoin$1: function(packet, exception) {
+  var p, t1, e;
+  try {
+    this._log.Debug$1("(signalhandler.dart) JoinPacket channel " + $.S(packet.get$channelId()) + " user " + $.S(packet.get$id()));
+    p = this.createPeerWrapper$0();
+    t1 = packet.get$id();
+    p.set$id(t1);
+    p.setAsHost$1(true);
+  } catch (exception) {
+    t1 = $.unwrapException(exception);
+    e = t1;
+    this._log.Error$1("(signalhandler.dart) Error handleJoin " + $.S(e));
+  }
+
 },
  get$handleJoin: function() {
   return new $.BoundClosure(this, 'handleJoin$1');
 },
  handleId$1: function(id) {
   var t1, t2;
-  this._log.Debug$1("ID packet: channel " + $.S(id.get$channelId()) + " user " + $.S(id.get$id()));
+  this._log.Debug$1("(signalhandler.dart) ID packet: channel " + $.S(id.get$channelId()) + " user " + $.S(id.get$id()));
   if (!(id.get$id() == null)) {
     t1 = id.get$id();
     t2 = $.getInterceptor$JSStringJSArray(t1).get$isEmpty(t1) !== true;
@@ -3380,7 +3439,7 @@ $$.SignalHandler = {"":"PacketHandler;",
   return new $.BoundClosure(this, 'handleId$1');
 },
  handleConnectionSuccess$1: function(p) {
-  this._log.Debug$1("Connection successfull user " + $.S(p.get$id()));
+  this._log.Debug$1("(signalhandler.dart) Connection successfull user " + $.S(p.get$id()));
   this._id = p.get$id();
 },
  get$handleConnectionSuccess: function() {
@@ -3399,20 +3458,20 @@ $$.SignalHandler = {"":"PacketHandler;",
  handleDescription$1: function(p) {
   var t1, t, peer;
   t1 = this._log;
-  t1.Debug$1("DescriptionPacket channel " + $.S(p.get$channelId()) + " user " + $.S(p.get$id()) + " sdp " + $.S(p.get$sdp()));
+  t1.Debug$1("(signalhandler.dart) RECV: DescriptionPacket channel " + $.S(p.get$channelId()) + " user " + $.S(p.get$id()) + " sdp " + $.S(p.get$sdp()));
   t = $.RtcSessionDescription_RtcSessionDescription({'sdp': p.get$sdp(), 'type': p.get$type()});
   peer = this._peerManager.findWrapper$1(p.get$id());
   if (!(peer == null)) {
-    t1.Debug$1("Setting remote description to peer");
+    t1.Debug$1("(signalhandler.dart) Setting remote description to peer");
     peer.setRemoteSessionDescription$1(t);
   } else
-    t1.Debug$1("Peer not found with id " + $.S(p.get$id()));
+    t1.Debug$1("(signalhandler.dart) Peer not found with id " + $.S(p.get$id()));
 },
  get$handleDescription: function() {
   return new $.BoundClosure(this, 'handleDescription$1');
 },
  handlePing$1: function(p) {
-  this._log.Debug$1("Received PING, answering with PONG");
+  this._log.Debug$1("(signalhandler.dart) Received PING, answering with PONG");
   this._dataSource.send$1($.PacketFactory_get($.PongPacket$()));
 },
  get$handlePing: function() {
@@ -3468,25 +3527,25 @@ $$.ChannelSignalHandler = {"":"SignalHandler;",
   return this.initialize$1(null);
 },
  onOpen$1: function(e) {
-  this._log.Debug$1("WebSocket connection opened, sending HELO, " + $.S(this._dataSource.get$readyState()));
+  this._log.Debug$1("(channelsignalhandler.dart) WebSocket connection opened, sending HELO, " + $.S(this._dataSource.get$readyState()));
   this._dataSource.send$1($.PacketFactory_get($.HeloPacket$With(this._channelId, "")));
 },
  handleJoin$1: function(packet) {
   var p;
   if ($.eqB(packet.get$id(), this._id))
     this._channelId = packet.get$channelId();
-  this._log.Debug$1("JoinPacket channel " + $.S(packet.get$channelId()) + " user " + $.S(packet.get$id()));
+  this._log.Debug$1("(channelsignalhandler.dart) JoinPacket channel " + $.S(packet.get$channelId()) + " user " + $.S(packet.get$id()));
   p = this.createPeerWrapper$0();
   p.set$channel(packet.get$channelId());
   p.set$id(packet.get$id());
-  p.set$_isHost(true);
+  p.setAsHost$1(true);
 },
  get$handleJoin: function() {
   return new $.BoundClosure(this, 'handleJoin$1');
 },
  handleId$1: function(id) {
   var t1, t2, p;
-  this._log.Debug$1("ID packet: channel " + $.S(id.get$channelId()) + " user " + $.S(id.get$id()));
+  this._log.Debug$1("(channelsignalhandler.dart) ID packet: channel " + $.S(id.get$channelId()) + " user " + $.S(id.get$id()));
   if (!(id.get$id() == null)) {
     t1 = id.get$id();
     t2 = $.getInterceptor$JSStringJSArray(t1).get$isEmpty(t1) !== true;
@@ -4420,7 +4479,7 @@ $.main = function() {
 };
 
 $.WebDataChannelHandler$ = function() {
-  var t1 = new $.WebDataChannelHandler(null, null, null, null);
+  var t1 = new $.WebDataChannelHandler(null, null, null);
   t1.WebDataChannelHandler$0();
   return t1;
 };
@@ -5826,7 +5885,7 @@ $.RtcPeerConnection__create = function(rtcIceServers, mediaConstraints) {
     mediaConstraints = null;
   if (t1)
     return new RTCPeerConnection(rtcIceServers);
-  return new RTCPeerConnection(rtcIceServers);
+  return new RTCPeerConnection(rtcIceServers,mediaConstraints);
 };
 
 $.RtcPeerConnectionEvents$ = function(_ptr) {
@@ -6139,8 +6198,8 @@ $.String = {builtin$cls: 'String'};
 $.List = {builtin$cls: 'List'};
 $.num = {builtin$cls: 'num'};
 $.Node = {builtin$cls: 'Node'};
-$.Match = {builtin$cls: 'Match'};
 $.Function = {builtin$cls: 'Function'};
+$.Match = {builtin$cls: 'Match'};
 $.MediaStream = {builtin$cls: 'MediaStream'};
 $.CONSTANT5 = new Isolate.$isolateProperties.JSInt();
 $.CONSTANT2 = new Isolate.$isolateProperties.JSString();
@@ -6153,23 +6212,14 @@ $.CONSTANT9 = new Isolate.$isolateProperties.Object();
 $.CONSTANT8 = new Isolate.$isolateProperties.LogLevel(2, "Warn");
 $.CONSTANT1 = new Isolate.$isolateProperties.JSArray();
 $.CONSTANT4 = new Isolate.$isolateProperties.JSNumber();
-$._JsonParser_WHITESPACE = 32;
-$._JsonParser_LAST_ASCII = 125;
-$._JsonParser_TRUE_LITERAL = 116;
-$._JsonParser_NULL_STRING = "null";
-$._JsonParser_FALSE_LITERAL = 102;
-$._JsonParser_TRUE_STRING = "true";
-$._JsonParser_FALSE_STRING = "false";
-$._JsonParser_tokens = null;
-$.PeerManager__instance = null;
 $.Primitives_hashCodeSeed = 0;
 $.Primitives_mirrorsEnabled = false;
-$._cachedBrowserPrefix = null;
 $.Logger_instance = null;
 $.Primitives_DOLLAR_CHAR_VALUE = 36;
-$.WebSocket_OPEN = 1;
-$._getTypeNameOf = null;
+$.PeerManager__instance = null;
+$._cachedBrowserPrefix = null;
 $._JsonParser_BACKSPACE = 8;
+$.WebSocket_OPEN = 1;
 $._JsonParser_TAB = 9;
 $._JsonParser_NEW_LINE = 10;
 $._JsonParser_FORM_FEED = 12;
@@ -6177,20 +6227,19 @@ $._JsonParser_CARRIAGE_RETURN = 13;
 $._JsonParser_SPACE = 32;
 $._JsonParser_QUOTE = 34;
 $._JsonParser_PLUS = 43;
-$.Notifier__instance = null;
 $._JsonParser_COMMA = 44;
+$._getTypeNameOf = null;
 $._JsonParser_MINUS = 45;
-$.MIRROR_OPT_IN_MESSAGE = "\nThis program is using an experimental feature called \"mirrors\".  As\ncurrently implemented, mirrors do not work with minification, and will\ncause spurious errors depending on how code was optimized.\n\nThe authors of this program are aware of these problems and have\ndecided the thrill of using an experimental feature is outweighing the\nrisks.  Furthermore, the authors of this program understand that\nlong-term, to fix the problems mentioned above, mirrors may have\nnegative impact on size and performance of Dart programs compiled to\nJavaScript.\n";
 $._JsonParser_DOT = 46;
 $._JsonParser_SLASH = 47;
 $._JsonParser_CHAR_0 = 48;
+$._DateImpl__MAX_MILLISECONDS_SINCE_EPOCH = 8640000000000000;
 $._JsonParser_CHAR_1 = 49;
-$._JsonParser_CHAR_3 = 51;
 $._JsonParser_CHAR_2 = 50;
+$._JsonParser_CHAR_3 = 51;
 $._JsonParser_CHAR_4 = 52;
 $._JsonParser_CHAR_5 = 53;
 $._JsonParser_CHAR_6 = 54;
-$._DateImpl__MAX_MILLISECONDS_SINCE_EPOCH = 8640000000000000;
 $._JsonParser_CHAR_7 = 55;
 $._JsonParser_CHAR_8 = 56;
 $._JsonParser_CHAR_9 = 57;
@@ -6198,21 +6247,31 @@ $._JsonParser_COLON = 58;
 $._JsonParser_CHAR_CAPITAL_E = 69;
 $._JsonParser_LBRACKET = 91;
 $._JsonParser_BACKSLASH = 92;
-$._JsonParser_RBRACKET = 93;
+$.Notifier__instance = null;
+$.MIRROR_OPT_IN_MESSAGE = "\nThis program is using an experimental feature called \"mirrors\".  As\ncurrently implemented, mirrors do not work with minification, and will\ncause spurious errors depending on how code was optimized.\n\nThe authors of this program are aware of these problems and have\ndecided the thrill of using an experimental feature is outweighing the\nrisks.  Furthermore, the authors of this program understand that\nlong-term, to fix the problems mentioned above, mirrors may have\nnegative impact on size and performance of Dart programs compiled to\nJavaScript.\n";
 $._JsonParser_CHAR_B = 98;
-$._JsonParser_CHAR_E = 101;
 $._JsonParser_CHAR_F = 102;
 $._JsonParser_CHAR_N = 110;
 $._JsonParser_CHAR_R = 114;
 $._JsonParser_CHAR_T = 116;
 $._JsonParser_CHAR_U = 117;
 $._JsonParser_LBRACE = 123;
-$._JsonParser_STRING_LITERAL = 34;
 $._JsonParser_RBRACE = 125;
-$._JsonParser_NUMBER_LITERAL = 45;
 $._HashMapImpl__DELETED_KEY = Isolate.$isolateProperties.CONSTANT3;
 $._HashMapImpl__INITIAL_CAPACITY = 8;
+$._JsonParser_NUMBER_LITERAL = 45;
+$._JsonParser_STRING_LITERAL = 34;
 $._JsonParser_NULL_LITERAL = 110;
+$._JsonParser_FALSE_LITERAL = 102;
+$._JsonParser_WHITESPACE = 32;
+$._JsonParser_TRUE_LITERAL = 116;
+$._JsonParser_CHAR_E = 101;
+$._JsonParser_LAST_ASCII = 125;
+$._JsonParser_NULL_STRING = "null";
+$._JsonParser_TRUE_STRING = "true";
+$._JsonParser_FALSE_STRING = "false";
+$._JsonParser_tokens = null;
+$._JsonParser_RBRACKET = 93;
 $.getInterceptor$JSStringJSArray = function(receiver) {
   if (typeof receiver == 'string')
     return $.JSString.prototype;
@@ -6985,7 +7044,7 @@ $.$defineNativeClass('MediaKeyError', {"":"code>"
 $.$defineNativeClass('MediaKeyEvent', {"":"message>"
 });
 
-$.$defineNativeClass('MediaStream', {"":"readyState>",
+$.$defineNativeClass('MediaStream', {"":"label>,readyState>",
  get$on: function() {
   return $.MediaStreamEvents$(this);
 },
@@ -7179,7 +7238,10 @@ $.$defineNativeClass('HTMLOListElement', {"":"type>"
 $.$defineNativeClass('HTMLObjectElement', {"":"code>,data>,height<,type>,width<"
 });
 
-$.$defineNativeClass('HTMLOptionElement', {"":"value="
+$.$defineNativeClass('HTMLOptGroupElement', {"":"label>"
+});
+
+$.$defineNativeClass('HTMLOptionElement', {"":"label>,value="
 });
 
 $.$defineNativeClass('HTMLOutputElement', {"":"type>,value="
@@ -7206,7 +7268,7 @@ $.$defineNativeClass('RangeException', {"":"code>,message>",
 }
 });
 
-$.$defineNativeClass('RTCDataChannel', {"":"readyState>",
+$.$defineNativeClass('RTCDataChannel', {"":"label>,readyState>,reliable>",
  get$on: function() {
   return $.RtcDataChannelEvents$(this);
 },
@@ -7224,13 +7286,16 @@ $.$defineNativeClass('RTCDataChannel', {"":"readyState>",
 }
 });
 
+$.$defineNativeClass('RTCDataChannelEvent', {"":"channel>"
+});
+
 $.$defineNativeClass('RTCIceCandidate', {"":"candidate>,sdpMLineIndex>,sdpMid>"
 });
 
 $.$defineNativeClass('RTCIceCandidateEvent', {"":"candidate>"
 });
 
-$.$defineNativeClass('RTCPeerConnection', {"":"readyState>",
+$.$defineNativeClass('RTCPeerConnection', {"":"iceState>,readyState>",
  get$on: function() {
   return $.RtcPeerConnectionEvents$(this);
 },
@@ -7288,11 +7353,11 @@ $.$defineNativeClass('RTCPeerConnection', {"":"readyState>",
   if (t1)
     options = null;
   if (!t1)
-    return this._createDataChannel_1$2(label,{reliable: false});
-  return this._createDataChannel_2$1(label, {reliable: false});
+    return this._createDataChannel_1$2(label, $.convertDartToNative_Dictionary(options));
+  return this._createDataChannel_2$1(label);
 },
  _createDataChannel_1$2: function(label, options) {
-  return this.createDataChannel(label);
+  return this.createDataChannel(label,options);
 },
  _createDataChannel_2$1: function(label) {
   return this.createDataChannel(label);
@@ -7407,7 +7472,7 @@ $.$defineNativeClass('HTMLTextAreaElement', {"":"type>,value="
 $.$defineNativeClass('TextEvent', {"":"data>"
 });
 
-$.$defineNativeClass('HTMLTrackElement', {"":"readyState>"
+$.$defineNativeClass('HTMLTrackElement', {"":"label>,readyState>"
 });
 
 $.$defineNativeClass('Uint16Array', {
@@ -7749,7 +7814,7 @@ $.$defineNativeClass('SVGException', {"":"code>,message>",
 }
 });
 
-// 102 dynamic classes.
+// 104 dynamic classes.
 // 256 classes
 // 23 !leaf
 (function() {

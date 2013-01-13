@@ -22,7 +22,7 @@ class ChannelSignalHandler extends SignalHandler{
    * Callback for websocket onopen
    */
   void onOpen(String e) {
-    _log.Debug("WebSocket connection opened, sending HELO, ${_dataSource.readyState}");
+    _log.Debug("(channelsignalhandler.dart) WebSocket connection opened, sending HELO, ${_dataSource.readyState}");
     _dataSource.send(PacketFactory.get(new HeloPacket.With(_channelId, "")));
   }
   
@@ -30,15 +30,15 @@ class ChannelSignalHandler extends SignalHandler{
     if (packet.id == _id)
       _channelId = packet.channelId;
     
-    _log.Debug("JoinPacket channel ${packet.channelId} user ${packet.id}");
+    _log.Debug("(channelsignalhandler.dart) JoinPacket channel ${packet.channelId} user ${packet.id}");
     PeerWrapper p = createPeerWrapper();
     p.channel = packet.channelId;
     p.id = packet.id;
-    p._isHost = true;
+    p.setAsHost(true);
   }
   
   void handleId(IdPacket id) {
-    _log.Debug("ID packet: channel ${id.channelId} user ${id.id}");
+    _log.Debug("(channelsignalhandler.dart) ID packet: channel ${id.channelId} user ${id.id}");
     if (id.id != null && !id.id.isEmpty) {
       PeerWrapper p = createPeerWrapper();
       p.id = id.id;

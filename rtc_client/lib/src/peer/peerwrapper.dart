@@ -60,7 +60,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   }
   
   void setAsHost(bool value) {
-    log.Debug("Setting as host");
+    log.Debug("(peerwrapper.dart) Setting as host");
     _isHost = value;
   }
   
@@ -69,7 +69,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * after offer created or replied with answer
    */
   void setSessionDescription(RtcSessionDescription sdp) {
-    log.Debug("Creating local description");
+    log.Debug("(peerwrapper.dart) Creating local description");
     _peer.setLocalDescription(sdp, _onLocalDescriptionSuccess, _onRTCError);
   }
   
@@ -78,7 +78,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * if the type is offer, then a answer must be created
    */
   void setRemoteSessionDescription(RtcSessionDescription sdp) {
-      log.Debug("Setting remote description ${sdp.type}");
+      log.Debug("(peerwrapper.dart) Setting remote description ${sdp.type}");
       _peer.setRemoteDescription(sdp, _onRemoteDescriptionSuccess, _onRTCError);
       
       if (sdp.type == SDP_OFFER)
@@ -112,7 +112,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * and set is our local session description
    */
   void _onOfferSuccess(RtcSessionDescription sdp) {
-    log.Debug("Offer created, sending");
+    log.Debug("(peerwrapper.dart) Offer created, sending");
     setSessionDescription(sdp);
     _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'offer', _id, _channelId)));
     //_offerSent = true;
@@ -123,7 +123,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * and set it our local session description
    */
   void _onAnswerSuccess(RtcSessionDescription sdp) {
-    log.Debug("Answer created, sending");
+    log.Debug("(peerwrapper.dart) Answer created, sending");
     setSessionDescription(sdp);
     _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'answer', _id, _channelId)));
   }
@@ -134,7 +134,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   void addStream(MediaStream ms) {
     if (ms == null)
       throw new Exception("MediaStream was null");
-    log.Debug("Adding stream to peer $id");
+    log.Debug("(peerwrapper.dart) Adding stream to peer $id");
     _peer.addStream(ms, _manager._streamConstraints.toMap());
   }
   
@@ -146,10 +146,10 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * means we're hosting and the other party must reply with answer
    */
   void _onNegotiationNeeded(Event e) {
-    log.Info("onNegotiationNeeded");   
+    log.Info("(peerwrapper.dart) onNegotiationNeeded");   
     //initialize();
-    //if (isHost)
-    //  _sendOffer();
+    if (isHost)
+      _sendOffer();
   }
 
   /**
@@ -161,7 +161,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
       throw new Exception("RtcIceCandidate was null");
     
     if (_peer.readyState != READYSTATE_CLOSED) {
-      log.Debug("Receiving remote ICE Candidate ${candidate.candidate}");
+      log.Debug("(peerwrapper.dart) Receiving remote ICE Candidate ${candidate.candidate}");
       _peer.addIceCandidate(candidate);
     }
   }
@@ -171,12 +171,13 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * other party via datasource
    */
   void _onIceCandidate(RtcIceCandidateEvent c) {
+    
     if (c.candidate != null) {
-      log.Debug("Sending local ICE Candidate ${c.candidate.candidate}");
+      log.Debug("(peerwrapper.dart) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
       IcePacket ice = new IcePacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id);
       _manager._sendPacket(PacketFactory.get(ice));
     } else {
-      log.Warning("Local ICE Candidate was null");
+      log.Warning("(peerwrapper.dart) Local ICE Candidate was null  ${_peer.iceState}");
     }
   }
   
@@ -184,7 +185,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * Not sure
    */
   void _onIceChange(Event c) {
-    log.Debug("ICE Change ${c}");
+    log.Debug("(peerwrapper.dart) ICE Change ${c}");
   }
   
   
@@ -193,15 +194,15 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   }
   
   void _onLocalDescriptionSuccess() {
-    log.Debug("Setting local description was success");
+    log.Debug("(peerwrapper.dart) Setting local description was success");
   }
   
   void _onRemoteDescriptionSuccess() {
-    log.Debug("Setting remote description was success");
+    log.Debug("(peerwrapper.dart) Setting remote description was success");
   }
   
   void _onRTCError(String error) {
-    log.Error("RTC ERROR : $error");
+    log.Error("(peerwrapper.dart) RTC ERROR : $error");
   }
   
   /**
