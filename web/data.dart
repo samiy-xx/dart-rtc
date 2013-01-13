@@ -35,6 +35,7 @@ class WebDataChannelHandler implements PeerMediaEventListener {
   }
   void initialize() {
     _sh.initialize();
+    
   }
   void onRemoteMediaStreamAvailable(MediaStream ms, String id, bool isMain) {
     new Logger().Debug("Incoming video stream");

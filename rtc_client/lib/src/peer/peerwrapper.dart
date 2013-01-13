@@ -42,7 +42,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   
   /** True if hosting the session */
   bool get isHost => _isHost;
-  
+  set isHost(bool value) => setAsHost(value);
   /** returns true if connection is open */
   bool get isOpen => _isOpen;
   
@@ -59,7 +59,10 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
     _peer.on.open.add((Event e) => _isOpen = true);
   }
   
-  
+  void setAsHost(bool value) {
+    log.Debug("Setting as host");
+    _isHost = value;
+  }
   
   /**
    * Sets the local session description
@@ -75,7 +78,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * if the type is offer, then a answer must be created
    */
   void setRemoteSessionDescription(RtcSessionDescription sdp) {
-      log.Debug("Creating remote description ${sdp.type} ${sdp.sdp} ");
+      log.Debug("Setting remote description ${sdp.type}");
       _peer.setRemoteDescription(sdp, _onRemoteDescriptionSuccess, _onRTCError);
       
       if (sdp.type == SDP_OFFER)
@@ -144,8 +147,9 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    */
   void _onNegotiationNeeded(Event e) {
     log.Info("onNegotiationNeeded");   
-    if (isHost)
-      _sendOffer();
+    //initialize();
+    //if (isHost)
+    //  _sendOffer();
   }
 
   /**
@@ -189,15 +193,15 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   }
   
   void _onLocalDescriptionSuccess() {
-    
+    log.Debug("Setting local description was success");
   }
   
   void _onRemoteDescriptionSuccess() {
-    
+    log.Debug("Setting remote description was success");
   }
   
   void _onRTCError(String error) {
-    log.Error(error);
+    log.Error("RTC ERROR : $error");
   }
   
   /**

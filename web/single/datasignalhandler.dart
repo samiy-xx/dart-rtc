@@ -41,7 +41,7 @@ String other = null;
     MediaStream ms = peerManager.getLocalStream();
     pw.addStream(ms);*/
     PeerWrapper pw = peerManager.findWrapper(join.id);
-    pw.initialize();
+    //pw.initialize();
   }
   
   void handleId(IdPacket id) {
@@ -53,6 +53,6 @@ String other = null;
       pw.addStream(ms);
     }*/
     PeerWrapper pw = peerManager.findWrapper(id.id);
-    pw.initialize();
+    //pw.initialize();
   }
 }

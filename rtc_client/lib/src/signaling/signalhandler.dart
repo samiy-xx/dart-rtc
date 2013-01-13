@@ -180,7 +180,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     _log.Debug("JoinPacket channel ${packet.channelId} user ${packet.id}");
     PeerWrapper p = createPeerWrapper();
     p.id = packet.id;
-    p._isHost = true;
+    p.setAsHost(true);
     
     /*MediaStream ms = _videoManager.getLocalStream();
     if (ms != null)
@@ -226,7 +226,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * Handles sdp description
    */
   void handleDescription(DescriptionPacket p) {
-    _log.Debug("DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
+    _log.Debug("RECV: DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
    
     RtcSessionDescription t = new RtcSessionDescription({
       'sdp':p.sdp,
