@@ -82,14 +82,14 @@ class UserContainer extends BaseUserContainer {
    * Returns true if user exists in users list
    */
   bool userExist(User userToFind) {
-    return _users.filter((User u) => u == userToFind).length > 0; 
+    return _users.where((User u) => u == userToFind).length > 0; 
   }
   
   /**
    * Returns user that has been inactive longest
    */
   User findLongestIdUser(User caller) {
-    List<User> toPick = _users.filter((u) => u != caller && !u.isTalking);
+    List<User> toPick = _users.where((u) => u != caller && !u.isTalking);
     if (toPick.length > 0) {
       toPick.sort((a, b) => a.compareTo(b));
       return toPick.last;
@@ -102,7 +102,7 @@ class UserContainer extends BaseUserContainer {
    * Returns a random user
    */
   User findRandomUser(User caller) {
-    List<User> toPick = _users.filter((u) => u != caller && !u.isTalking);
+    List<User> toPick = _users.where((u) => u != caller && !u.isTalking);
     
     if (toPick.length > 0) {
       Random r = new Random();

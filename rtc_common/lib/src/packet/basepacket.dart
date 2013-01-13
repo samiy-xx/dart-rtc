@@ -24,6 +24,6 @@ abstract class Packet {
    * Calls JSON.stringify on Map returned by toJson
    */
   String toString() {
-    return JSON.stringify(toJson());
+    return json.stringify(toJson());
   }
 }

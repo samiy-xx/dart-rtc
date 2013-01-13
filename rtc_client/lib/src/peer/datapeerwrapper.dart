@@ -106,7 +106,7 @@ class DataPeerWrapper extends PeerWrapper {
   void _signalStateChanged() {
     if (_dataChannel.readyState != _channelState) {
       
-      listeners.filter((l) => l is PeerDataEventListener).forEach((PeerDataEventListener l) {
+      listeners.where((l) => l is PeerDataEventListener).forEach((PeerDataEventListener l) {
         l.onChannelStateChanged(this, _dataChannel.readyState);
       });
       _channelState = _dataChannel.readyState;

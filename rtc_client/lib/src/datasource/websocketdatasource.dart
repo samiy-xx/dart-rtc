@@ -70,7 +70,7 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
    * Send all messages received from callback to the datasource event listeners
    */
   void onMessage(MessageEvent e) {
-    listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
+    listeners.where((l) => l is DataSourceConnectionEventListener).forEach((l) {
       l.onMessage(e.data);
     });
   }
@@ -80,7 +80,7 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
    * call the callback on datasource event listeners
    */
   void onOpen(Event e) {
-    listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
+    listeners.where((l) => l is DataSourceConnectionEventListener).forEach((l) {
       l.onOpen("");
     });
   }
@@ -90,7 +90,7 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
    * call the callback on datasource event listeners
    */
   void onClose(CloseEvent e) {
-    listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
+    listeners.where((l) => l is DataSourceConnectionEventListener).forEach((l) {
       l.onClose("${e.code.toString()} ${e.reason}");
     });
   }
@@ -100,7 +100,7 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
    * call the callback on datasource event listeners
    */
   void onError(Event e) {
-    listeners.filter((l) => l is DataSourceConnectionEventListener).forEach((l) {
+    listeners.where((l) => l is DataSourceConnectionEventListener).forEach((l) {
       l.onError("");
     });
   }

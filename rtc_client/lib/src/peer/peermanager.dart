@@ -112,7 +112,7 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
   void onAddStream(MediaStreamEvent e) {
     log.Debug("PM: Adding peer");
     PeerWrapper wrapper = getWrapperForPeer(e.target);
-    listeners.filter((l) => l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
+    listeners.where((l) => l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
       log.Debug("PM: notify class stream available");
       l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
     });
@@ -122,7 +122,7 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
    * Signal handler should listen for event onPacketToSend so that this actually gets sent
    */
   void _sendPacket(String p) {
-    listeners.filter((l) => l is PeerPacketEventListener).forEach((PeerPacketEventListener l) {
+    listeners.where((l) => l is PeerPacketEventListener).forEach((PeerPacketEventListener l) {
       l.onPacketToSend(p);
     });
   }

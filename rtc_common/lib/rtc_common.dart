@@ -1,5 +1,5 @@
 library rtc_common;
-import 'dart:json';
+import 'dart:json' as json;
 
 // Base stuff
 part 'src/packethandler.dart';

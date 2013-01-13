@@ -11,7 +11,7 @@ class PacketFactory {
    */
   static Packet getPacketFromString(String input) {
     try {
-      return getPacketFromMap(JSON.parse(input));
+      return getPacketFromMap(json.parse(input));
     } catch(e) {
       throw new InvalidPacketException("Invalid packet", e);
     }
@@ -80,6 +80,6 @@ class PacketFactory {
    * Returns a json stringified Packet for websocket send
    */
   static String get(Packet p) {
-    return JSON.stringify(p); 
+    return json.stringify(p); 
   }
 }
