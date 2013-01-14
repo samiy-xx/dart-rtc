@@ -39,8 +39,8 @@ class ChannelServer extends WebSocketServer {
           chan.join(u);
         } else {
           c.close(1003, "Channel was full");
-          _container.removeUser(u);
-          u = null;
+          //_container.removeUser(u);
+          //u = null;
           return;
         }
       } else {
@@ -53,7 +53,7 @@ class ChannelServer extends WebSocketServer {
   }
   
   void handleBye(ByePacket bp, WebSocketConnection c) {
-    ChannelUser user = _container.findUserByConn(c) as ChannelUser;
+    User user = _container.findUserByConn(c) as ChannelUser;
     
     try {
       if (user != null) {

@@ -1,6 +1,6 @@
 part of rtc_server;
 
-class UserContainer extends BaseUserContainer {
+class UserContainer extends BaseUserContainer implements UserConnectionEventListener {
   /* Store users */
   List<User> _users;
   
@@ -18,6 +18,14 @@ class UserContainer extends BaseUserContainer {
    */
   UserContainer(Server s) : super(s){
     _users = new List<User>();
+  }
+  
+  /**
+   * Implements UserConnectionEventListener
+   */
+  void onClose(User u, int status, String reason) {
+    logger.Debug("(usercontainer.dart) Removing user ${u.id}");
+    removeUser(u);
   }
   
   /*
@@ -52,6 +60,7 @@ class UserContainer extends BaseUserContainer {
       return u;
     
     u = new User(this, id, c);
+    u.subscribe(this);
     _users.add(u);
     
     return u;
@@ -64,6 +73,7 @@ class UserContainer extends BaseUserContainer {
       return u;
     
     u = new ChannelUser(this, id, c);
+    u.subscribe(this);
     _users.add(u);
 
     return u;

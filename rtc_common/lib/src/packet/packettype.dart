@@ -17,3 +17,18 @@ class PacketType {
   static final String RANDOM = "random";
   static final String DISCONNECTED = "disconnected";
 }
+
+class PacketType2 {
+  static final PacketType2 HELO = const PacketType2("helo");
+  static final PacketType2 DESC = const PacketType2("desc");
+  static final PacketType2 ICE = const PacketType2("ice");
+  static final PacketType2 BYE = const PacketType2("bye");
+  static final PacketType2 JOIN = const PacketType2("join");
+  static final PacketType2 ID = const PacketType2("id");
+  static final PacketType2 ACK = const PacketType2("ack");
+  static final PacketType2 PING = const PacketType2("ping");
+  static final PacketType2 PONG = const PacketType2("pong");
+  final String type;
+  const PacketType2(this.type);
+  String toString() => type;
+}

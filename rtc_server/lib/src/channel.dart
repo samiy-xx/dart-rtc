@@ -1,6 +1,6 @@
 part of rtc_server;
 
-class Channel {
+class Channel extends GenericEventTarget<ChannelEventListener> implements UserConnectionEventListener {
   /* Parent container */
   ChannelContainer _container;
   
@@ -13,7 +13,7 @@ class Channel {
   // TODO: needed?
   bool _hasBeenJoined = false;
   
-  List<ChannelUser> _users;
+  List<User> _users;
   
   // returns true id users in room is less or equal than limit
   bool get canJoin => _users.length < _limit;
@@ -28,15 +28,21 @@ class Channel {
     _id = id;
     _limit = limit;
     _container = rc;
-    _users = new List<ChannelUser>();
+    _users = new List<User>();
   }
   
+  /**
+   * Implements UserConnectionEventListener
+   */
+  void onClose(User u, int status, String reason) {
+    leave(u);
+  }
   /**
    * Joins the room
    * @param User joining the room
    */
-  void join(ChannelUser newUser) {
-    newUser.channel = this;
+  void join(User newUser) {
+    //newUser.channel = this;
     _users.add(newUser);
     // Get the server
     Server server = _container.getServer();
@@ -62,10 +68,10 @@ class Channel {
      
   }
   
-  void leave(ChannelUser u) {
+  void leave(User u) {
     print("User ${u.id} leaving channel $id");
     
-    u.channel = null;
+    //u.channel = null;
     if (_users.contains(u))
       _users.removeAt(_users.indexOf(u));
     
@@ -75,16 +81,16 @@ class Channel {
     }
   }
   
-  void sendToAll(String p) {
+  void sendToAll(Packet p) {
     _users.forEach((User u) {
-        _container.getServer().sendToClient(u.connection, p);
+        _container.getServer().sendPacket(u.connection, p);
     });
   }
   
-  void sendToAllExceptSender(User sender, String p) {
+  void sendToAllExceptSender(User sender, Packet p) {
     _users.forEach((User u) {
       if (sender != u) {
-        _container.getServer().sendToClient(u.connection, p);
+        _container.getServer().sendPacket(u.connection, p);
       }
     });
   }

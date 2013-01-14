@@ -55,12 +55,15 @@ class DataPeerWrapper extends PeerWrapper {
   }
   
   void initChannel() {
-    _dataChannel = _peer.createDataChannel("somelabelhere", { 'reliable' : false });
-    _log.Debug("(datapeerwrapper.dart) DataChannel created");
-    _dataChannel.on.close.add(onDataChannelClose);
-    _dataChannel.on.open.add(onDataChannelOpen);
-    _dataChannel.on.error.add(onDataChannelError);
-    _dataChannel.on.message.add(onDataChannelMessage);
+    window.setTimeout(() {
+      _dataChannel = _peer.createDataChannel("somelabelhere", { 'reliable' : false });
+      _log.Debug("(datapeerwrapper.dart) DataChannel created");
+      _dataChannel.on.close.add(onDataChannelClose);
+      _dataChannel.on.open.add(onDataChannelOpen);
+      _dataChannel.on.error.add(onDataChannelError);
+      _dataChannel.on.message.add(onDataChannelMessage);
+    }, 2000);
+    
     
     
   }
@@ -76,6 +79,13 @@ class DataPeerWrapper extends PeerWrapper {
     _dataChannel.on.open.add(onDataChannelOpen);
     _dataChannel.on.error.add(onDataChannelError);
     _dataChannel.on.message.add(onDataChannelMessage);
+    
+    window.setTimeout(() {
+      _log.Debug("(datapeerwrapper.dart) DataChannel received");
+      _log.Debug("(datapeerwrapper.dart) Channel label : ${_dataChannel.label}");
+      _log.Debug("(datapeerwrapper.dart) Channel state : ${_dataChannel.readyState}");
+      _log.Debug("(datapeerwrapper.dart) Channel reliable : ${_dataChannel.reliable}");
+    }, 1000);
   }
   
   void onDataChannelOpen(Event e) {

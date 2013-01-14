@@ -31,4 +31,12 @@ class GenericEventTarget<T> {
     if (!_listeners.contains(listener))
       _listeners.add(listener);
   }
+  
+  /**
+   * Unsubscribe
+   */
+  void unsubscribe(T listener) {
+    if (_listeners.contains(listener))
+      _listeners.removeAt(_listeners.indexOf(listener));
+  }
 }

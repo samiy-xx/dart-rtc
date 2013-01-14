@@ -3,7 +3,7 @@ part of rtc_server;
 /**
  * User class
  */
-class User implements Comparable {
+class User extends GenericEventTarget<UserEventListener> implements Comparable {
   /* talking to */
   List<User> _talkingTo;
   
@@ -65,8 +65,12 @@ class User implements Comparable {
    */ 
   void _onClose(int status, String reason) {
     log.Debug("User connection closed with status $status and reason $reason");
-    _container.removeUser(this);
+    //_container.removeUser(this);
     _talkingTo.forEach((User u) => u.hangup(this));
+    
+    listeners.where((l) => l is UserConnectionEventListener).forEach((l) {
+      l.onClose(this, status, reason);
+    });
   }
   
   /**

@@ -5,6 +5,7 @@ import 'dart:json' as json;
 part 'src/packethandler.dart';
 part 'src/packetfactory.dart';
 part 'src/eventtarget.dart';
+
 // Exceptions
 part 'src/exception/InvalidPacketException.dart';
 
@@ -18,15 +19,11 @@ part 'src/packet/usermessage.dart';
 part 'src/packet/helopacket.dart';
 part 'src/packet/descpacket.dart';
 part 'src/packet/icepacket.dart';
-part 'src/packet/userpacket.dart';
-part 'src/packet/roompacket.dart';
 part 'src/packet/byepacket.dart';
 part 'src/packet/connectionsuccesspacket.dart';
 part 'src/packet/pingpacket.dart';
 part 'src/packet/pongpacket.dart';
 part 'src/packet/random.dart';
-part 'src/packet/routepacket.dart';
 part 'src/packet/disconnected.dart';
-
 
 
