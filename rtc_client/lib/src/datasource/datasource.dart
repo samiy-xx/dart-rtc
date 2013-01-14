@@ -30,6 +30,7 @@ abstract class DataSource {
   
   /**
    * Subscribe for DataSource events
+   * TODO: Required? comes from GenericEventTarget
    */
   void subscribe(DataSourceEventListener l);
 }

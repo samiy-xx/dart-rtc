@@ -8,8 +8,6 @@ import '../rtc_common/lib/rtc_common.dart';
 void main() {
   WebDataChannelHandler wsh = new WebDataChannelHandler();
   wsh.initialize();
-  
-  
 }
 
 class WebDataChannelHandler implements PeerMediaEventListener {

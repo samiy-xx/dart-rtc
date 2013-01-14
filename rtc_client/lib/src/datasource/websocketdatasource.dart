@@ -2,6 +2,7 @@ part of rtc_client;
 
 /**
  * DataSource that uses websocket
+ * Extends GenericEventTarget for dispatching events
  */
 class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> implements DataSource {
   /* Where do we connect */
@@ -9,9 +10,6 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
   
   /* Reference to the websocket connection */
   WebSocket _ws;
-  
-  /* DataSource event listeners */
-  //List<DataSourceEventListener> _listeners;
   
   /** Returns the current readystate for this datasource */
   int get readyState => getReadyState();
@@ -23,7 +21,6 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
    */
   WebSocketDataSource(String connectionString) : super(){
     _connectionString = connectionString;
-    //_listeners = new List<DataSourceEventListener>();
   }
   
   /**
@@ -45,14 +42,6 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
   }
   
   /**
-   * Subscribe for datasource events
-   */
-  //void subscribe(DataSourceEventListener l) {
-  //  if (!listeners.contains(l))
-  //    listeners.add(l);
-  //}
-  
-  /**
    * Send data over web socket
    */
   void send(String p) {
@@ -67,6 +56,7 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
   }
   
   /**
+   * Callback for websocket onMessage
    * Send all messages received from callback to the datasource event listeners
    */
   void onMessage(MessageEvent e) {

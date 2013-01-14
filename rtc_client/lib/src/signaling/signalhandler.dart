@@ -33,6 +33,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
   /** Id of the user */
   String get id => _id;
   
+  // TODO: Should really figure out howto use GenericEventTarget here
   Map<String, List> _listeners;
   
   /**
@@ -41,12 +42,17 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
   SignalHandler(DataSource ds) : super() {
     /* Init the datasource */
     _dataSource = ds;
+    
+    /* Subscribe to datasource events */
     _dataSource.subscribe(this);
     
     /* Init peer manager */
     _peerManager = new PeerManager();
+    
+    /* Subscribe to peer manager events */
     _peerManager.subscribe(this);
     
+    // TODO: Should really figure out howto use GenericEventTarget here
     _listeners = new Map<String, List>();
     
     /* listen to ping, and respond with pong */
@@ -64,13 +70,14 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     /* Connect success to server */
     registerHandler("connected", handleConnectionSuccess);
     
-    /* Listenfor join, when someone joins same channel as you are */
+    /* Listen for join, when someone joins same channel as you are */
     registerHandler("join", handleJoin);
     
     /* Listen for id, all users in channel you joined */
     registerHandler("id", handleId);
   }
   
+  // TODO: Should really figure out howto use GenericEventTarget here
   void subscribe(String type, Object listener) {
     if (!_listeners.containsKey(type))
       _listeners[type] = new List<Object>();
@@ -78,6 +85,10 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     _listeners[type].add(listener);
   }
   
+  /**
+   * Sets data channels enabled
+   * calls the same method in peer manager
+   */
   void setDataChannelsEnabled(bool value) {
     _dataChannelsEnabled = value;
     _peerManager.dataChannelsEnabled = value;
@@ -104,7 +115,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     
     _peerManager = p;
   }
-  //TODO : Remove?
+  //TODO : Remove? Peermanager is singleton instance
   /**
    * Returns the peer manager
    * @return PeerManager

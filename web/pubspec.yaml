@@ -1,0 +1,6 @@
+name:  web demo
+description:  web demo
+
+dependencies:
+  browser: any
+#  unittest: any
