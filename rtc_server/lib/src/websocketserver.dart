@@ -1,6 +1,6 @@
 part of rtc_server;
 
-class WebSocketServer extends PacketHandler implements Server {
+class WebSocketServer extends PacketHandler implements Server, ContainerContentsEventListener {
   /* The http server */
   HttpServer _httpServer;
   
@@ -36,6 +36,7 @@ class WebSocketServer extends PacketHandler implements Server {
     _httpServer.sessionTimeout = _sessionTimeout;
     _wsHandler = new WebSocketHandler();
     _container = new UserContainer(this);
+    _container.subscribe(this);
     _timer = new Timer.repeating(_timerTickInterval, onTimerTick);
     
     
@@ -116,6 +117,11 @@ class WebSocketServer extends PacketHandler implements Server {
    
   }
   
+  void onCountChanged(BaseContainer bc) {
+    if (bc is UserContainer)
+      logger.Info("Users: ${bc.count}");
+  }
+  
   String displayStatus() {
     logger.Info("Users: ${_container.userCount}");
   }
@@ -123,9 +129,7 @@ class WebSocketServer extends PacketHandler implements Server {
   void onTimerTick(Timer t) {
     try {
       doAliveChecks();
-      displayStatus();
-    
-    
+      //displayStatus();
     } catch(e) {
       logger.Error("onTimerTick: $e");
     }
@@ -176,10 +180,10 @@ class WebSocketServer extends PacketHandler implements Server {
     } catch(e) {
       logger.Debug("Socket Dead? removing connection");
       try {
-        ChannelUser u = _container.findUserByConn(c) as ChannelUser;
+        User u = _container.findUserByConn(c);
         if (u != null) {
           _container.removeUser(u);
-          u.channel.leave(u);
+          //u.channel.leave(u);
           u = null;
         }
         c.close(1000, "Assuming dead");

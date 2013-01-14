@@ -35,6 +35,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    * Implements UserConnectionEventListener
    */
   void onClose(User u, int status, String reason) {
+    new Logger().Debug("(channel.dart) onClose fired for user ${u.id}");
     leave(u);
   }
   /**
@@ -44,6 +45,8 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   void join(User newUser) {
     //newUser.channel = this;
     _users.add(newUser);
+    newUser.subscribe(this);
+    new Logger().Debug("User ${newUser.id} joins channel $_id");
     // Get the server
     Server server = _container.getServer();
     
@@ -69,7 +72,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   }
   
   void leave(User u) {
-    print("User ${u.id} leaving channel $id");
+    new Logger().Debug("(channel.dart) User ${u.id} leaving channel $id");
     
     //u.channel = null;
     if (_users.contains(u))
@@ -98,7 +101,11 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    * Equality operator ==
    * Check that id strings match
    **/
-  operator ==(Channel other) {
-    return _id == other._id;
+  operator ==(Object other) {
+    if (!(other is Channel)) {
+      new Logger().Warning("(channel.dart) operator== tried to match against ${other.runtimeType.toString()}");
+      return false;
+    }
+    return _id == (other as Channel)._id;
   }
 }

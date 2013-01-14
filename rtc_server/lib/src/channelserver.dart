@@ -1,6 +1,6 @@
 part of rtc_server;
 
-class ChannelServer extends WebSocketServer {
+class ChannelServer extends WebSocketServer implements ContainerContentsEventListener{
   ChannelContainer _channelContainer;
   
   ChannelServer() : super() {
@@ -10,6 +10,12 @@ class ChannelServer extends WebSocketServer {
     registerHandler("usermessage", handleUserMessage);
     
     _channelContainer = new ChannelContainer(this);
+    _channelContainer.subscribe(this);
+  }
+  
+  void onCountChanged(BaseContainer bc) {
+    new Logger().Info("Container count changed ${bc.count}");
+    displayStatus();
   }
   
   String displayStatus() {
@@ -23,7 +29,7 @@ class ChannelServer extends WebSocketServer {
         return;
       }
       
-      ChannelUser u;
+      User u;
       if (hp.id != null && !hp.id.isEmpty)
         u = _container.createChannelUserFromId(hp.id, c);
       else
@@ -47,13 +53,14 @@ class ChannelServer extends WebSocketServer {
         chan = _channelContainer.createChannelWithId(hp.channelId);
         chan.join(u);
       }
-    } catch(e) {
-      print(e);
+    } catch(e, s) {
+      new Logger().Error(e);
+      new Logger().Info(s);
     }
   }
   
   void handleBye(ByePacket bp, WebSocketConnection c) {
-    User user = _container.findUserByConn(c) as ChannelUser;
+    User user = _container.findUserByConn(c);
     
     try {
       if (user != null) {

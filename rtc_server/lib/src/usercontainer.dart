@@ -1,23 +1,20 @@
 part of rtc_server;
 
 class UserContainer extends BaseUserContainer implements UserConnectionEventListener {
-  /* Store users */
-  List<User> _users;
-  
   /* logger singleton instance */
   Logger logger = new Logger();
   
   /** Returns a list of users */
-  List<User> get users => _users;
+  List<User> get users => _list;
   
   /** Number of users */
-  int get userCount => _users.length;
+  int get userCount => _list.length;
   
   /**
    * Constructor
    */
   UserContainer(Server s) : super(s){
-    _users = new List<User>();
+    
   }
   
   /**
@@ -32,18 +29,17 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
    * Generate random id
    */
   static String genId() {
-    return Util.generateId();
+    return Util.generateId(RANDOM_ID_LENGTH);
   }
   
   /**
    * Returns all users
    */
   List<User> getUsers() {
-    return _users;
+    return _list;
   }
   
-  
-  ChannelUser createChannelUser(WebSocketConnection c) {
+  User createChannelUser(WebSocketConnection c) {
     String id = genId();
     return createChannelUserFromId(id, c);
   }
@@ -61,20 +57,21 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
     
     u = new User(this, id, c);
     u.subscribe(this);
-    _users.add(u);
-    
+    //_list.add(u);
+    add(u);
     return u;
   }
   
-  ChannelUser createChannelUserFromId(String id, WebSocketConnection c) {
-    ChannelUser u = findUserById(id);
+  User createChannelUserFromId(String id, WebSocketConnection c) {
+    User u = findUserById(id);
     
     if (u != null) 
       return u;
     
-    u = new ChannelUser(this, id, c);
+    u = new User(this, id, c);
     u.subscribe(this);
-    _users.add(u);
+    add(u);
+    //_list.add(u);
 
     return u;
   }
@@ -83,23 +80,24 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
    * Removes the user specified
    */
   void removeUser(User u) {
-    if (_users.contains(u)) {
-      _users.removeAt(_users.indexOf(u));
-    }
+    remove(u);
+    //if (_list.contains(u)) {
+    //  _list.removeAt(_list.indexOf(u));
+    //}
   }
   
   /**
    * Returns true if user exists in users list
    */
   bool userExist(User userToFind) {
-    return _users.where((User u) => u == userToFind).length > 0; 
+    return _list.where((User u) => u == userToFind).length > 0; 
   }
   
   /**
    * Returns user that has been inactive longest
    */
   User findLongestIdUser(User caller) {
-    List<User> toPick = _users.where((u) => u != caller && !u.isTalking);
+    List<User> toPick = _list.where((u) => u != caller && !u.isTalking);
     if (toPick.length > 0) {
       toPick.sort((a, b) => a.compareTo(b));
       return toPick.last;
@@ -112,7 +110,7 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
    * Returns a random user
    */
   User findRandomUser(User caller) {
-    List<User> toPick = _users.where((u) => u != caller && !u.isTalking);
+    List<User> toPick = _list.where((u) => u != caller && !u.isTalking);
     
     if (toPick.length > 0) {
       Random r = new Random();
@@ -126,8 +124,8 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
   
   // Obsolete
   User findRandomUser_old(User caller) {
-    for (int i = 0; i < _users.length; i++) {
-      User u = _users[i];
+    for (int i = 0; i < _list.length; i++) {
+      User u = _list[i];
       if (!u.isTalking && u != caller) {
         return u;
       }
@@ -142,9 +140,9 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
   User findUserByConn(WebSocketConnection c) {
     User u = null;
     
-    for(int i = 0; i < _users.length; i++) {
-      if (_users[i].connection == c) {
-        u = _users[i];
+    for(int i = 0; i < _list.length; i++) {
+      if (_list[i].connection == c) {
+        u = _list[i];
         break;
       }
     }
@@ -158,9 +156,9 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
   User findUserById(String id) {
     User u = null;
     
-    for(int i = 0; i < _users.length; i++) {
-      if (_users[i].id == id) {
-        u = _users[i];
+    for(int i = 0; i < _list.length; i++) {
+      if (_list[i].id == id) {
+        u = _list[i];
         break;
       }
     }

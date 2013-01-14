@@ -1,9 +1,6 @@
 part of rtc_server;
 
 class ChannelContainer extends BaseChannelContainer {
-  /* Store all channels in list */
-  List<Channel> _channels;
- 
   /* logger singleton instance */
   Logger logger = new Logger();
   
@@ -11,14 +8,14 @@ class ChannelContainer extends BaseChannelContainer {
   int _channelLimit = 20;
   
   /** Amount of active channels */
-  int get channelCount => _channels.length;
+  int get channelCount => _list.length;
   
   /**
    * Constructor
    * Takes Server as parameter
    */
   ChannelContainer(Server s) : super(s) {
-    _channels = new List<Channel>();
+   
   }
   
   /**
@@ -32,11 +29,12 @@ class ChannelContainer extends BaseChannelContainer {
    * Remove channel and kill users if any
    */
   bool removeChannel(Channel c) {
-    if (_channels.contains(c)) {
+    if (_list.contains(c)) {
       if (c.userCount > 0)
         c.killAll();
       
-      _channels.removeAt(_channels.indexOf(c));
+      remove(c);
+      //_list.removeAt(_list.indexOf(c));
     }
   }
   
@@ -44,8 +42,8 @@ class ChannelContainer extends BaseChannelContainer {
    * Find a channel by id
    */
   Channel findChannel(String id) {
-    for (int i = 0; i < _channels.length; i++) {
-      Channel c = _channels[i];
+    for (int i = 0; i < _list.length; i++) {
+      Channel c = _list[i];
       if (c._id == id)
         return c;
     }
@@ -64,7 +62,7 @@ class ChannelContainer extends BaseChannelContainer {
    * Create channel with random  id
    */
   Channel createChannel() {
-    String id = Util.generateId();
+    String id = Util.generateId(RANDOM_ID_LENGTH);
     return createChannelWithId(id);
   }
   
@@ -76,7 +74,8 @@ class ChannelContainer extends BaseChannelContainer {
       return findChannel(id);
     
     Channel r = new Channel(this, id, _channelLimit);
-    _channels.add(r);
+    add(r);
+    //_list.add(r);
     
     return r;
   }
@@ -89,7 +88,8 @@ class ChannelContainer extends BaseChannelContainer {
       return findChannel(id);
     
     Channel r = new QueueChannel(this, id);
-    _channels.add(r);
+    add(r);
+    //_list.add(r);
     
     return r;
   }

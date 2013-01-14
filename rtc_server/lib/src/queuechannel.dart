@@ -7,7 +7,7 @@ class QueueChannel extends Channel {
     
   }
   
-  void join(ChannelUser u) {
+  void join(User u) {
     if (canJoin) {
       super.join(u);
     } else {
