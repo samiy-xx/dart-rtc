@@ -1,1 +1,1 @@
-{"packages":{"args":{"version":"0.0.0-r.15986","source":"sdk","description":"args"},"unittest":{"version":"0.0.0-r.15986","source":"sdk","description":"unittest"},"uuid":{"version":"0.0.8","source":"hosted","description":"uuid"}}}
+{"packages":{"args":{"version":"0.2.10+1","source":"hosted","description":"args"},"unittest":{"version":"0.2.10+1","source":"hosted","description":"unittest"}}}

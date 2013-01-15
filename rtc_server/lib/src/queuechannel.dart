@@ -5,9 +5,9 @@ class QueueChannel extends Channel {
   
   bool get canJoin => true;
   
-  QueueChannel(ChannelContainer rc, String id, int limit) : super(rc, id, 2){
+  QueueChannel(ChannelContainer rc, String id) : super(rc, id, 2){
     _queue = new List<User>();
-    subscribe(this);
+    //subscribe(this);
   }
   
   void join(User u) {

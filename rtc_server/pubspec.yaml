@@ -1,8 +1,7 @@
-name:  rtc_server
-description:  A server
+name:  sample_pubspec
+description:  A sample application
 
 dependencies:
-  uuid: 0.0.8
-  args: { sdk: args }
+  args : any
 #  js: any
-  unittest: { sdk: unittest }
+  unittest: any
