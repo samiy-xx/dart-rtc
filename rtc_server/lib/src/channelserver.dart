@@ -19,7 +19,7 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
   }
   
   String displayStatus() {
-    print("Users: ${_container.userCount} Channels: ${_channelContainer.channelCount}");
+    new Logger().Info("Users: ${_container.userCount} Channels: ${_channelContainer.channelCount}");
   }
   
   void handleHelo(HeloPacket hp, WebSocketConnection c) {
@@ -35,7 +35,6 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
       else
         u = _container.createChannelUser(c);
       
-      print(u.id);
       sendToClient(c, PacketFactory.get(new ConnectionSuccessPacket.With(u.id)));
       
       Channel chan;
@@ -91,7 +90,7 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
       User other = _container.findUserById(um.id);
       
       if (user == null || other == null) {
-        print("user wass not found");
+        new Logger().Warning("(channelserver.dart) User was not found");
         return;
       }
       
@@ -100,9 +99,9 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
       sendToClient(other.connection, PacketFactory.get(um));
       
     } on NoSuchMethodError catch(e) {
-      print("Somethign was null: $e");
+      new Logger().Error("Error: $e");
     } catch(e) {
-      print(e);
+      new Logger().Error("Error: $e");
     }
   }
 }

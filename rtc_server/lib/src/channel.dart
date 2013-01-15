@@ -47,6 +47,9 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     _users.add(newUser);
     newUser.subscribe(this);
     new Logger().Debug("User ${newUser.id} joins channel $_id");
+    listeners.where((l) => l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
+      l.onEnterChannel(this, newUser);
+    });
     // Get the server
     Server server = _container.getServer();
     
@@ -77,6 +80,10 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     //u.channel = null;
     if (_users.contains(u))
       _users.removeAt(_users.indexOf(u));
+    
+    listeners.where((l) => l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
+      l.onLeaveChannel(this, u);
+    });
     
     if (userCount <= 0) {
       print("Usercount ${userCount} removing channel");
