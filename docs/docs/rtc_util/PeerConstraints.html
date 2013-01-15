@@ -1,0 +1,145 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>PeerConstraints class / rtc_util Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_util" data-type="PeerConstraints">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_util.html">rtc_util</a> &rsaquo; <a href="../rtc_util/PeerConstraints.html">PeerConstraints</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2><ul class="icon">
+<li><a href="../rtc_util/Constraints.html"><div class="icon-class"></div>Constraints</a></li>
+<li><a href="../rtc_util/Logger.html"><div class="icon-class"></div>Logger</a></li>
+<li><a href="../rtc_util/LogLevel.html"><div class="icon-class"></div>LogLevel</a></li>
+<li><div class="icon-class"></div><strong>PeerConstraints</strong></li>
+<li><a href="../rtc_util/StreamConstraints.html"><div class="icon-class"></div>StreamConstraints</a></li>
+<li><a href="../rtc_util/Util.html"><div class="icon-class"></div>Util</a></li>
+<li><a href="../rtc_util/VideoConstraints.html"><div class="icon-class"></div>VideoConstraints</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>PeerConstraints</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class PeerConstraints implements Constraints{
+ bool _dataChannelEnabled;
+ 
+ /** Sets the bitrate of the stream */
+ set dataChannelEnabled(bool value) =&gt; setDataChannelEnabled(value);
+ 
+ PeerConstraints() {
+   _dataChannelEnabled = false;
+ }
+ 
+ void setDataChannelEnabled(bool value) {
+   _dataChannelEnabled = value;
+ }
+ 
+ /*
+  * Implements Constraints toMap
+  */
+ Map toMap() {
+   return {
+     
+     'optional' : [{'RtpDataChannels': _dataChannelEnabled}]
+   };
+ }
+}
+</pre>
+</div>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_util/Constraints.html">Constraints</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="PeerConstraints">
+<button class="show-code">Code</button>
+new <strong>PeerConstraints</strong>() <a class="anchor-link" href="#PeerConstraints"
+              title="Permalink to PeerConstraints.PeerConstraints">#</a></h4>
+<div class="doc">
+<pre class="source">
+PeerConstraints() {
+ _dataChannelEnabled = false;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="method"><h4 id="dataChannelEnabled=">
+<button class="show-code">Code</button>
+<strong>set dataChannelEnabled</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> value) <a class="anchor-link" href="#dataChannelEnabled="
+              title="Permalink to PeerConstraints.set dataChannelEnabled">#</a></h4>
+<div class="doc">
+<p>Sets the bitrate of the stream </p>
+<pre class="source">
+set dataChannelEnabled(bool value) =&gt; setDataChannelEnabled(value);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="setDataChannelEnabled">
+<button class="show-code">Code</button>
+void <strong>setDataChannelEnabled</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> value) <a class="anchor-link" href="#setDataChannelEnabled"
+              title="Permalink to PeerConstraints.setDataChannelEnabled">#</a></h4>
+<div class="doc">
+<pre class="source">
+void setDataChannelEnabled(bool value) {
+ _dataChannelEnabled = value;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toMap">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toMap</strong>() <a class="anchor-link" href="#toMap"
+              title="Permalink to PeerConstraints.toMap">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns the object converted into a Map</p>
+<div class="docs-inherited-from">docs inherited from <a href="../rtc_util/Constraints.html">Constraints</a> </div></div>
+<pre class="source">
+Map toMap() {
+ return {
+   
+   'optional' : [{'RtpDataChannels': _dataChannelEnabled}]
+ };
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:57.499</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

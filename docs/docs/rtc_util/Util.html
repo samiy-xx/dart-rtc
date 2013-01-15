@@ -1,0 +1,182 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Util class / rtc_util Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_util" data-type="Util">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_util.html">rtc_util</a> &rsaquo; <a href="../rtc_util/Util.html">Util</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2><ul class="icon">
+<li><a href="../rtc_util/Constraints.html"><div class="icon-class"></div>Constraints</a></li>
+<li><a href="../rtc_util/Logger.html"><div class="icon-class"></div>Logger</a></li>
+<li><a href="../rtc_util/LogLevel.html"><div class="icon-class"></div>LogLevel</a></li>
+<li><a href="../rtc_util/PeerConstraints.html"><div class="icon-class"></div>PeerConstraints</a></li>
+<li><a href="../rtc_util/StreamConstraints.html"><div class="icon-class"></div>StreamConstraints</a></li>
+<li><div class="icon-class"></div><strong>Util</strong></li>
+<li><a href="../rtc_util/VideoConstraints.html"><div class="icon-class"></div>VideoConstraints</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Util</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Utility class</p>
+<pre class="source">
+class Util {
+ 
+ /**
+  * Method to return aspectratio based on width and height
+  */
+ static String aspectRatio(int x, int y) {
+   double value = x.toDouble() / y.toDouble();
+   if (value &gt; 1.7)
+     return "16:9";
+   else
+     return "4:3";
+ }
+ 
+ // For future generations.. ~/ integer division
+ 
+ static int getHeight(int width, String aspectRatio) {
+   return aspectRatio == "4:3" ? width * 3 ~/ 4 : width * 9 ~/ 16 ;
+ }
+ 
+ static int getWidth(int height, String aspectRatio) {
+   return aspectRatio == "4:3" ? height * 4 ~/ 3 : height * 16 ~/ 9;
+ }
+ 
+ /**
+  * Generates more or less random string
+  * @param length of the requied random string
+  */
+ static String generateId(int length) {
+   // Characters used in string generation
+   // TODO: Is there some other way to get all characters?
+   var chars = ['a','b','c','d','e',
+                'f','g','h','i','j',
+                'k','l','m','o','p',
+                'q','r','s','t','u',
+                'v','w','x','y','z'
+                '0','1','2','3','4'
+                '5','6','7','8','9'];
+   
+   int max = chars.length - 1;
+   
+   StringBuffer buf = new StringBuffer();
+   Random r = new Random();
+   for (int i = 0; i &lt; length; i++) {
+     buf.add(chars[r.nextInt(max)]);
+   }
+   
+   return buf.toString();
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="aspectRatio">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>aspectRatio</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> x, <a href="http://api.dartlang.org/dart_core/int.html">int</a> y) <a class="anchor-link" href="#aspectRatio"
+              title="Permalink to Util.aspectRatio">#</a></h4>
+<div class="doc">
+<p>Method to return aspectratio based on width and height</p>
+<pre class="source">
+static String aspectRatio(int x, int y) {
+ double value = x.toDouble() / y.toDouble();
+ if (value &gt; 1.7)
+   return "16:9";
+ else
+   return "4:3";
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getHeight">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>getHeight</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> width, <a href="http://api.dartlang.org/dart_core/String.html">String</a> aspectRatio) <a class="anchor-link" href="#getHeight"
+              title="Permalink to Util.getHeight">#</a></h4>
+<div class="doc">
+<pre class="source">
+static int getHeight(int width, String aspectRatio) {
+ return aspectRatio == "4:3" ? width * 3 ~/ 4 : width * 9 ~/ 16 ;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getWidth">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>getWidth</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> height, <a href="http://api.dartlang.org/dart_core/String.html">String</a> aspectRatio) <a class="anchor-link" href="#getWidth"
+              title="Permalink to Util.getWidth">#</a></h4>
+<div class="doc">
+<pre class="source">
+static int getWidth(int height, String aspectRatio) {
+ return aspectRatio == "4:3" ? height * 4 ~/ 3 : height * 16 ~/ 9;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="generateId">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>generateId</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> length) <a class="anchor-link" href="#generateId"
+              title="Permalink to Util.generateId">#</a></h4>
+<div class="doc">
+<p>Generates more or less random string
+@param length of the requied random string</p>
+<pre class="source">
+static String generateId(int length) {
+ // Characters used in string generation
+ // TODO: Is there some other way to get all characters?
+ var chars = ['a','b','c','d','e',
+              'f','g','h','i','j',
+              'k','l','m','o','p',
+              'q','r','s','t','u',
+              'v','w','x','y','z'
+              '0','1','2','3','4'
+              '5','6','7','8','9'];
+ 
+ int max = chars.length - 1;
+ 
+ StringBuffer buf = new StringBuffer();
+ Random r = new Random();
+ for (int i = 0; i &lt; length; i++) {
+   buf.add(chars[r.nextInt(max)]);
+ }
+ 
+ return buf.toString();
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:57.605</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

@@ -1,0 +1,193 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>ByePacket class / rtc_common Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_common" data-type="ByePacket">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_common.html">rtc_common</a> &rsaquo; <a href="../rtc_common/ByePacket.html">ByePacket</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><ul class="icon">
+<li><div class="icon-class"></div><strong>ByePacket</strong></li>
+<li><a href="../rtc_common/ConnectionSuccessPacket.html"><div class="icon-class"></div>ConnectionSuccessPacket</a></li>
+<li><a href="../rtc_common/DescriptionPacket.html"><div class="icon-class"></div>DescriptionPacket</a></li>
+<li><a href="../rtc_common/Disconnected.html"><div class="icon-class"></div>Disconnected</a></li>
+<li><a href="../rtc_common/GenericEventTarget.html"><div class="icon-class"></div>GenericEventTarget&lt;T&gt;</a></li>
+<li><a href="../rtc_common/HeloPacket.html"><div class="icon-class"></div>HeloPacket</a></li>
+<li><a href="../rtc_common/IcePacket.html"><div class="icon-class"></div>IcePacket</a></li>
+<li><a href="../rtc_common/IdPacket.html"><div class="icon-class"></div>IdPacket</a></li>
+<li><a href="../rtc_common/JoinPacket.html"><div class="icon-class"></div>JoinPacket</a></li>
+<li><a href="../rtc_common/Packet.html"><div class="icon-class"></div>Packet</a></li>
+<li><a href="../rtc_common/PacketFactory.html"><div class="icon-class"></div>PacketFactory</a></li>
+<li><a href="../rtc_common/PacketHandler.html"><div class="icon-class"></div>PacketHandler</a></li>
+<li><a href="../rtc_common/PacketType.html"><div class="icon-class"></div>PacketType</a></li>
+<li><a href="../rtc_common/PacketType2.html"><div class="icon-class"></div>PacketType2</a></li>
+<li><a href="../rtc_common/PeerCreatedPacket.html"><div class="icon-class"></div>PeerCreatedPacket</a></li>
+<li><a href="../rtc_common/PingPacket.html"><div class="icon-class"></div>PingPacket</a></li>
+<li><a href="../rtc_common/PongPacket.html"><div class="icon-class"></div>PongPacket</a></li>
+<li><a href="../rtc_common/RandomUserPacket.html"><div class="icon-class"></div>RandomUserPacket</a></li>
+<li><a href="../rtc_common/UserMessage.html"><div class="icon-class"></div>UserMessage</a></li>
+<li><a href="../rtc_common/InvalidPacketException.html"><div class="icon-exception"></div>InvalidPacketException</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<div class="content">
+        <h2><strong>ByePacket</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>ByePacket.
+Signal the server that client is disconnecting.</p>
+<pre class="source">
+class ByePacket implements Packet {
+ ByePacket();
+ ByePacket.With(this.id);
+ 
+ String packetType = PacketType.BYE;
+
+ String id = "";
+ 
+ Map toJson() {
+   return {
+     'packetType': packetType,
+     'uid': id
+   };
+ }
+ 
+ static ByePacket fromMap(Map m) {
+   return new ByePacket.With(m['id']);
+ }
+}
+</pre>
+</div>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/Packet.html">Packet</a></span></p>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="fromMap">
+<button class="show-code">Code</button>
+<a href="../rtc_common/ByePacket.html">ByePacket</a> <strong>fromMap</strong>(<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> m) <a class="anchor-link" href="#fromMap"
+              title="Permalink to ByePacket.fromMap">#</a></h4>
+<div class="doc">
+<pre class="source">
+static ByePacket fromMap(Map m) {
+ return new ByePacket.With(m['id']);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="ByePacket">
+<button class="show-code">Code</button>
+new <strong>ByePacket</strong>() <a class="anchor-link" href="#ByePacket"
+              title="Permalink to ByePacket.ByePacket">#</a></h4>
+<div class="doc">
+<pre class="source">
+ByePacket();
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="ByePacket.With">
+<button class="show-code">Code</button>
+new <strong>ByePacket.With</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> id) <a class="anchor-link" href="#ByePacket.With"
+              title="Permalink to ByePacket.ByePacket.With">#</a></h4>
+<div class="doc">
+<pre class="source">
+ByePacket.With(this.id);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="id">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>id</strong> <a class="anchor-link"
+            href="#id"
+            title="Permalink to ByePacket.id">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+id = ""
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="packetType">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>packetType</strong> <a class="anchor-link"
+            href="#packetType"
+            title="Permalink to ByePacket.packetType">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+packetType = PacketType.BYE
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toJson">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to ByePacket.toJson">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns the object as Map.
+WebSocket sends only native objects and maps</p>
+<div class="docs-inherited-from">docs inherited from <a href="../rtc_common/Packet.html">Packet</a> </div></div>
+<pre class="source">
+Map toJson() {
+ return {
+   'packetType': packetType,
+   'uid': id
+ };
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to ByePacket.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/Packet.html">Packet</a> </div><div class="doc">
+<p>Calls JSON.stringify on Map returned by toJson</p>
+<pre class="source">
+String toString() {
+ return json.stringify(toJson());
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:56.672</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

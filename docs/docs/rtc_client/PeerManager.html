@@ -1,0 +1,554 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>PeerManager class / rtc_client Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_client" data-type="PeerManager">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_client.html">rtc_client</a> &rsaquo; <a href="../rtc_client/PeerManager.html">PeerManager</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><ul class="icon">
+<li><a href="../rtc_client/BaseSignalHandler.html"><div class="icon-class"></div>BaseSignalHandler</a></li>
+<li><a href="../rtc_client/ChannelSignalHandler.html"><div class="icon-class"></div>ChannelSignalHandler</a></li>
+<li><a href="../rtc_client/DataPeerWrapper.html"><div class="icon-class"></div>DataPeerWrapper</a></li>
+<li><a href="../rtc_client/DataSource.html"><div class="icon-class"></div>DataSource</a></li>
+<li><a href="../rtc_client/DataSourceConnectionEventListener.html"><div class="icon-class"></div>DataSourceConnectionEventListener</a></li>
+<li><a href="../rtc_client/DataSourceEventListener.html"><div class="icon-class"></div>DataSourceEventListener</a></li>
+<li><a href="../rtc_client/PeerDataEventListener.html"><div class="icon-class"></div>PeerDataEventListener</a></li>
+<li><a href="../rtc_client/PeerEventListener.html"><div class="icon-class"></div>PeerEventListener</a></li>
+<li><div class="icon-class"></div><strong>PeerManager</strong></li>
+<li><a href="../rtc_client/PeerMediaEventListener.html"><div class="icon-class"></div>PeerMediaEventListener</a></li>
+<li><a href="../rtc_client/PeerMediaEventListenerType.html"><div class="icon-interface"></div>PeerMediaEventListenerType</a></li>
+<li><a href="../rtc_client/PeerPacketEventListener.html"><div class="icon-class"></div>PeerPacketEventListener</a></li>
+<li><a href="../rtc_client/PeerWrapper.html"><div class="icon-class"></div>PeerWrapper</a></li>
+<li><a href="../rtc_client/SignalHandler.html"><div class="icon-class"></div>SignalHandler</a></li>
+<li><a href="../rtc_client/SignalingConnectionEventListener.html"><div class="icon-class"></div>SignalingConnectionEventListener</a></li>
+<li><a href="../rtc_client/SignalingEventListener.html"><div class="icon-class"></div>SignalingEventListener</a></li>
+<li><a href="../rtc_client/SimpleSignalHandler.html"><div class="icon-class"></div>SimpleSignalHandler</a></li>
+<li><a href="../rtc_client/WebSocketDataSource.html"><div class="icon-class"></div>WebSocketDataSource</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<div class="content">
+        <h2><strong>PeerManager</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>PeerManager takes care of all peer connections</p>
+<pre class="source">
+class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
+ /* instance */
+ static PeerManager _instance;
+ 
+ /** Closed readystate */
+ final READYSTATE_CLOSED = "closed";
+ 
+ /** Open readystate */
+ final READYSTATE_OPEN = "open";
+ 
+ final Logger log = new Logger();
+ bool _dataChannelsEnabled = false;
+ LocalMediaStream _ms;
+ List&lt;PeerWrapper&gt; _peers;
+ 
+ StreamConstraints _streamConstraints;
+ 
+ set dataChannelsEnabled(bool value) =&gt; _dataChannelsEnabled = value;
+ 
+ /**
+  * Factory constructor
+  */
+ factory PeerManager() {
+   if (_instance == null)
+     _instance = new PeerManager._internal();
+   
+   return _instance;
+ }
+ 
+ /**
+  * Internal constructor
+  */
+ PeerManager._internal() {
+   _peers = new List&lt;PeerWrapper&gt;();
+   
+   _streamConstraints = new StreamConstraints();
+ }
+ 
+ 
+ void setMaxBitRate(int b) {
+   _streamConstraints.bitRate = b;
+ }
+ 
+ void setLocalStream(LocalMediaStream ms) {
+   _ms = ms;
+   _peers.forEach((PeerWrapper p) {
+     p.addStream(ms);
+   });
+ }
+ 
+ MediaStream getLocalStream() {
+   return _ms;
+ }
+ 
+ /**
+  * Creates a new peer and wraps it in PeerWrapper
+  */
+ PeerWrapper createPeer() {
+   PeerConstraints con = new PeerConstraints();
+   con.dataChannelEnabled = _dataChannelsEnabled;
+   
+   print(con.toMap());
+   RtcPeerConnection peer = new RtcPeerConnection({
+     'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]});
+   
+   PeerWrapper wrapper;
+   if (_dataChannelsEnabled) {
+     log.Debug("Creating peer with data channels");
+     wrapper = new DataPeerWrapper(this, peer);
+   } else {
+     log.Debug("Creating peer without data channels");
+     wrapper = new PeerWrapper(this, peer);
+   }
+   
+   peer.on.addStream.add(onAddStream);
+   peer.on.open.add(onOpen);
+   peer.on.stateChange.add(onStateChanged);
+   
+   _peers.add(wrapper);
+   return wrapper;
+ }
+ 
+ /**
+  * Gets a wrapper containing peer connection
+  */
+ PeerWrapper getWrapperForPeer(RtcPeerConnection p) {
+   for (int i = 0; i &lt; _peers.length; i++) {
+     PeerWrapper wrapper = _peers[i];
+     if (wrapper.peer == p)
+       return wrapper;
+   }
+   return null;
+ }
+ 
+ /**
+  * Finds a wrapper by id
+  */
+ PeerWrapper findWrapper(String id) {
+   for (int i = 0; i &lt; _peers.length; i++) {
+     PeerWrapper wrapper = _peers[i];
+     if (wrapper.id == id)
+       return wrapper;
+   }
+   return null;
+ }
+ 
+ void onAddStream(MediaStreamEvent e) {
+   log.Debug("PM: Adding peer");
+   PeerWrapper wrapper = getWrapperForPeer(e.target);
+   listeners.where((l) =&gt; l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
+     log.Debug("PM: notify class stream available");
+     l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
+   });
+ }
+ 
+ /**
+  * Signal handler should listen for event onPacketToSend so that this actually gets sent
+  */
+ void _sendPacket(String p) {
+   listeners.where((l) =&gt; l is PeerPacketEventListener).forEach((PeerPacketEventListener l) {
+     l.onPacketToSend(p);
+   });
+ }
+ 
+ /**
+  * Closes all peer connections
+  */
+ void closeAll() {
+   //_peers.forEach((p) =&gt; p.close());
+   // TODO: Closing the peer modifies the collection
+   // on state change where the peer gets removed from collection
+   // avoid foreach
+   for (int i = 0; i &lt; _peers.length; i++) {
+     PeerWrapper p = _peers[i];
+     p.close();
+   }
+ }
+ 
+ /**
+  * Removes a single peer wrapper
+  * Removed from collection after onStateChanged gets fired
+  */
+ void remove(PeerWrapper p) {
+   p.close();
+ }
+ 
+ /**
+  * Peer state changed
+  */
+ void onStateChanged(Event e) {
+   PeerWrapper wrapper = getWrapperForPeer(e.target);
+   log.Debug("onStateChanged: ${wrapper.peer.readyState}");
+   
+   if (wrapper.peer.readyState == READYSTATE_CLOSED) {
+     wrapper.dispose();
+     _peers.removeAt(_peers.indexOf(wrapper));
+     log.Debug("Peer removed");
+   }
+ }
+ 
+ void onOpen(Event e) {
+   log.Debug("Peer connection is open");
+ }
+ 
+ 
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/GenericEventTarget.html">GenericEventTarget&lt;PeerEventListener&gt;</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>PeerManager</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="PeerManager">
+<button class="show-code">Code</button>
+factory <strong>PeerManager</strong>() <a class="anchor-link" href="#PeerManager"
+              title="Permalink to PeerManager.PeerManager">#</a></h4>
+<div class="doc">
+<p>Factory constructor</p>
+<pre class="source">
+factory PeerManager() {
+ if (_instance == null)
+   _instance = new PeerManager._internal();
+ 
+ return _instance;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="method"><h4 id="dataChannelsEnabled=">
+<button class="show-code">Code</button>
+<strong>set dataChannelsEnabled</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> value) <a class="anchor-link" href="#dataChannelsEnabled="
+              title="Permalink to PeerManager.set dataChannelsEnabled">#</a></h4>
+<div class="doc">
+<pre class="source">
+set dataChannelsEnabled(bool value) =&gt; _dataChannelsEnabled = value;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="listeners">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_client/PeerManager.html">T</a>&gt;         <strong>listeners</strong> <a class="anchor-link"
+            href="#listeners"
+            title="Permalink to PeerManager.listeners">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Getter for listeners provided by GenericEventTarget </p>
+<pre class="source">
+List&lt;T&gt; get listeners =&gt; _listeners;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="log">
+<button class="show-code">Code</button>
+final <a href="../rtc_util/Logger.html">Logger</a>         <strong>log</strong> <a class="anchor-link"
+            href="#log"
+            title="Permalink to PeerManager.log">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+log = new Logger()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="READYSTATE_CLOSED">
+<button class="show-code">Code</button>
+final         <strong>READYSTATE_CLOSED</strong> <a class="anchor-link"
+            href="#READYSTATE_CLOSED"
+            title="Permalink to PeerManager.READYSTATE_CLOSED">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+READYSTATE_CLOSED = "closed"
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="READYSTATE_OPEN">
+<button class="show-code">Code</button>
+final         <strong>READYSTATE_OPEN</strong> <a class="anchor-link"
+            href="#READYSTATE_OPEN"
+            title="Permalink to PeerManager.READYSTATE_OPEN">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+READYSTATE_OPEN = "open"
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="closeAll">
+<button class="show-code">Code</button>
+void <strong>closeAll</strong>() <a class="anchor-link" href="#closeAll"
+              title="Permalink to PeerManager.closeAll">#</a></h4>
+<div class="doc">
+<p>Closes all peer connections</p>
+<pre class="source">
+void closeAll() {
+ //_peers.forEach((p) =&gt; p.close());
+ // TODO: Closing the peer modifies the collection
+ // on state change where the peer gets removed from collection
+ // avoid foreach
+ for (int i = 0; i &lt; _peers.length; i++) {
+   PeerWrapper p = _peers[i];
+   p.close();
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="createPeer">
+<button class="show-code">Code</button>
+<a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> <strong>createPeer</strong>() <a class="anchor-link" href="#createPeer"
+              title="Permalink to PeerManager.createPeer">#</a></h4>
+<div class="doc">
+<p>Creates a new peer and wraps it in PeerWrapper</p>
+<pre class="source">
+PeerWrapper createPeer() {
+ PeerConstraints con = new PeerConstraints();
+ con.dataChannelEnabled = _dataChannelsEnabled;
+ 
+ print(con.toMap());
+ RtcPeerConnection peer = new RtcPeerConnection({
+   'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]});
+ 
+ PeerWrapper wrapper;
+ if (_dataChannelsEnabled) {
+   log.Debug("Creating peer with data channels");
+   wrapper = new DataPeerWrapper(this, peer);
+ } else {
+   log.Debug("Creating peer without data channels");
+   wrapper = new PeerWrapper(this, peer);
+ }
+ 
+ peer.on.addStream.add(onAddStream);
+ peer.on.open.add(onOpen);
+ peer.on.stateChange.add(onStateChanged);
+ 
+ _peers.add(wrapper);
+ return wrapper;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="findWrapper">
+<button class="show-code">Code</button>
+<a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> <strong>findWrapper</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> id) <a class="anchor-link" href="#findWrapper"
+              title="Permalink to PeerManager.findWrapper">#</a></h4>
+<div class="doc">
+<p>Finds a wrapper by id</p>
+<pre class="source">
+PeerWrapper findWrapper(String id) {
+ for (int i = 0; i &lt; _peers.length; i++) {
+   PeerWrapper wrapper = _peers[i];
+   if (wrapper.id == id)
+     return wrapper;
+ }
+ return null;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="getListeners">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_client/PeerManager.html">T</a>&gt; <strong>getListeners</strong>() <a class="anchor-link" href="#getListeners"
+              title="Permalink to PeerManager.getListeners">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Returns all listeners provided by GenericEventTarget</p>
+<pre class="source">
+List&lt;T&gt; getListeners() {
+ return _listeners;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getLocalStream">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_html/MediaStream.html">MediaStream</a> <strong>getLocalStream</strong>() <a class="anchor-link" href="#getLocalStream"
+              title="Permalink to PeerManager.getLocalStream">#</a></h4>
+<div class="doc">
+<pre class="source">
+MediaStream getLocalStream() {
+ return _ms;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getWrapperForPeer">
+<button class="show-code">Code</button>
+<a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> <strong>getWrapperForPeer</strong>(<a href="http://api.dartlang.org/dart_html/RtcPeerConnection.html">RtcPeerConnection</a> p) <a class="anchor-link" href="#getWrapperForPeer"
+              title="Permalink to PeerManager.getWrapperForPeer">#</a></h4>
+<div class="doc">
+<p>Gets a wrapper containing peer connection</p>
+<pre class="source">
+PeerWrapper getWrapperForPeer(RtcPeerConnection p) {
+ for (int i = 0; i &lt; _peers.length; i++) {
+   PeerWrapper wrapper = _peers[i];
+   if (wrapper.peer == p)
+     return wrapper;
+ }
+ return null;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onAddStream">
+<button class="show-code">Code</button>
+void <strong>onAddStream</strong>(<a href="http://api.dartlang.org/dart_html/MediaStreamEvent.html">MediaStreamEvent</a> e) <a class="anchor-link" href="#onAddStream"
+              title="Permalink to PeerManager.onAddStream">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onAddStream(MediaStreamEvent e) {
+ log.Debug("PM: Adding peer");
+ PeerWrapper wrapper = getWrapperForPeer(e.target);
+ listeners.where((l) =&gt; l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
+   log.Debug("PM: notify class stream available");
+   l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
+ });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onOpen">
+<button class="show-code">Code</button>
+void <strong>onOpen</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onOpen"
+              title="Permalink to PeerManager.onOpen">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onOpen(Event e) {
+ log.Debug("Peer connection is open");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onStateChanged">
+<button class="show-code">Code</button>
+void <strong>onStateChanged</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onStateChanged"
+              title="Permalink to PeerManager.onStateChanged">#</a></h4>
+<div class="doc">
+<p>Peer state changed</p>
+<pre class="source">
+void onStateChanged(Event e) {
+ PeerWrapper wrapper = getWrapperForPeer(e.target);
+ log.Debug("onStateChanged: ${wrapper.peer.readyState}");
+ 
+ if (wrapper.peer.readyState == READYSTATE_CLOSED) {
+   wrapper.dispose();
+   _peers.removeAt(_peers.indexOf(wrapper));
+   log.Debug("Peer removed");
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="remove">
+<button class="show-code">Code</button>
+void <strong>remove</strong>(<a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> p) <a class="anchor-link" href="#remove"
+              title="Permalink to PeerManager.remove">#</a></h4>
+<div class="doc">
+<p>Removes a single peer wrapper
+Removed from collection after onStateChanged gets fired</p>
+<pre class="source">
+void remove(PeerWrapper p) {
+ p.close();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setLocalStream">
+<button class="show-code">Code</button>
+void <strong>setLocalStream</strong>(<a href="http://api.dartlang.org/dart_html/LocalMediaStream.html">LocalMediaStream</a> ms) <a class="anchor-link" href="#setLocalStream"
+              title="Permalink to PeerManager.setLocalStream">#</a></h4>
+<div class="doc">
+<pre class="source">
+void setLocalStream(LocalMediaStream ms) {
+ _ms = ms;
+ _peers.forEach((PeerWrapper p) {
+   p.addStream(ms);
+ });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setMaxBitRate">
+<button class="show-code">Code</button>
+void <strong>setMaxBitRate</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> b) <a class="anchor-link" href="#setMaxBitRate"
+              title="Permalink to PeerManager.setMaxBitRate">#</a></h4>
+<div class="doc">
+<pre class="source">
+void setMaxBitRate(int b) {
+ _streamConstraints.bitRate = b;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="subscribe">
+<button class="show-code">Code</button>
+void <strong>subscribe</strong>(<a href="../rtc_client/PeerManager.html">T</a> listener) <a class="anchor-link" href="#subscribe"
+              title="Permalink to PeerManager.subscribe">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Subscribe</p>
+<pre class="source">
+void subscribe(T listener) {
+ if (!_listeners.contains(listener))
+   _listeners.add(listener);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="unsubscribe">
+<button class="show-code">Code</button>
+void <strong>unsubscribe</strong>(<a href="../rtc_client/PeerManager.html">T</a> listener) <a class="anchor-link" href="#unsubscribe"
+              title="Permalink to PeerManager.unsubscribe">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Unsubscribe</p>
+<pre class="source">
+void unsubscribe(T listener) {
+ if (_listeners.contains(listener))
+   _listeners.removeAt(_listeners.indexOf(listener));
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:56.483</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

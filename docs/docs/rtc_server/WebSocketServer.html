@@ -1,0 +1,766 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>WebSocketServer class / rtc_server Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_server" data-type="WebSocketServer">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_server.html">rtc_server</a> &rsaquo; <a href="../rtc_server/WebSocketServer.html">WebSocketServer</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
+<li><a href="../rtc_server/BaseChannelContainer.html"><div class="icon-class"></div>BaseChannelContainer</a></li>
+<li><a href="../rtc_server/BaseContainer.html"><div class="icon-class"></div>BaseContainer&lt;T&gt;</a></li>
+<li><a href="../rtc_server/BaseUserContainer.html"><div class="icon-class"></div>BaseUserContainer</a></li>
+<li><a href="../rtc_server/Channel.html"><div class="icon-class"></div>Channel</a></li>
+<li><a href="../rtc_server/ChannelConnectionEventListener.html"><div class="icon-class"></div>ChannelConnectionEventListener</a></li>
+<li><a href="../rtc_server/ChannelContainer.html"><div class="icon-class"></div>ChannelContainer</a></li>
+<li><a href="../rtc_server/ChannelEventListener.html"><div class="icon-class"></div>ChannelEventListener</a></li>
+<li><a href="../rtc_server/ChannelQueueEventListener.html"><div class="icon-class"></div>ChannelQueueEventListener</a></li>
+<li><a href="../rtc_server/ChannelServer.html"><div class="icon-class"></div>ChannelServer</a></li>
+<li><a href="../rtc_server/ContainerContentsEventListener.html"><div class="icon-class"></div>ContainerContentsEventListener</a></li>
+<li><a href="../rtc_server/ContainerEventListener.html"><div class="icon-class"></div>ContainerEventListener</a></li>
+<li><a href="../rtc_server/ContainerQueueEventListener.html"><div class="icon-class"></div>ContainerQueueEventListener</a></li>
+<li><a href="../rtc_server/QueueChannel.html"><div class="icon-class"></div>QueueChannel</a></li>
+<li><a href="../rtc_server/QueueContainer.html"><div class="icon-class"></div>QueueContainer</a></li>
+<li><a href="../rtc_server/QueueServer.html"><div class="icon-class"></div>QueueServer</a></li>
+<li><a href="../rtc_server/Server.html"><div class="icon-class"></div>Server</a></li>
+<li><a href="../rtc_server/User.html"><div class="icon-class"></div>User</a></li>
+<li><a href="../rtc_server/UserConnectionEventListener.html"><div class="icon-class"></div>UserConnectionEventListener</a></li>
+<li><a href="../rtc_server/UserContainer.html"><div class="icon-class"></div>UserContainer</a></li>
+<li><a href="../rtc_server/UserEventListener.html"><div class="icon-class"></div>UserEventListener</a></li>
+<li><div class="icon-class"></div><strong>WebSocketServer</strong></li>
+<li><a href="../rtc_server/WheelServer.html"><div class="icon-class"></div>WheelServer</a></li>
+<li><a href="../rtc_server/WheelUser.html"><div class="icon-class"></div>WheelUser</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<div class="content">
+        <h2><strong>WebSocketServer</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class WebSocketServer extends PacketHandler implements Server, ContainerContentsEventListener {
+ /* The http server */
+ HttpServer _httpServer;
+ 
+ /* Websocket handler */
+ WebSocketHandler _wsHandler;
+ 
+ /* Container keeps track of users and rooms */
+ UserContainer _container;
+ 
+ /* Ip address socket is going to be bind */
+ String _ip;
+ 
+ /* path for websocket */
+ String _path;
+ 
+ /* port to bind to */
+ int _port;
+ 
+ /* 2 second session timeout */
+ int _sessionTimeout = 2;
+ 
+ // 1 minute
+ int _timerTickInterval = 6000;
+ 
+ Logger logger = new Logger();
+ 
+ /* Timer */
+ Timer _timer;
+ 
+ WebSocketServer() : super(){
+   // Create the HttpServer and web socket 
+   _httpServer = new HttpServer();
+   _httpServer.sessionTimeout = _sessionTimeout;
+   _wsHandler = new WebSocketHandler();
+   _container = new UserContainer(this);
+   _container.subscribe(this);
+   _timer = new Timer.repeating(_timerTickInterval, onTimerTick);
+   
+   
+   // Register handlers needed to handle on this low level
+   registerHandler("pong", handleIncomingPong);
+   registerHandler("desc", handleIncomingDescription);
+   registerHandler("ice", handleIncomingIce);
+ }
+ 
+ /**
+  * Stop the server
+  * TODO: Find out howto catch ctrl+c
+  */
+ void stop() {
+   logger.Info("Stopping server");
+   _timer.cancel();
+   _httpServer.close();
+ }
+ 
+ /**
+  * Start listening on port
+  * @param ip the ip address bind to
+  * @param port the port to bind to
+  * @param path the path
+  */
+ void listen([String ip="0.0.0.0", int port=8234, String path="/ws"]) {
+   _ip = ip;
+   _path = path;
+   _port = port;
+   
+   logger.Info("Starting server on ip $ip and port $port");
+   _httpServer.addRequestHandler(
+       (req) =&gt; req.path == _path,
+       (HttpRequest request, HttpResponse response) {
+         print("Incoming connection from: ${request.connectionInfo.remoteHost}");
+         _wsHandler.onRequest(request, response);
+       }
+    );
+
+   _httpServer.onError = (err) {
+     logger.Error(err);
+   };
+   
+   _httpServer.listen(_ip, _port);
+   
+   run();
+ }
+ 
+ void run() {
+   _wsHandler.onOpen = (WebSocketConnection conn) {
+     try {
+       conn.onMessage = (message) {
+         
+         Packet p = PacketFactory.getPacketFromString(message);
+         logger.Debug("Incoming packet (${p.packetType})");
+         if (p != null) {
+           if (p.packetType == "helo") {
+             User u = _container.findUserByConn(conn);
+             if (u != null) {
+               conn.close(1003, "Already HELO'd");
+               logger.Warning("User exists, disconnecting");
+             }
+           }
+           
+           if (!executeHandlerFor(conn, p))
+             logger.Warning("No handler found for packet (${p.packetType})");
+         }
+         
+       };
+       
+     } on Exception catch(e) {
+       logger.Error("run: Exception onMessage: $e");
+     } catch(e) {
+       logger.Error("run: Error onMessage: $e");
+     }
+   };
+   
+  
+ }
+ 
+ void onCountChanged(BaseContainer bc) {
+   if (bc is UserContainer)
+     logger.Info("Users: ${bc.count}");
+ }
+ 
+ String displayStatus() {
+   logger.Info("Users: ${_container.userCount}");
+ }
+ 
+ void onTimerTick(Timer t) {
+   try {
+     doAliveChecks();
+     //displayStatus();
+   } catch(e) {
+     logger.Error("onTimerTick: $e");
+   }
+ }
+ 
+ /**
+  * PingPongKill
+  */
+ void doAliveChecks() {
+   
+   int currentTime = new Date.now().millisecondsSinceEpoch;
+   List&lt;User&gt; users = _container.getUsers();
+   
+   for (int i = 0; i &lt; users.length; i++) {
+     User u = users[i];
+     
+     if (u.needsPing(currentTime)) {
+       sendPacket(u.connection, new PingPacket.With(u.id));
+     } else if(u.needsKill(currentTime)) {
+       try {
+         logger.Debug("Closing dead socket");
+         u.connection.close(1000, "Closing dead socket");
+       } catch (e) {
+         logger.Error("Closing dead socket threw $e");
+       }
+     }
+   }
+ }
+ 
+ /**
+  * Sends a packet to the WebSocketConnection
+  * @param c WebSocketConnection
+  * @param p Packet to send
+  */
+ void sendPacket(WebSocketConnection c, Packet p) {
+   logger.Debug("Sending packet (${p.packetType})");
+   sendToClient(c, PacketFactory.get(p));
+ }
+ 
+ /**
+  * Send a stringified json to receiving web socket connection
+  * @param c WebSocketConnection
+  * @param p Packet to send
+  */
+ void sendToClient(WebSocketConnection c, String p) {
+   try {
+     c.send(p);
+   } catch(e) {
+     logger.Debug("Socket Dead? removing connection");
+     try {
+       User u = _container.findUserByConn(c);
+       if (u != null) {
+         _container.removeUser(u);
+         //u.channel.leave(u);
+         u = null;
+       }
+       c.close(1000, "Assuming dead");
+     } catch (e) {
+       logger.Debug("Last catch, sendToClient $e");
+     }
+   }
+ }
+ 
+ /**
+  * Handle the incoming sdp description
+  */
+ void handleIncomingDescription(DescriptionPacket p, WebSocketConnection c) {
+   try {
+     User sender = _container.findUserByConn(c);
+     User receiver = _container.findUserById(p.id);
+     
+     if (sender == null || receiver == null) {
+       logger.Warning("Sender or Receiver not found");
+       return;
+     }
+     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+     
+     if (sender == receiver) {
+       logger.Warning("Sending to self, abort");
+       return;
+     }
+     receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
+     
+     sender.talkTo(receiver);
+     
+     sendPacket(receiver.connection, new DescriptionPacket.With(p.sdp, p.type, sender.id, ""));
+   } catch (e) {
+     logger.Error("handleIncomingDescription: $e");
+   }
+ }
+ 
+ /**
+  * Handle incoming ice packets
+  */
+ void handleIncomingIce(IcePacket ice, WebSocketConnection c) {
+   try {
+     User sender = _container.findUserByConn(c);
+     User receiver = _container.findUserById(ice.id);
+     
+     if (sender == null || receiver == null) {
+       logger.Warning("Sender or Receiver not found");
+       return;
+     }
+     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+     
+     if (sender == receiver) {
+       logger.Warning("Sending to self, abort");
+       return;
+     }
+     receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
+     
+     sendPacket(receiver.connection, new IcePacket.With(ice.candidate, ice.sdpMid, ice.sdpMLineIndex, sender.id));
+   } catch(e) {
+     logger.Error("handleIncomingIce: $e");
+   }
+ }
+ 
+ /**
+  * handle incoming pong replies
+  */
+ void handleIncomingPong(PongPacket p, c) {
+   try {
+     logger.Debug("Handling pong");
+     User sender = _container.findUserByConn(c);
+     sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+   } catch(e) {
+     logger.Error("handleIncomingPong: $e");
+   }
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/PacketHandler.html">PacketHandler</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>WebSocketServer</strong></span></p>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/ChannelServer.html">ChannelServer</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_server/QueueServer.html">QueueServer</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_server/WheelServer.html">WheelServer</a></span></p>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/ContainerContentsEventListener.html">ContainerContentsEventListener</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_server/Server.html">Server</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="WebSocketServer">
+<button class="show-code">Code</button>
+new <strong>WebSocketServer</strong>() <a class="anchor-link" href="#WebSocketServer"
+              title="Permalink to WebSocketServer.WebSocketServer">#</a></h4>
+<div class="doc">
+<pre class="source">
+WebSocketServer() : super(){
+ // Create the HttpServer and web socket 
+ _httpServer = new HttpServer();
+ _httpServer.sessionTimeout = _sessionTimeout;
+ _wsHandler = new WebSocketHandler();
+ _container = new UserContainer(this);
+ _container.subscribe(this);
+ _timer = new Timer.repeating(_timerTickInterval, onTimerTick);
+ 
+ 
+ // Register handlers needed to handle on this low level
+ registerHandler("pong", handleIncomingPong);
+ registerHandler("desc", handleIncomingDescription);
+ registerHandler("ice", handleIncomingIce);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="logger">
+<button class="show-code">Code</button>
+<a href="../rtc_util/Logger.html">Logger</a>         <strong>logger</strong> <a class="anchor-link"
+            href="#logger"
+            title="Permalink to WebSocketServer.logger">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+logger = new Logger()
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="clearHandlers">
+<button class="show-code">Code</button>
+void <strong>clearHandlers</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type) <a class="anchor-link" href="#clearHandlers"
+              title="Permalink to WebSocketServer.clearHandlers">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/PacketHandler.html">PacketHandler</a> </div><div class="doc">
+<p>Clears all handlers associated to "type"</p>
+<pre class="source">
+void clearHandlers(String type) {
+ if (_methodHandlers.containsKey(type))
+   _methodHandlers.remove(type);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="displayStatus">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>displayStatus</strong>() <a class="anchor-link" href="#displayStatus"
+              title="Permalink to WebSocketServer.displayStatus">#</a></h4>
+<div class="doc">
+<pre class="source">
+String displayStatus() {
+ logger.Info("Users: ${_container.userCount}");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="doAliveChecks">
+<button class="show-code">Code</button>
+void <strong>doAliveChecks</strong>() <a class="anchor-link" href="#doAliveChecks"
+              title="Permalink to WebSocketServer.doAliveChecks">#</a></h4>
+<div class="doc">
+<p>PingPongKill</p>
+<pre class="source">
+void doAliveChecks() {
+ 
+ int currentTime = new Date.now().millisecondsSinceEpoch;
+ List&lt;User&gt; users = _container.getUsers();
+ 
+ for (int i = 0; i &lt; users.length; i++) {
+   User u = users[i];
+   
+   if (u.needsPing(currentTime)) {
+     sendPacket(u.connection, new PingPacket.With(u.id));
+   } else if(u.needsKill(currentTime)) {
+     try {
+       logger.Debug("Closing dead socket");
+       u.connection.close(1000, "Closing dead socket");
+     } catch (e) {
+       logger.Error("Closing dead socket threw $e");
+     }
+   }
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="executeHandler">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>executeHandler</strong>(<a href="../rtc_common/Packet.html">Packet</a> p) <a class="anchor-link" href="#executeHandler"
+              title="Permalink to WebSocketServer.executeHandler">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/PacketHandler.html">PacketHandler</a> </div><div class="doc">
+<p>Executes packet handlers for given packet if any</p>
+<pre class="source">
+bool executeHandler(Packet p) {
+ List&lt;Function&gt; handlers = getHandlers(p.packetType);
+ if (handlers == null || handlers.length == 0)
+   return false;
+   
+ for (Function f in handlers)
+   f(p);
+       
+ return true;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="executeHandlerFor">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>executeHandlerFor</strong>(<a href="http://api.dartlang.org/dart_core/Object.html">Object</a> c, <a href="../rtc_common/Packet.html">Packet</a> p) <a class="anchor-link" href="#executeHandlerFor"
+              title="Permalink to WebSocketServer.executeHandlerFor">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/PacketHandler.html">PacketHandler</a> </div><div class="doc">
+<p>Executes packet handlers for given object and packet if any</p>
+<pre class="source">
+bool executeHandlerFor(Object c, Packet p) {
+   List&lt;Function&gt; handlers = getHandlers(p.packetType);
+   if (handlers == null || handlers.length == 0)
+     return false;
+   
+   for (Function f in handlers)
+     f(p, c);
+       
+   return true;
+ 
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="getHandlers">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/Function.html">Function</a>&gt; <strong>getHandlers</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type) <a class="anchor-link" href="#getHandlers"
+              title="Permalink to WebSocketServer.getHandlers">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/PacketHandler.html">PacketHandler</a> </div><div class="doc">
+<p>Returns a list of handler functions for given packet type</p>
+<pre class="source">
+List&lt;Function&gt; getHandlers(String type) {
+ if (_methodHandlers.containsKey(type))
+   return _methodHandlers[type];
+ 
+ return null;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleIncomingDescription">
+<button class="show-code">Code</button>
+void <strong>handleIncomingDescription</strong>(<a href="../rtc_common/DescriptionPacket.html">DescriptionPacket</a> p, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c) <a class="anchor-link" href="#handleIncomingDescription"
+              title="Permalink to WebSocketServer.handleIncomingDescription">#</a></h4>
+<div class="doc">
+<p>Handle the incoming sdp description</p>
+<pre class="source">
+void handleIncomingDescription(DescriptionPacket p, WebSocketConnection c) {
+ try {
+   User sender = _container.findUserByConn(c);
+   User receiver = _container.findUserById(p.id);
+   
+   if (sender == null || receiver == null) {
+     logger.Warning("Sender or Receiver not found");
+     return;
+   }
+   sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+   
+   if (sender == receiver) {
+     logger.Warning("Sending to self, abort");
+     return;
+   }
+   receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
+   
+   sender.talkTo(receiver);
+   
+   sendPacket(receiver.connection, new DescriptionPacket.With(p.sdp, p.type, sender.id, ""));
+ } catch (e) {
+   logger.Error("handleIncomingDescription: $e");
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleIncomingIce">
+<button class="show-code">Code</button>
+void <strong>handleIncomingIce</strong>(<a href="../rtc_common/IcePacket.html">IcePacket</a> ice, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c) <a class="anchor-link" href="#handleIncomingIce"
+              title="Permalink to WebSocketServer.handleIncomingIce">#</a></h4>
+<div class="doc">
+<p>Handle incoming ice packets</p>
+<pre class="source">
+void handleIncomingIce(IcePacket ice, WebSocketConnection c) {
+ try {
+   User sender = _container.findUserByConn(c);
+   User receiver = _container.findUserById(ice.id);
+   
+   if (sender == null || receiver == null) {
+     logger.Warning("Sender or Receiver not found");
+     return;
+   }
+   sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+   
+   if (sender == receiver) {
+     logger.Warning("Sending to self, abort");
+     return;
+   }
+   receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
+   
+   sendPacket(receiver.connection, new IcePacket.With(ice.candidate, ice.sdpMid, ice.sdpMLineIndex, sender.id));
+ } catch(e) {
+   logger.Error("handleIncomingIce: $e");
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleIncomingPong">
+<button class="show-code">Code</button>
+void <strong>handleIncomingPong</strong>(<a href="../rtc_common/PongPacket.html">PongPacket</a> p, c) <a class="anchor-link" href="#handleIncomingPong"
+              title="Permalink to WebSocketServer.handleIncomingPong">#</a></h4>
+<div class="doc">
+<p>handle incoming pong replies</p>
+<pre class="source">
+void handleIncomingPong(PongPacket p, c) {
+ try {
+   logger.Debug("Handling pong");
+   User sender = _container.findUserByConn(c);
+   sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+ } catch(e) {
+   logger.Error("handleIncomingPong: $e");
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="listen">
+<button class="show-code">Code</button>
+void <strong>listen</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> ip = "0.0.0.0", <a href="http://api.dartlang.org/dart_core/int.html">int</a> port = 8234, <a href="http://api.dartlang.org/dart_core/String.html">String</a> path = "/ws"]) <a class="anchor-link" href="#listen"
+              title="Permalink to WebSocketServer.listen">#</a></h4>
+<div class="doc">
+<p>Start listening on port
+@param ip the ip address bind to
+@param port the port to bind to
+@param path the path</p>
+<pre class="source">
+void listen([String ip="0.0.0.0", int port=8234, String path="/ws"]) {
+ _ip = ip;
+ _path = path;
+ _port = port;
+ 
+ logger.Info("Starting server on ip $ip and port $port");
+ _httpServer.addRequestHandler(
+     (req) =&gt; req.path == _path,
+     (HttpRequest request, HttpResponse response) {
+       print("Incoming connection from: ${request.connectionInfo.remoteHost}");
+       _wsHandler.onRequest(request, response);
+     }
+  );
+
+ _httpServer.onError = (err) {
+   logger.Error(err);
+ };
+ 
+ _httpServer.listen(_ip, _port);
+ 
+ run();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onCountChanged">
+<button class="show-code">Code</button>
+void <strong>onCountChanged</strong>(<a href="../rtc_server/BaseContainer.html">BaseContainer</a> bc) <a class="anchor-link" href="#onCountChanged"
+              title="Permalink to WebSocketServer.onCountChanged">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onCountChanged(BaseContainer bc) {
+ if (bc is UserContainer)
+   logger.Info("Users: ${bc.count}");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onTimerTick">
+<button class="show-code">Code</button>
+void <strong>onTimerTick</strong>(<a href="http://api.dartlang.org/dart_async/Timer.html">Timer</a> t) <a class="anchor-link" href="#onTimerTick"
+              title="Permalink to WebSocketServer.onTimerTick">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onTimerTick(Timer t) {
+ try {
+   doAliveChecks();
+   //displayStatus();
+ } catch(e) {
+   logger.Error("onTimerTick: $e");
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="registerHandler">
+<button class="show-code">Code</button>
+void <strong>registerHandler</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type, <a href="http://api.dartlang.org/dart_core/Function.html">Function</a> handler) <a class="anchor-link" href="#registerHandler"
+              title="Permalink to WebSocketServer.registerHandler">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/PacketHandler.html">PacketHandler</a> </div><div class="doc">
+<p>Add a new handler for given type</p>
+<pre class="source">
+void registerHandler(String type, Function handler) {
+ if (!_methodHandlers.containsKey(type))
+   _methodHandlers[type] = new List&lt;Function&gt;();
+ _methodHandlers[type].add(handler);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="run">
+<button class="show-code">Code</button>
+void <strong>run</strong>() <a class="anchor-link" href="#run"
+              title="Permalink to WebSocketServer.run">#</a></h4>
+<div class="doc">
+<pre class="source">
+void run() {
+ _wsHandler.onOpen = (WebSocketConnection conn) {
+   try {
+     conn.onMessage = (message) {
+       
+       Packet p = PacketFactory.getPacketFromString(message);
+       logger.Debug("Incoming packet (${p.packetType})");
+       if (p != null) {
+         if (p.packetType == "helo") {
+           User u = _container.findUserByConn(conn);
+           if (u != null) {
+             conn.close(1003, "Already HELO'd");
+             logger.Warning("User exists, disconnecting");
+           }
+         }
+         
+         if (!executeHandlerFor(conn, p))
+           logger.Warning("No handler found for packet (${p.packetType})");
+       }
+       
+     };
+     
+   } on Exception catch(e) {
+     logger.Error("run: Exception onMessage: $e");
+   } catch(e) {
+     logger.Error("run: Error onMessage: $e");
+   }
+ };
+ 
+
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="sendPacket">
+<button class="show-code">Code</button>
+void <strong>sendPacket</strong>(<a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c, <a href="../rtc_common/Packet.html">Packet</a> p) <a class="anchor-link" href="#sendPacket"
+              title="Permalink to WebSocketServer.sendPacket">#</a></h4>
+<div class="doc">
+<p>Sends a packet to the WebSocketConnection
+@param c WebSocketConnection
+@param p Packet to send</p>
+<pre class="source">
+void sendPacket(WebSocketConnection c, Packet p) {
+ logger.Debug("Sending packet (${p.packetType})");
+ sendToClient(c, PacketFactory.get(p));
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="sendToClient">
+<button class="show-code">Code</button>
+void <strong>sendToClient</strong>(<a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c, <a href="http://api.dartlang.org/dart_core/String.html">String</a> p) <a class="anchor-link" href="#sendToClient"
+              title="Permalink to WebSocketServer.sendToClient">#</a></h4>
+<div class="doc">
+<p>Send a stringified json to receiving web socket connection
+@param c WebSocketConnection
+@param p Packet to send</p>
+<pre class="source">
+void sendToClient(WebSocketConnection c, String p) {
+ try {
+   c.send(p);
+ } catch(e) {
+   logger.Debug("Socket Dead? removing connection");
+   try {
+     User u = _container.findUserByConn(c);
+     if (u != null) {
+       _container.removeUser(u);
+       //u.channel.leave(u);
+       u = null;
+     }
+     c.close(1000, "Assuming dead");
+   } catch (e) {
+     logger.Debug("Last catch, sendToClient $e");
+   }
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stop">
+<button class="show-code">Code</button>
+void <strong>stop</strong>() <a class="anchor-link" href="#stop"
+              title="Permalink to WebSocketServer.stop">#</a></h4>
+<div class="doc">
+<p>Stop the server
+TODO: Find out howto catch ctrl+c</p>
+<pre class="source">
+void stop() {
+ logger.Info("Stopping server");
+ _timer.cancel();
+ _httpServer.close();
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:57.476</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

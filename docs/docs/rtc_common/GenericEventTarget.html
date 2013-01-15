@@ -1,0 +1,186 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>GenericEventTarget&lt;T&gt; class / rtc_common Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_common" data-type="GenericEventTarget&amp;lt;T&amp;gt;">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_common.html">rtc_common</a> &rsaquo; <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget&lt;T&gt;</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><ul class="icon">
+<li><a href="../rtc_common/ByePacket.html"><div class="icon-class"></div>ByePacket</a></li>
+<li><a href="../rtc_common/ConnectionSuccessPacket.html"><div class="icon-class"></div>ConnectionSuccessPacket</a></li>
+<li><a href="../rtc_common/DescriptionPacket.html"><div class="icon-class"></div>DescriptionPacket</a></li>
+<li><a href="../rtc_common/Disconnected.html"><div class="icon-class"></div>Disconnected</a></li>
+<li><div class="icon-class"></div><strong>GenericEventTarget&lt;T&gt;</strong></li>
+<li><a href="../rtc_common/HeloPacket.html"><div class="icon-class"></div>HeloPacket</a></li>
+<li><a href="../rtc_common/IcePacket.html"><div class="icon-class"></div>IcePacket</a></li>
+<li><a href="../rtc_common/IdPacket.html"><div class="icon-class"></div>IdPacket</a></li>
+<li><a href="../rtc_common/JoinPacket.html"><div class="icon-class"></div>JoinPacket</a></li>
+<li><a href="../rtc_common/Packet.html"><div class="icon-class"></div>Packet</a></li>
+<li><a href="../rtc_common/PacketFactory.html"><div class="icon-class"></div>PacketFactory</a></li>
+<li><a href="../rtc_common/PacketHandler.html"><div class="icon-class"></div>PacketHandler</a></li>
+<li><a href="../rtc_common/PacketType.html"><div class="icon-class"></div>PacketType</a></li>
+<li><a href="../rtc_common/PacketType2.html"><div class="icon-class"></div>PacketType2</a></li>
+<li><a href="../rtc_common/PeerCreatedPacket.html"><div class="icon-class"></div>PeerCreatedPacket</a></li>
+<li><a href="../rtc_common/PingPacket.html"><div class="icon-class"></div>PingPacket</a></li>
+<li><a href="../rtc_common/PongPacket.html"><div class="icon-class"></div>PongPacket</a></li>
+<li><a href="../rtc_common/RandomUserPacket.html"><div class="icon-class"></div>RandomUserPacket</a></li>
+<li><a href="../rtc_common/UserMessage.html"><div class="icon-class"></div>UserMessage</a></li>
+<li><a href="../rtc_common/InvalidPacketException.html"><div class="icon-exception"></div>InvalidPacketException</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<div class="content">
+        <h2><strong>GenericEventTarget&lt;T&gt;</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Generic event target class</p>
+<pre class="source">
+class GenericEventTarget&lt;T&gt; {
+ /* List holding listeners */
+ List&lt;T&gt; _listeners;
+ 
+ /** Getter for listeners provided by GenericEventTarget */
+ List&lt;T&gt; get listeners =&gt; _listeners;
+ 
+ /**
+  * Constructor
+  */
+ GenericEventTarget() {
+   _listeners = new List&lt;T&gt;();
+ }
+ 
+ /**
+  * Returns all listeners provided by GenericEventTarget
+  */
+ List&lt;T&gt; getListeners() {
+   return _listeners;
+ }
+ 
+ /**
+  * Subscribe
+  */
+ void subscribe(T listener) {
+   if (!_listeners.contains(listener))
+     _listeners.add(listener);
+ }
+ 
+ /**
+  * Unsubscribe
+  */
+ void unsubscribe(T listener) {
+   if (_listeners.contains(listener))
+     _listeners.removeAt(_listeners.indexOf(listener));
+ }
+}
+</pre>
+</div>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/BaseContainer.html">BaseContainer&lt;T&gt;</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_client/BaseSignalHandler.html">BaseSignalHandler</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_server/Channel.html">Channel</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_client/PeerManager.html">PeerManager</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_client/PeerWrapper.html">PeerWrapper</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_server/User.html">User</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_client/WebSocketDataSource.html">WebSocketDataSource</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="GenericEventTarget">
+<button class="show-code">Code</button>
+new <strong>GenericEventTarget</strong>() <a class="anchor-link" href="#GenericEventTarget"
+              title="Permalink to GenericEventTarget&lt;T&gt;.GenericEventTarget">#</a></h4>
+<div class="doc">
+<p>Constructor</p>
+<pre class="source">
+GenericEventTarget() {
+ _listeners = new List&lt;T&gt;();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="listeners">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_common/GenericEventTarget.html">T</a>&gt;         <strong>listeners</strong> <a class="anchor-link"
+            href="#listeners"
+            title="Permalink to GenericEventTarget&lt;T&gt;.listeners">#</a>
+        </h4>
+        <div class="doc">
+<p>Getter for listeners provided by GenericEventTarget </p>
+<pre class="source">
+List&lt;T&gt; get listeners =&gt; _listeners;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="getListeners">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_common/GenericEventTarget.html">T</a>&gt; <strong>getListeners</strong>() <a class="anchor-link" href="#getListeners"
+              title="Permalink to GenericEventTarget&lt;T&gt;.getListeners">#</a></h4>
+<div class="doc">
+<p>Returns all listeners provided by GenericEventTarget</p>
+<pre class="source">
+List&lt;T&gt; getListeners() {
+ return _listeners;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="subscribe">
+<button class="show-code">Code</button>
+void <strong>subscribe</strong>(<a href="../rtc_common/GenericEventTarget.html">T</a> listener) <a class="anchor-link" href="#subscribe"
+              title="Permalink to GenericEventTarget&lt;T&gt;.subscribe">#</a></h4>
+<div class="doc">
+<p>Subscribe</p>
+<pre class="source">
+void subscribe(T listener) {
+ if (!_listeners.contains(listener))
+   _listeners.add(listener);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="unsubscribe">
+<button class="show-code">Code</button>
+void <strong>unsubscribe</strong>(<a href="../rtc_common/GenericEventTarget.html">T</a> listener) <a class="anchor-link" href="#unsubscribe"
+              title="Permalink to GenericEventTarget&lt;T&gt;.unsubscribe">#</a></h4>
+<div class="doc">
+<p>Unsubscribe</p>
+<pre class="source">
+void unsubscribe(T listener) {
+ if (_listeners.contains(listener))
+   _listeners.removeAt(_listeners.indexOf(listener));
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:56.775</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

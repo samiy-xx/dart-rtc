@@ -1,0 +1,351 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>VideoConstraints class / rtc_util Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_util" data-type="VideoConstraints">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_util.html">rtc_util</a> &rsaquo; <a href="../rtc_util/VideoConstraints.html">VideoConstraints</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2><ul class="icon">
+<li><a href="../rtc_util/Constraints.html"><div class="icon-class"></div>Constraints</a></li>
+<li><a href="../rtc_util/Logger.html"><div class="icon-class"></div>Logger</a></li>
+<li><a href="../rtc_util/LogLevel.html"><div class="icon-class"></div>LogLevel</a></li>
+<li><a href="../rtc_util/PeerConstraints.html"><div class="icon-class"></div>PeerConstraints</a></li>
+<li><a href="../rtc_util/StreamConstraints.html"><div class="icon-class"></div>StreamConstraints</a></li>
+<li><a href="../rtc_util/Util.html"><div class="icon-class"></div>Util</a></li>
+<li><div class="icon-class"></div><strong>VideoConstraints</strong></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>VideoConstraints</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Constraints for getUserMedia</p>
+<pre class="source">
+class VideoConstraints implements Constraints{
+ /* enabled audio */
+ bool _audio = true;
+ 
+ /* enabled video */
+ bool _video = true;
+ 
+ /* max width of the video */
+ int _maxWidth;
+ 
+ /* max height of the video */
+ int _maxHeight;
+ 
+ /* min width of the video */
+ int _minWidth;
+ 
+ /* min height of the video */
+ int _minHeight;
+ 
+ /* frame rate of the video */
+ int _frameRate;
+ 
+ /** Sets the max width of the video */
+ set maxWidth(int value) =&gt; setMaxWidth(value);
+ 
+ /** Sets the max height of the video */
+ set maxHeight(int value) =&gt; setMaxHeight(value);
+ 
+ /** Sets the min width of the video */
+ set minWidth(int value) =&gt; setMinWidth(value);
+ 
+ /** Sets the min height of the video */
+ set minHeight(int value) =&gt; setMinHeight(value);
+ 
+ /** Sets the video framerate */
+ set frameRate(int value) =&gt; setFrameRate(value);
+ 
+ VideoConstraints() {
+   _frameRate = 30;
+   _maxWidth = 1280;
+   _maxHeight = 720;
+   _minWidth = 800;
+   _minHeight = 600;
+ }
+ 
+ /**
+  * Sets the max width of the video
+  */
+ VideoConstraints setMaxWidth(int value) {
+   _maxWidth = value;
+   return this;
+ }
+ 
+ /**
+  * Sets the max height of the video
+  */
+ VideoConstraints setMaxHeight(int value) {
+   _maxHeight = value;
+   return this;
+ }
+ 
+ /**
+  * Sets the min width of the video
+  */
+ VideoConstraints setMinWidth(int value) {
+   _minWidth = value;
+   return this;
+ }
+ 
+ /**
+  * Sets the min height of the video
+  */
+ VideoConstraints setMinHeight(int value) {
+   _minHeight = value;
+   return this;
+ }
+ 
+ /**
+  * Sets the framerate of the video
+  */
+ VideoConstraints setFrameRate(int value) {
+   _frameRate = value;
+   return this;
+ }
+ 
+ /*
+  * Implements Constraints toMap
+  */
+ Map toMap() {
+   Map constraints = new Map();
+   constraints['audio'] = _audio;
+   if (!_video) {
+     constraints['video'] = false;
+   } else {
+     constraints['video'] = {
+       'mandatory': {
+         'maxWidth' : _maxWidth,
+         'maxHeight' : _maxHeight,
+         'minWidth' : _minWidth,
+         'minHeight' : _minHeight,
+         'minFrameRate' : _frameRate,
+       },
+       'optional' : []                        
+     };
+   }
+   
+   return constraints;
+ }
+}
+</pre>
+</div>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_util/Constraints.html">Constraints</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="VideoConstraints">
+<button class="show-code">Code</button>
+new <strong>VideoConstraints</strong>() <a class="anchor-link" href="#VideoConstraints"
+              title="Permalink to VideoConstraints.VideoConstraints">#</a></h4>
+<div class="doc">
+<pre class="source">
+VideoConstraints() {
+ _frameRate = 30;
+ _maxWidth = 1280;
+ _maxHeight = 720;
+ _minWidth = 800;
+ _minHeight = 600;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="method"><h4 id="frameRate=">
+<button class="show-code">Code</button>
+<strong>set frameRate</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#frameRate="
+              title="Permalink to VideoConstraints.set frameRate">#</a></h4>
+<div class="doc">
+<p>Sets the video framerate </p>
+<pre class="source">
+set frameRate(int value) =&gt; setFrameRate(value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="maxHeight=">
+<button class="show-code">Code</button>
+<strong>set maxHeight</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#maxHeight="
+              title="Permalink to VideoConstraints.set maxHeight">#</a></h4>
+<div class="doc">
+<p>Sets the max height of the video </p>
+<pre class="source">
+set maxHeight(int value) =&gt; setMaxHeight(value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="maxWidth=">
+<button class="show-code">Code</button>
+<strong>set maxWidth</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#maxWidth="
+              title="Permalink to VideoConstraints.set maxWidth">#</a></h4>
+<div class="doc">
+<p>Sets the max width of the video </p>
+<pre class="source">
+set maxWidth(int value) =&gt; setMaxWidth(value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="minHeight=">
+<button class="show-code">Code</button>
+<strong>set minHeight</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#minHeight="
+              title="Permalink to VideoConstraints.set minHeight">#</a></h4>
+<div class="doc">
+<p>Sets the min height of the video </p>
+<pre class="source">
+set minHeight(int value) =&gt; setMinHeight(value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="minWidth=">
+<button class="show-code">Code</button>
+<strong>set minWidth</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#minWidth="
+              title="Permalink to VideoConstraints.set minWidth">#</a></h4>
+<div class="doc">
+<p>Sets the min width of the video </p>
+<pre class="source">
+set minWidth(int value) =&gt; setMinWidth(value);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="setFrameRate">
+<button class="show-code">Code</button>
+<a href="../rtc_util/VideoConstraints.html">VideoConstraints</a> <strong>setFrameRate</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#setFrameRate"
+              title="Permalink to VideoConstraints.setFrameRate">#</a></h4>
+<div class="doc">
+<p>Sets the framerate of the video</p>
+<pre class="source">
+VideoConstraints setFrameRate(int value) {
+ _frameRate = value;
+ return this;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setMaxHeight">
+<button class="show-code">Code</button>
+<a href="../rtc_util/VideoConstraints.html">VideoConstraints</a> <strong>setMaxHeight</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#setMaxHeight"
+              title="Permalink to VideoConstraints.setMaxHeight">#</a></h4>
+<div class="doc">
+<p>Sets the max height of the video</p>
+<pre class="source">
+VideoConstraints setMaxHeight(int value) {
+ _maxHeight = value;
+ return this;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setMaxWidth">
+<button class="show-code">Code</button>
+<a href="../rtc_util/VideoConstraints.html">VideoConstraints</a> <strong>setMaxWidth</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#setMaxWidth"
+              title="Permalink to VideoConstraints.setMaxWidth">#</a></h4>
+<div class="doc">
+<p>Sets the max width of the video</p>
+<pre class="source">
+VideoConstraints setMaxWidth(int value) {
+ _maxWidth = value;
+ return this;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setMinHeight">
+<button class="show-code">Code</button>
+<a href="../rtc_util/VideoConstraints.html">VideoConstraints</a> <strong>setMinHeight</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#setMinHeight"
+              title="Permalink to VideoConstraints.setMinHeight">#</a></h4>
+<div class="doc">
+<p>Sets the min height of the video</p>
+<pre class="source">
+VideoConstraints setMinHeight(int value) {
+ _minHeight = value;
+ return this;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setMinWidth">
+<button class="show-code">Code</button>
+<a href="../rtc_util/VideoConstraints.html">VideoConstraints</a> <strong>setMinWidth</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#setMinWidth"
+              title="Permalink to VideoConstraints.setMinWidth">#</a></h4>
+<div class="doc">
+<p>Sets the min width of the video</p>
+<pre class="source">
+VideoConstraints setMinWidth(int value) {
+ _minWidth = value;
+ return this;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toMap">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toMap</strong>() <a class="anchor-link" href="#toMap"
+              title="Permalink to VideoConstraints.toMap">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns the object converted into a Map</p>
+<div class="docs-inherited-from">docs inherited from <a href="../rtc_util/Constraints.html">Constraints</a> </div></div>
+<pre class="source">
+Map toMap() {
+ Map constraints = new Map();
+ constraints['audio'] = _audio;
+ if (!_video) {
+   constraints['video'] = false;
+ } else {
+   constraints['video'] = {
+     'mandatory': {
+       'maxWidth' : _maxWidth,
+       'maxHeight' : _maxHeight,
+       'minWidth' : _minWidth,
+       'minHeight' : _minHeight,
+       'minFrameRate' : _frameRate,
+     },
+     'optional' : []                        
+   };
+ }
+ 
+ return constraints;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:57.508</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

@@ -1,0 +1,133 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>BaseSignalHandler class / rtc_client Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_client" data-type="BaseSignalHandler">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_client.html">rtc_client</a> &rsaquo; <a href="../rtc_client/BaseSignalHandler.html">BaseSignalHandler</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><ul class="icon">
+<li><div class="icon-class"></div><strong>BaseSignalHandler</strong></li>
+<li><a href="../rtc_client/ChannelSignalHandler.html"><div class="icon-class"></div>ChannelSignalHandler</a></li>
+<li><a href="../rtc_client/DataPeerWrapper.html"><div class="icon-class"></div>DataPeerWrapper</a></li>
+<li><a href="../rtc_client/DataSource.html"><div class="icon-class"></div>DataSource</a></li>
+<li><a href="../rtc_client/DataSourceConnectionEventListener.html"><div class="icon-class"></div>DataSourceConnectionEventListener</a></li>
+<li><a href="../rtc_client/DataSourceEventListener.html"><div class="icon-class"></div>DataSourceEventListener</a></li>
+<li><a href="../rtc_client/PeerDataEventListener.html"><div class="icon-class"></div>PeerDataEventListener</a></li>
+<li><a href="../rtc_client/PeerEventListener.html"><div class="icon-class"></div>PeerEventListener</a></li>
+<li><a href="../rtc_client/PeerManager.html"><div class="icon-class"></div>PeerManager</a></li>
+<li><a href="../rtc_client/PeerMediaEventListener.html"><div class="icon-class"></div>PeerMediaEventListener</a></li>
+<li><a href="../rtc_client/PeerMediaEventListenerType.html"><div class="icon-interface"></div>PeerMediaEventListenerType</a></li>
+<li><a href="../rtc_client/PeerPacketEventListener.html"><div class="icon-class"></div>PeerPacketEventListener</a></li>
+<li><a href="../rtc_client/PeerWrapper.html"><div class="icon-class"></div>PeerWrapper</a></li>
+<li><a href="../rtc_client/SignalHandler.html"><div class="icon-class"></div>SignalHandler</a></li>
+<li><a href="../rtc_client/SignalingConnectionEventListener.html"><div class="icon-class"></div>SignalingConnectionEventListener</a></li>
+<li><a href="../rtc_client/SignalingEventListener.html"><div class="icon-class"></div>SignalingEventListener</a></li>
+<li><a href="../rtc_client/SimpleSignalHandler.html"><div class="icon-class"></div>SimpleSignalHandler</a></li>
+<li><a href="../rtc_client/WebSocketDataSource.html"><div class="icon-class"></div>WebSocketDataSource</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<div class="content">
+        <h2><strong>BaseSignalHandler</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class BaseSignalHandler extends GenericEventTarget&lt;DataSourceEventListener&gt; {
+ 
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/GenericEventTarget.html">GenericEventTarget&lt;DataSourceEventListener&gt;</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>BaseSignalHandler</strong></span></p>
+<div class="inherited">
+<h3>Properties</h3>
+<div class="field inherited"><h4 id="listeners">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_client/BaseSignalHandler.html">T</a>&gt;         <strong>listeners</strong> <a class="anchor-link"
+            href="#listeners"
+            title="Permalink to BaseSignalHandler.listeners">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Getter for listeners provided by GenericEventTarget </p>
+<pre class="source">
+List&lt;T&gt; get listeners =&gt; _listeners;
+</pre>
+</div>
+</div>
+</div>
+<div class="inherited">
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="getListeners">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_client/BaseSignalHandler.html">T</a>&gt; <strong>getListeners</strong>() <a class="anchor-link" href="#getListeners"
+              title="Permalink to BaseSignalHandler.getListeners">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Returns all listeners provided by GenericEventTarget</p>
+<pre class="source">
+List&lt;T&gt; getListeners() {
+ return _listeners;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="subscribe">
+<button class="show-code">Code</button>
+void <strong>subscribe</strong>(<a href="../rtc_client/BaseSignalHandler.html">T</a> listener) <a class="anchor-link" href="#subscribe"
+              title="Permalink to BaseSignalHandler.subscribe">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Subscribe</p>
+<pre class="source">
+void subscribe(T listener) {
+ if (!_listeners.contains(listener))
+   _listeners.add(listener);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="unsubscribe">
+<button class="show-code">Code</button>
+void <strong>unsubscribe</strong>(<a href="../rtc_client/BaseSignalHandler.html">T</a> listener) <a class="anchor-link" href="#unsubscribe"
+              title="Permalink to BaseSignalHandler.unsubscribe">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Unsubscribe</p>
+<pre class="source">
+void unsubscribe(T listener) {
+ if (_listeners.contains(listener))
+   _listeners.removeAt(_listeners.indexOf(listener));
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:56.361</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

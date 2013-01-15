@@ -1,0 +1,629 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>DataPeerWrapper class / rtc_client Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="rtc_client" data-type="DataPeerWrapper">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../rtc_client.html">rtc_client</a> &rsaquo; <a href="../rtc_client/DataPeerWrapper.html">DataPeerWrapper</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><ul class="icon">
+<li><a href="../rtc_client/BaseSignalHandler.html"><div class="icon-class"></div>BaseSignalHandler</a></li>
+<li><a href="../rtc_client/ChannelSignalHandler.html"><div class="icon-class"></div>ChannelSignalHandler</a></li>
+<li><div class="icon-class"></div><strong>DataPeerWrapper</strong></li>
+<li><a href="../rtc_client/DataSource.html"><div class="icon-class"></div>DataSource</a></li>
+<li><a href="../rtc_client/DataSourceConnectionEventListener.html"><div class="icon-class"></div>DataSourceConnectionEventListener</a></li>
+<li><a href="../rtc_client/DataSourceEventListener.html"><div class="icon-class"></div>DataSourceEventListener</a></li>
+<li><a href="../rtc_client/PeerDataEventListener.html"><div class="icon-class"></div>PeerDataEventListener</a></li>
+<li><a href="../rtc_client/PeerEventListener.html"><div class="icon-class"></div>PeerEventListener</a></li>
+<li><a href="../rtc_client/PeerManager.html"><div class="icon-class"></div>PeerManager</a></li>
+<li><a href="../rtc_client/PeerMediaEventListener.html"><div class="icon-class"></div>PeerMediaEventListener</a></li>
+<li><a href="../rtc_client/PeerMediaEventListenerType.html"><div class="icon-interface"></div>PeerMediaEventListenerType</a></li>
+<li><a href="../rtc_client/PeerPacketEventListener.html"><div class="icon-class"></div>PeerPacketEventListener</a></li>
+<li><a href="../rtc_client/PeerWrapper.html"><div class="icon-class"></div>PeerWrapper</a></li>
+<li><a href="../rtc_client/SignalHandler.html"><div class="icon-class"></div>SignalHandler</a></li>
+<li><a href="../rtc_client/SignalingConnectionEventListener.html"><div class="icon-class"></div>SignalingConnectionEventListener</a></li>
+<li><a href="../rtc_client/SignalingEventListener.html"><div class="icon-class"></div>SignalingEventListener</a></li>
+<li><a href="../rtc_client/SimpleSignalHandler.html"><div class="icon-class"></div>SimpleSignalHandler</a></li>
+<li><a href="../rtc_client/WebSocketDataSource.html"><div class="icon-class"></div>WebSocketDataSource</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<div class="content">
+        <h2><strong>DataPeerWrapper</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>DataChannel enabled peer connection</p>
+<pre class="source">
+class DataPeerWrapper extends PeerWrapper {
+ /* DataChannel */
+ RtcDataChannel _dataChannel;
+ 
+ /* Logger */
+ Logger _log = new Logger();
+ 
+ /* Current channel state */
+ String _channelState = null;
+ 
+ /**
+  * Constructor
+  */
+ DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p){
+   _peer.on.iceCandidate.add(_onIceCandidate);
+   _peer.on.open.add(_onOpen);
+   _peer.on['datachannel'].add(_onNewDataChannelOpen);
+ }
+ 
+ void setAsHost(bool value) {
+   super.setAsHost(value);
+   
+   _log.Debug("(datapeerwrapper.dart) Initializing datachannel now");
+   initChannel();
+ }
+ 
+ void initialize() {
+   //super.initialize();
+   if (_isHost) {
+     log.Debug("Is Host");
+     initChannel();
+     _sendOffer();
+   }
+   //super.initialize();
+   
+   
+ }
+ /*
+  * When receiving null ice candidate, assume connection established
+  * create datachannel
+  */
+ void _onIceCandidate(RtcIceCandidateEvent c) {
+   if (c.candidate == null) {
+     // Assume done?
+   }
+ }
+ 
+ void _onOpen(Event e) {
+  
+ }
+ 
+ void initChannel() {
+   window.setTimeout(() {
+     _dataChannel = _peer.createDataChannel("somelabelhere", { 'reliable' : false });
+     _log.Debug("(datapeerwrapper.dart) DataChannel created");
+     _dataChannel.on.close.add(onDataChannelClose);
+     _dataChannel.on.open.add(onDataChannelOpen);
+     _dataChannel.on.error.add(onDataChannelError);
+     _dataChannel.on.message.add(onDataChannelMessage);
+   }, 2000);
+   
+   
+   
+ }
+ 
+ void _onNewDataChannelOpen(RtcDataChannelEvent e) {
+   _dataChannel = e.channel;
+  
+   _log.Debug("(datapeerwrapper.dart) DataChannel received");
+   _log.Debug("(datapeerwrapper.dart) Channel label : ${_dataChannel.label}");
+   _log.Debug("(datapeerwrapper.dart) Channel state : ${_dataChannel.readyState}");
+   _log.Debug("(datapeerwrapper.dart) Channel reliable : ${_dataChannel.reliable}");
+   _dataChannel.on.close.add(onDataChannelClose);
+   _dataChannel.on.open.add(onDataChannelOpen);
+   _dataChannel.on.error.add(onDataChannelError);
+   _dataChannel.on.message.add(onDataChannelMessage);
+   
+   window.setTimeout(() {
+     _log.Debug("(datapeerwrapper.dart) DataChannel received");
+     _log.Debug("(datapeerwrapper.dart) Channel label : ${_dataChannel.label}");
+     _log.Debug("(datapeerwrapper.dart) Channel state : ${_dataChannel.readyState}");
+     _log.Debug("(datapeerwrapper.dart) Channel reliable : ${_dataChannel.reliable}");
+   }, 1000);
+ }
+ 
+ void onDataChannelOpen(Event e) {
+   
+   _log.Debug("(datapeerwrapper.dart) DataChannelOpen $e");
+   _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+   
+   _dataChannel.send("I HAS OPENED");
+ }
+ 
+ void onDataChannelClose(Event e) {
+   _log.Debug("(datapeerwrapper.dart) DataChannelClose $e");
+   _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+ }
+
+ void onDataChannelMessage(Event e) {
+   
+   _log.Debug("(datapeerwrapper.dart) DataChannelMessage $e");
+   _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+   
+ }
+
+ void onDataChannelError(Event e) {
+   _log.Debug("(datapeerwrapper.dart) DataChannelError $e");
+   _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+ }
+
+ void _signalStateChanged() {
+   if (_dataChannel.readyState != _channelState) {
+     
+     listeners.where((l) =&gt; l is PeerDataEventListener).forEach((PeerDataEventListener l) {
+       l.onChannelStateChanged(this, _dataChannel.readyState);
+     });
+     _channelState = _dataChannel.readyState;
+   }
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/GenericEventTarget.html">GenericEventTarget&lt;PeerEventListener&gt;</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../rtc_client/PeerWrapper.html">PeerWrapper</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>DataPeerWrapper</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="DataPeerWrapper">
+<button class="show-code">Code</button>
+new <strong>DataPeerWrapper</strong>(<a href="../rtc_client/PeerManager.html">PeerManager</a> pm, <a href="http://api.dartlang.org/dart_html/RtcPeerConnection.html">RtcPeerConnection</a> p) <a class="anchor-link" href="#DataPeerWrapper"
+              title="Permalink to DataPeerWrapper.DataPeerWrapper">#</a></h4>
+<div class="doc">
+<p>Constructor</p>
+<pre class="source">
+DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p){
+ _peer.on.iceCandidate.add(_onIceCandidate);
+ _peer.on.open.add(_onOpen);
+ _peer.on['datachannel'].add(_onNewDataChannelOpen);
+}
+</pre>
+</div>
+</div>
+</div>
+<div class="inherited">
+<h3>Properties</h3>
+<div class="field inherited"><h4 id="channel">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>channel</strong> <a class="anchor-link"
+            href="#channel"
+            title="Permalink to DataPeerWrapper.channel">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<pre class="source">
+String get channel =&gt; _channelId;
+</pre>
+<pre class="source">
+set channel(String value) =&gt; _channelId = value;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="id">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>id</strong> <a class="anchor-link"
+            href="#id"
+            title="Permalink to DataPeerWrapper.id">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<pre class="source">
+String get id =&gt; _id;
+</pre>
+<pre class="source">
+set id(String value) =&gt; _id = value;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isHost">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isHost</strong> <a class="anchor-link"
+            href="#isHost"
+            title="Permalink to DataPeerWrapper.isHost">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>True if hosting the session </p>
+<pre class="source">
+bool get isHost =&gt; _isHost;
+</pre>
+<pre class="source">
+set isHost(bool value) =&gt; setAsHost(value);
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isOpen">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isOpen</strong> <a class="anchor-link"
+            href="#isOpen"
+            title="Permalink to DataPeerWrapper.isOpen">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>returns true if connection is open </p>
+<pre class="source">
+bool get isOpen =&gt; _isOpen;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="listeners">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_client/DataPeerWrapper.html">T</a>&gt;         <strong>listeners</strong> <a class="anchor-link"
+            href="#listeners"
+            title="Permalink to DataPeerWrapper.listeners">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Getter for listeners provided by GenericEventTarget </p>
+<pre class="source">
+List&lt;T&gt; get listeners =&gt; _listeners;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="log">
+<button class="show-code">Code</button>
+final <a href="../rtc_util/Logger.html">Logger</a>         <strong>log</strong> <a class="anchor-link"
+            href="#log"
+            title="Permalink to DataPeerWrapper.log">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<pre class="source">
+log = new Logger()
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="peer">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_html/RtcPeerConnection.html">RtcPeerConnection</a>         <strong>peer</strong> <a class="anchor-link"
+            href="#peer"
+            title="Permalink to DataPeerWrapper.peer">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>Getter returning RtcPeerConnection object </p>
+<pre class="source">
+RtcPeerConnection get peer =&gt; _peer;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="READYSTATE_CLOSED">
+<button class="show-code">Code</button>
+final         <strong>READYSTATE_CLOSED</strong> <a class="anchor-link"
+            href="#READYSTATE_CLOSED"
+            title="Permalink to DataPeerWrapper.READYSTATE_CLOSED">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<pre class="source">
+READYSTATE_CLOSED = "closed"
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="READYSTATE_OPEN">
+<button class="show-code">Code</button>
+final         <strong>READYSTATE_OPEN</strong> <a class="anchor-link"
+            href="#READYSTATE_OPEN"
+            title="Permalink to DataPeerWrapper.READYSTATE_OPEN">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<pre class="source">
+READYSTATE_OPEN = "open"
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="SDP_ANSWER">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>SDP_ANSWER</strong> <a class="anchor-link"
+            href="#SDP_ANSWER"
+            title="Permalink to DataPeerWrapper.SDP_ANSWER">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<pre class="source">
+SDP_ANSWER = 'answer'
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="SDP_OFFER">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>SDP_OFFER</strong> <a class="anchor-link"
+            href="#SDP_OFFER"
+            title="Permalink to DataPeerWrapper.SDP_OFFER">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<pre class="source">
+SDP_OFFER = 'offer'
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="state">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>state</strong> <a class="anchor-link"
+            href="#state"
+            title="Permalink to DataPeerWrapper.state">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>returns current readystate </p>
+<pre class="source">
+String get state =&gt; _peer.readyState;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="addRemoteIceCandidate">
+<button class="show-code">Code</button>
+void <strong>addRemoteIceCandidate</strong>(<a href="http://api.dartlang.org/dart_html/RtcIceCandidate.html">RtcIceCandidate</a> candidate) <a class="anchor-link" href="#addRemoteIceCandidate"
+              title="Permalink to DataPeerWrapper.addRemoteIceCandidate">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>These you get from datasource
+at the moment, a null RtcIceCandidate means that connection is done(tm) =P</p>
+<pre class="source">
+void addRemoteIceCandidate(RtcIceCandidate candidate) {
+ if (candidate == null)
+   throw new Exception("RtcIceCandidate was null");
+ 
+ if (_peer.readyState != READYSTATE_CLOSED) {
+   log.Debug("(peerwrapper.dart) Receiving remote ICE Candidate ${candidate.candidate}");
+   _peer.addIceCandidate(candidate);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="addStream">
+<button class="show-code">Code</button>
+void <strong>addStream</strong>(<a href="http://api.dartlang.org/dart_html/MediaStream.html">MediaStream</a> ms) <a class="anchor-link" href="#addStream"
+              title="Permalink to DataPeerWrapper.addStream">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>Ads a MediaStream to the peer connection</p>
+<pre class="source">
+void addStream(MediaStream ms) {
+ if (ms == null)
+   throw new Exception("MediaStream was null");
+ log.Debug("(peerwrapper.dart) Adding stream to peer $id");
+ _peer.addStream(ms, _manager._streamConstraints.toMap());
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="close">
+<button class="show-code">Code</button>
+void <strong>close</strong>() <a class="anchor-link" href="#close"
+              title="Permalink to DataPeerWrapper.close">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>Close the peer connection if not closed already</p>
+<pre class="source">
+void close() {
+ if (_peer.readyState != READYSTATE_CLOSED)
+   _peer.close();  
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to DataPeerWrapper.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>Dispose</p>
+<pre class="source">
+void dispose() {
+ if (_peer.readyState != READYSTATE_CLOSED)
+   _peer.close();
+ _peer = null;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="getListeners">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_client/DataPeerWrapper.html">T</a>&gt; <strong>getListeners</strong>() <a class="anchor-link" href="#getListeners"
+              title="Permalink to DataPeerWrapper.getListeners">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Returns all listeners provided by GenericEventTarget</p>
+<pre class="source">
+List&lt;T&gt; getListeners() {
+ return _listeners;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="initChannel">
+<button class="show-code">Code</button>
+void <strong>initChannel</strong>() <a class="anchor-link" href="#initChannel"
+              title="Permalink to DataPeerWrapper.initChannel">#</a></h4>
+<div class="doc">
+<pre class="source">
+void initChannel() {
+ window.setTimeout(() {
+   _dataChannel = _peer.createDataChannel("somelabelhere", { 'reliable' : false });
+   _log.Debug("(datapeerwrapper.dart) DataChannel created");
+   _dataChannel.on.close.add(onDataChannelClose);
+   _dataChannel.on.open.add(onDataChannelOpen);
+   _dataChannel.on.error.add(onDataChannelError);
+   _dataChannel.on.message.add(onDataChannelMessage);
+ }, 2000);
+ 
+ 
+ 
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="initialize">
+<button class="show-code">Code</button>
+void <strong>initialize</strong>() <a class="anchor-link" href="#initialize"
+              title="Permalink to DataPeerWrapper.initialize">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Can be used to initialize connection if not wanting to add mediastream right away</p>
+<div class="docs-inherited-from">docs inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div></div>
+<pre class="source">
+void initialize() {
+ //super.initialize();
+ if (_isHost) {
+   log.Debug("Is Host");
+   initChannel();
+   _sendOffer();
+ }
+ //super.initialize();
+ 
+ 
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onDataChannelClose">
+<button class="show-code">Code</button>
+void <strong>onDataChannelClose</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onDataChannelClose"
+              title="Permalink to DataPeerWrapper.onDataChannelClose">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onDataChannelClose(Event e) {
+ _log.Debug("(datapeerwrapper.dart) DataChannelClose $e");
+ _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onDataChannelError">
+<button class="show-code">Code</button>
+void <strong>onDataChannelError</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onDataChannelError"
+              title="Permalink to DataPeerWrapper.onDataChannelError">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onDataChannelError(Event e) {
+ _log.Debug("(datapeerwrapper.dart) DataChannelError $e");
+ _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onDataChannelMessage">
+<button class="show-code">Code</button>
+void <strong>onDataChannelMessage</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onDataChannelMessage"
+              title="Permalink to DataPeerWrapper.onDataChannelMessage">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onDataChannelMessage(Event e) {
+ 
+ _log.Debug("(datapeerwrapper.dart) DataChannelMessage $e");
+ _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+ 
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onDataChannelOpen">
+<button class="show-code">Code</button>
+void <strong>onDataChannelOpen</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onDataChannelOpen"
+              title="Permalink to DataPeerWrapper.onDataChannelOpen">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onDataChannelOpen(Event e) {
+ 
+ _log.Debug("(datapeerwrapper.dart) DataChannelOpen $e");
+ _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+ 
+ _dataChannel.send("I HAS OPENED");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setAsHost">
+<button class="show-code">Code</button>
+void <strong>setAsHost</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> value) <a class="anchor-link" href="#setAsHost"
+              title="Permalink to DataPeerWrapper.setAsHost">#</a></h4>
+<div class="doc">
+<pre class="source">
+void setAsHost(bool value) {
+ super.setAsHost(value);
+ 
+ _log.Debug("(datapeerwrapper.dart) Initializing datachannel now");
+ initChannel();
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="setRemoteSessionDescription">
+<button class="show-code">Code</button>
+void <strong>setRemoteSessionDescription</strong>(<a href="http://api.dartlang.org/dart_html/RtcSessionDescription.html">RtcSessionDescription</a> sdp) <a class="anchor-link" href="#setRemoteSessionDescription"
+              title="Permalink to DataPeerWrapper.setRemoteSessionDescription">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>Remote description comes over datasource
+if the type is offer, then a answer must be created</p>
+<pre class="source">
+void setRemoteSessionDescription(RtcSessionDescription sdp) {
+   log.Debug("(peerwrapper.dart) Setting remote description ${sdp.type}");
+   _peer.setRemoteDescription(sdp, _onRemoteDescriptionSuccess, _onRTCError);
+   
+   if (sdp.type == SDP_OFFER)
+     _sendAnswer();
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="setSessionDescription">
+<button class="show-code">Code</button>
+void <strong>setSessionDescription</strong>(<a href="http://api.dartlang.org/dart_html/RtcSessionDescription.html">RtcSessionDescription</a> sdp) <a class="anchor-link" href="#setSessionDescription"
+              title="Permalink to DataPeerWrapper.setSessionDescription">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_client/PeerWrapper.html">PeerWrapper</a> </div><div class="doc">
+<p>Sets the local session description
+after offer created or replied with answer</p>
+<pre class="source">
+void setSessionDescription(RtcSessionDescription sdp) {
+ log.Debug("(peerwrapper.dart) Creating local description");
+ _peer.setLocalDescription(sdp, _onLocalDescriptionSuccess, _onRTCError);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="subscribe">
+<button class="show-code">Code</button>
+void <strong>subscribe</strong>(<a href="../rtc_client/DataPeerWrapper.html">T</a> listener) <a class="anchor-link" href="#subscribe"
+              title="Permalink to DataPeerWrapper.subscribe">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Subscribe</p>
+<pre class="source">
+void subscribe(T listener) {
+ if (!_listeners.contains(listener))
+   _listeners.add(listener);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="unsubscribe">
+<button class="show-code">Code</button>
+void <strong>unsubscribe</strong>(<a href="../rtc_client/DataPeerWrapper.html">T</a> listener) <a class="anchor-link" href="#unsubscribe"
+              title="Permalink to DataPeerWrapper.unsubscribe">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/GenericEventTarget.html">GenericEventTarget</a> </div><div class="doc">
+<p>Unsubscribe</p>
+<pre class="source">
+void unsubscribe(T listener) {
+ if (_listeners.contains(listener))
+   _listeners.removeAt(_listeners.indexOf(listener));
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        
+        <div class="footer">
+          <div>This page was generated at 2013-01-15 19:35:56.449</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        
