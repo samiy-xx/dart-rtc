@@ -1,17 +1,11 @@
 part of rtc_server;
 
-/**
- * User class
- */
-class User extends GenericEventTarget<UserEventListener> implements Comparable {
+class BaseUser extends GenericEventTarget<UserEventListener> implements Comparable {
   /* talking to */
-  List<User> _talkingTo;
+  List<BaseUser> _talkingTo;
   
   /* name (id) of the user */
   String _id;
-  
-  /* WebSocketConnection */
-  WebSocketConnection _conn;
   
   /* millisecond timestamp when last activity was registered*/
   int _lastActivity;
@@ -29,13 +23,10 @@ class User extends GenericEventTarget<UserEventListener> implements Comparable {
   bool get isTalking => _talkingTo.length > 0;
   
   /** Users this user it talking with */
-  List<User> get talkers => _talkingTo;
+  List<BaseUser> get talkers => _talkingTo;
   
   /** Getter for user id */
   String get id => _id;
-  
-  /** Getter for the connection */
-  WebSocketConnection get connection => _conn;
   
   /** Setter for user id */
   set id(String value) => _id = value;
@@ -47,24 +38,21 @@ class User extends GenericEventTarget<UserEventListener> implements Comparable {
   set timeSinceLastConnection(int value) => _timeSinceLastConnection = value;
   
   /** Logger =) */
-  Logger log = new Logger();
+  Logger logger = new Logger();
   
   UserContainer _container;
-  /**
-   * Constructor
-   */
-  User(this._container, this._id, this._conn) {
-    _talkingTo = new List<User>();
-    _conn.onClosed = _onClose;
+  
+  BaseUser(this._container, this._id) {
+    _talkingTo = new List<BaseUser>();
     _lastActivity = new Date.now().millisecondsSinceEpoch;
     _timeSinceLastConnection = new Date.now().millisecondsSinceEpoch;
   }
- 
+  
   /*
    * Called when websocket connection closes
    */ 
   void _onClose(int status, String reason) {
-    log.Debug("User connection closed with status $status and reason $reason");
+    logger.Debug("User connection closed with status $status and reason $reason");
     //_container.removeUser(this);
     _talkingTo.forEach((User u) => u.hangup(this));
     
@@ -76,7 +64,7 @@ class User extends GenericEventTarget<UserEventListener> implements Comparable {
   /**
    * Hangup with other users
    */
-  void hangup(User u) {
+  void hangup(BaseUser u) {
     if (_talkingTo.contains(u))
       _talkingTo.removeAt(_talkingTo.indexOf(u));
   }
@@ -84,22 +72,9 @@ class User extends GenericEventTarget<UserEventListener> implements Comparable {
   /**
    * Talk to other user
    */
-  void talkTo(User u) {
+  void talkTo(BaseUser u) {
     if (!_talkingTo.contains(u)) {
       _talkingTo.add(u);
-    }
-  }
-  
-  /**
-   * Kill the user
-   */
-  void terminate() {
-    try {
-      _conn.close(1000, "Leaving");
-    } on Exception catch(e) {
-      log.Error("terminate Exception: $e");
-    } catch (e) {
-      log.Error("terminate Error: $e");
     }
   }
   
@@ -122,7 +97,7 @@ class User extends GenericEventTarget<UserEventListener> implements Comparable {
    * Implements Comparable
    */
   int compareTo(Comparable other) {
-    if (!(other is User))
+    if (!(other is BaseUser))
       throw new ArgumentError("Cannot compare to anything else but User");
     
     int toReturn;
@@ -137,13 +112,46 @@ class User extends GenericEventTarget<UserEventListener> implements Comparable {
     return toReturn;
   }
   
-  operator >(User other) {
+  operator >(BaseUser other) {
     return _timeSinceLastConnection > other.timeSinceLastConnection;
   }
   
-  operator >=(User other) {
+  operator >=(BaseUser other) {
     return _timeSinceLastConnection >= other.timeSinceLastConnection;
   }
+  
+  
+}
+
+/**
+ * User class
+ */
+class User extends BaseUser {
+  /* WebSocketConnection */
+  WebSocketConnection _conn;
+  
+  /** Getter for the connection */
+  WebSocketConnection get connection => _conn;
+  
+  /**
+   * Constructor
+   */
+  User(UserContainer container, String id, this._conn) : super(container, id){
+    _conn.onClosed = _onClose;
+  }
+ 
+  /**
+   * Kill the user
+   */
+  void terminate() {
+    try {
+      _conn.close(1000, "Leaving");
+    } on Exception catch(e) {
+      logger.Error("terminate Exception: $e");
+    } catch (e) {
+      logger.Error("terminate Error: $e");
+    }
+  } 
   
   /**
    * Equality operator ==

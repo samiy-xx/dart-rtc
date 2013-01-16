@@ -30,20 +30,11 @@ class ChannelTests {
       test("Channel, When created, has properties", () {
         expect(c.id, equals(channelId));
         expect(c.channelLimit, equals(channelLimit));
+        expect(c.userCount, equals(0));
       });
       
     });
   }
 }
 
-class TestableServer implements Server {
-  void sendToClient(WebSocketConnection, String p) {
-    
-  }
-  void sendPacket(WebSocketConnection, Packet p) {
-    
-  }
-  void listen([String ip, int port, String path]){
-    
-  }
-}
+
