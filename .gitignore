@@ -1,3 +1,4 @@
 packages/
 .idea
 *.dart.js
+.lock
