@@ -27,6 +27,10 @@ class ChannelTests {
         expect(c, isNotNull);
       });
       
+      test("Channel, When created, has properties", () {
+        expect(c.id, equals(channelId));
+        expect(c.channelLimit, equals(channelLimit));
+      });
       
     });
   }

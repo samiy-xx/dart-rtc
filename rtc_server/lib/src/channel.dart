@@ -13,12 +13,27 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   // TODO: needed?
   bool _hasBeenJoined = false;
   
+  /* users */
   List<User> _users;
   
-  // returns true id users in room is less or equal than limit
+  /**
+   * Returns true if users length is less than limit
+   */
   bool get canJoin => _users.length < _limit;
   
+  /**
+   * Limit of users in channel
+   */
+  int get channelLimit => _limit;
+  
+  /**
+   * Current usercount
+   */
   int get userCount => _users.length;
+  
+  /**
+   * Channel id
+   */
   String get id => _id;
   
   /**
@@ -38,9 +53,9 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     new Logger().Debug("(channel.dart) onClose fired for user ${u.id}");
     leave(u);
   }
+  
   /**
    * Joins the room
-   * @param User joining the room
    */
   void join(User newUser) {
     //newUser.channel = this;
@@ -70,10 +85,11 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     });
   }
   
-  void killAll() {
-     
-  }
-  
+  /**
+   * Remove user from channel
+   * Notify everyone else in channel
+   * Notify listeners
+   */
   void leave(User u) {
     new Logger().Debug("(channel.dart) User ${u.id} leaving channel $id");
     
@@ -92,12 +108,18 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     }
   }
   
+  /**
+   * Send packet to everyone in channel
+   */
   void sendToAll(Packet p) {
     _users.forEach((User u) {
         _container.getServer().sendPacket(u.connection, p);
     });
   }
   
+  /**
+   * Send packet to everyone in channel except the sender
+   */
   void sendToAllExceptSender(User sender, Packet p) {
     _users.forEach((User u) {
       if (sender != u) {
@@ -105,6 +127,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
       }
     });
   }
+  
   /**
    * Equality operator ==
    * Check that id strings match
