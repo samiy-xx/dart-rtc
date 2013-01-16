@@ -270,8 +270,10 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * Handles Bye packet
    */
   void handleBye(ByePacket p) {
+    _log.Debug("(signalhandler.dart) Received BYE from ${p.id}");
     PeerWrapper peer = _peerManager.findWrapper(p.id);
     if (peer != null) {
+      _log.Debug("(signalhandler.dart) Closing peer ${peer.id}");
       peer.close();
     }
   }

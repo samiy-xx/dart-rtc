@@ -53,6 +53,9 @@ class PacketFactory {
         case "bye":
           p = ByePacket.fromMap(m);
           break;
+        case "queue":
+          p = QueuePacket.fromMap(m);
+          break;
         case "usermessage":
           p = UserMessage.fromMap(m);
           break;

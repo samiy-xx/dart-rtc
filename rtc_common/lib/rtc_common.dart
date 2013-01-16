@@ -25,5 +25,5 @@ part 'src/packet/pingpacket.dart';
 part 'src/packet/pongpacket.dart';
 part 'src/packet/random.dart';
 part 'src/packet/disconnected.dart';
-
+part 'src/packet/queue.dart';
 

@@ -154,7 +154,7 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
    */
   void onStateChanged(Event e) {
     PeerWrapper wrapper = getWrapperForPeer(e.target);
-    log.Debug("onStateChanged: ${wrapper.peer.readyState}");
+    log.Debug("(peermanager.dart) onStateChanged: ${wrapper.peer.readyState}");
     
     if (wrapper.peer.readyState == READYSTATE_CLOSED) {
       wrapper.dispose();

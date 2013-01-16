@@ -16,6 +16,7 @@ class PacketType {
   static final String CONNECTED = "connected";
   static final String RANDOM = "random";
   static final String DISCONNECTED = "disconnected";
+  static final String QUEUE = "queue";
 }
 
 class PacketType2 {

@@ -5,23 +5,15 @@ class QueueServer extends WebSocketServer implements ContainerContentsEventListe
   
   QueueServer() : super() {
     registerHandler("helo", handleHelo);
-    //registerHandler("bye", handleBye);
-    //registerHandler("peercreated", handlePeerCreated);
-    //registerHandler("usermessage", handleUserMessage);
+    registerHandler("bye", handleBye);
+    registerHandler("peercreated", handlePeerCreated);
+    registerHandler("usermessage", handleUserMessage);
     
     _queueContainer = new QueueContainer(this);
     _queueContainer.subscribe(this);
   }
   
-  void onEnterQueue(User u, int count, int position) {
-    
-  }
-  void onMoveInQueue(User u, int count, int position) {
-    
-  }
-  void onLeaveQueue(User u) {
-    
-  }
+  
   void onCountChanged(BaseContainer bc) {
     new Logger().Info("Container count changed ${bc.count}");
     displayStatus();
@@ -44,28 +36,62 @@ class QueueServer extends WebSocketServer implements ContainerContentsEventListe
       else
         u = _container.createChannelUser(c);
       
-      sendToClient(c, PacketFactory.get(new ConnectionSuccessPacket.With(u.id)));
+      sendPacket(c, new ConnectionSuccessPacket.With(u.id));
       
       Channel chan;
       chan = _queueContainer.findChannel(hp.channelId);
-      if (chan != null) {
-        if (chan.canJoin) {
-          chan.join(u);
-        } else {
-          c.close(1003, "Channel was full");
-          //_container.removeUser(u);
-          //u = null;
-          return;
-        }
-      } else {
+      if (chan == null)
         chan = _queueContainer.createChannelWithId(hp.channelId);
-        chan.join(u);
-      }
+      chan.join(u); 
     } catch(e, s) {
       new Logger().Error(e);
       new Logger().Info(s);
     }
   }
   
+  void handleBye(ByePacket bp, WebSocketConnection c) {
+    User user = _container.findUserByConn(c);
+    
+    try {
+      if (user != null) {
+        user.terminate();
+      }
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  void handlePeerCreated(PeerCreatedPacket pcp, WebSocketConnection c) {
+    User user = _container.findUserByConn(c);
+    User other = _container.findUserById(pcp.id);
+    
+    if (user != null && other != null)
+      user.talkTo(other);
+  }
+
+  void handleUserMessage(UserMessage um, WebSocketConnection c) {
+    try {
+      if (um.id == null || um.id.isEmpty) {
+        print ("id was null or empty");
+        return;
+      }
+      User user = _container.findUserByConn(c);
+      User other = _container.findUserById(um.id);
+      
+      if (user == null || other == null) {
+        new Logger().Warning("(channelserver.dart) User was not found");
+        return;
+      }
+      
+      um.id = user.id;
+      
+      sendToClient(other.connection, PacketFactory.get(um));
+      
+    } on NoSuchMethodError catch(e) {
+      new Logger().Error("Error: $e");
+    } catch(e) {
+      new Logger().Error("Error: $e");
+    }
+  }
 }
 

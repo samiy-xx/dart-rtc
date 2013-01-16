@@ -10,8 +10,8 @@ abstract class ChannelConnectionEventListener extends ChannelEventListener {
 }
 
 abstract class ChannelQueueEventListener extends ChannelEventListener {
-  void onEnterQueue(User u, int count, int position);
-  void onMoveInQueue(User u, int count, int position);
-  void onLeaveQueue(User u);
+  void onEnterQueue(Channel c, User u, int count, int position);
+  void onMoveInQueue(Channel c, User u, int count, int position);
+  void onLeaveQueue(Channel c, User u);
 }
 

@@ -209,8 +209,11 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * Close the peer connection if not closed already
    */
   void close() {
-    if (_peer.readyState != READYSTATE_CLOSED)
-      _peer.close();  
+    log.Error("(peerwrapper.dart) Closing peer");
+    if (_peer.readyState != READYSTATE_CLOSED) {
+      _peer.close();
+      log.Error("(peerwrapper.dart) Peer close called");
+    }
   }
   
   /**

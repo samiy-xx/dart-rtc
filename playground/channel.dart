@@ -98,6 +98,6 @@ class WebChannelHandler implements PeerMediaEventListener {
   }
   
   void handleJoin(JoinPacket jp) {
-    new Logger().Debug("USer joinpacket");
+    new Logger().Debug("User joinpacket");
   }
 }

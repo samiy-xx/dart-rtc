@@ -15,7 +15,7 @@ class ByePacket implements Packet {
   Map toJson() {
     return {
       'packetType': packetType,
-      'uid': id
+      'id': id
     };
   }
   

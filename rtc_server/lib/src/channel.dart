@@ -81,6 +81,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     if (_users.contains(u))
       _users.removeAt(_users.indexOf(u));
     
+    sendToAll(new ByePacket.With(u.id));
     listeners.where((l) => l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
       l.onLeaveChannel(this, u);
     });

@@ -79,18 +79,5 @@ class ChannelContainer extends BaseChannelContainer {
     
     return r;
   }
-  
-  /**
-   * Create queue enabled channel with specified id
-   */
-  Channel createQueueChannel(String id) {
-    if (channelExists(id))
-      return findChannel(id);
-    
-    Channel r = new QueueChannel(this, id);
-    add(r);
-    //_list.add(r);
-    
-    return r;
-  }
+
 }
