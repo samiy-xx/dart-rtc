@@ -6,6 +6,6 @@ import "../../rtc_common/lib/rtc_common.dart";
 part "channeltests.dart";
 
 void main() {
-  configure(new VMConfiguration());
+  useVmConfiguration();
   new ChannelTests().run();
 }
