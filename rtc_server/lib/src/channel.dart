@@ -108,6 +108,13 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     }
   }
   
+  void killAll() {
+    for (int i = 0; i < _users.length; i++) {
+      User u = _users[i];
+      leave(u);
+    }
+  }
+  
   /**
    * Send packet to everyone in channel
    */
