@@ -173,7 +173,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   void _onIceCandidate(RtcIceCandidateEvent c) {
     
     if (c.candidate != null) {
-      log.Debug("(peerwrapper.dart) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
+      log.Debug("(peerwrapper.dart) (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
       IcePacket ice = new IcePacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id);
       _manager._sendPacket(PacketFactory.get(ice));
     } else {
@@ -185,7 +185,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * Not sure
    */
   void _onIceChange(Event c) {
-    log.Debug("(peerwrapper.dart) ICE Change ${c}");
+    log.Debug("(peerwrapper.dart) ICE Change ${c} (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState})");
   }
   
   

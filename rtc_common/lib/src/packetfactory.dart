@@ -66,7 +66,7 @@ class PacketFactory {
           p = RandomUserPacket.fromMap(m);
           break;
         default:
-          print("Unkown packet");
+          print("(packetfactory.dart) Unkown packet");
           p = null;
           break;
       }

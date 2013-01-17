@@ -38,6 +38,7 @@ class WebChannelHandler implements PeerMediaEventListener {
   WebSignalHandler _sh;
   PeerManager _pm;
   WebVideoManager _vm;
+  bool _inQueue = false;
   
   WebChannelHandler(WebVideoManager vm) {
     _vm = vm;
@@ -52,6 +53,7 @@ class WebChannelHandler implements PeerMediaEventListener {
     _sh.registerHandler("bye", handleBye);
     _sh.registerHandler("id", handleId);
     _sh.registerHandler("join", handleJoin);
+    _sh.registerHandler("queue", handleQueue);
     
     _pm.subscribe(this);
   }
@@ -73,7 +75,26 @@ class WebChannelHandler implements PeerMediaEventListener {
   void handleDisconnected(Disconnected d) {
     new Logger().Debug("User disconnected");
     _notify.display("User disconnected...");
+    _vm.removeRemoteStream(d.id);
+  }
+  
+  void handleQueue(QueuePacket qp) {
+    if (!_inQueue) {
+      _inQueue = true;
+      new Logger().Debug("Entered Queue. Position ${qp.position}");
+      _notify.display("Entered Queue. Position ${qp.position}");
+    } else {
+      if (int.parse(qp.position) > 0) {
+        new Logger().Debug("Queue Position ${qp.position}");
+        _notify.display("Queue Position ${qp.position}");
+      } else {
+        new Logger().Debug("Left queue");
+        _notify.display("Left queue");
+      }
+    }
     
+    new Logger().Debug("Queue position ${qp.position}");
+    _notify.display("Connected to signaling server succesfully!");
   }
   
   void handleConnected(ConnectionSuccessPacket csp) {
@@ -84,7 +105,7 @@ class WebChannelHandler implements PeerMediaEventListener {
   void handleBye(ByePacket bp) {
     new Logger().Debug("User left");
     _notify.display("User disconnected...");
-    
+    _vm.removeRemoteStream(bp.id);
   }
   
   void handleId(IdPacket ip) {

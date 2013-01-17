@@ -64,6 +64,8 @@ class QueueChannel extends Channel implements UserConnectionEventListener {
         });
       }
     }
+    
+    return u;
   }
 }
 

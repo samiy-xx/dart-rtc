@@ -13,7 +13,8 @@ class QueuePacket implements Packet {
     return {
       'id': id,
       'channelId': channelId,
-      'position': position
+      'position': position,
+      'packetType': packetType
     };
   }
   

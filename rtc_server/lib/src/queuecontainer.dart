@@ -7,13 +7,15 @@ class QueueContainer extends ChannelContainer implements ChannelQueueEventListen
   }
   
   void onEnterQueue(Channel c, User u, int count, int position) {
+    String positionToDisplay = (position + 1).toString();
     new Logger().Debug("User ${u.id} enters queue with $count users at position $position");
-    _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, position.toString()));
+    _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, positionToDisplay));
   }
   
   void onMoveInQueue(Channel c, User u, int count, int position) {
+    String positionToDisplay = (position + 1).toString();
     new Logger().Debug("User ${u.id} moves in queue with $count users at position $position");
-    _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, position.toString()));
+    _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, positionToDisplay));
   }
   
   void onLeaveQueue(Channel c, User u) {

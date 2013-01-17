@@ -2,12 +2,24 @@
 
 <html>
   <head>
-    <title>queue</title>
+    <meta charset="utf-8">
+    <title>channel</title>
+    <link rel="stylesheet" href="css/channel.css">
   </head>
- 
-  <body>   
-    <p id="text"></p>
+  <body>
+    
+    <div id="container">
+      <div id="videocontainer">
+        <div id="main"></div>
+        <div id="aux"></div>
+      </div>
+      <div id="chat">
+        <div id="chatText"></div>
+        <input type="text" id="chatTextToEnter" /><button id="chatSubmit">Submit</button>
+      </div>
+    </div>
+
     <script type="application/dart" src="queue.dart"></script>
-    <script src="https://dart.googlecode.com/svn/branches/bleeding_edge/dart/pkg/browser/lib/dart.js"></script>
+    <script src="packages/browser/dart.js"></script>
   </body>
 </html>
