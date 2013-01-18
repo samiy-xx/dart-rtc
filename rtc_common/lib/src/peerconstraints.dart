@@ -1,4 +1,4 @@
-part of rtc_util;
+part of rtc_common;
 
 class PeerConstraints implements Constraints{
   bool _dataChannelEnabled;

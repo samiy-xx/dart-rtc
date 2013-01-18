@@ -4,7 +4,7 @@ import 'dart:math';
 import 'dart:isolate';
 
 import '../lib/rtc_server.dart';
-import '../../rtc_util/lib/rtc_util.dart';
+import '../../rtc_common/lib/rtc_common.dart';
 import 'package:args/args.dart';
 
 /*

@@ -1,4 +1,4 @@
-part of rtc_util;
+part of rtc_common;
 
 /**
  * Abstract base class for defining constraints

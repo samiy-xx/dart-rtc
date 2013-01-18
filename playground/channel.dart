@@ -1,6 +1,5 @@
 import 'dart:html';
 
-import '../rtc_util/lib/rtc_util.dart';
 import 'single/demo_client.dart';
 import '../rtc_client/lib/rtc_client.dart';
 import '../rtc_common/lib/rtc_common.dart';

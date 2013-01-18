@@ -1,4 +1,4 @@
 packages/
-.idea
+*.idea
 *.dart.js
-.lock
+*.lock

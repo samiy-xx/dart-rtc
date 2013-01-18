@@ -1,4 +1,4 @@
-part of rtc_util;
+part of rtc_common;
 
 /**
  * Constraints for Peer stream

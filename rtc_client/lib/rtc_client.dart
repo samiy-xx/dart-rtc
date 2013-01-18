@@ -3,7 +3,6 @@ library rtc_client;
 import 'dart:html';
 import 'dart:json';
 
-import '../../rtc_util/lib/rtc_util.dart';
 import '../../rtc_common/lib/rtc_common.dart';
 
 part 'src/peer/peermanager.dart';

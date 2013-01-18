@@ -3,7 +3,7 @@
  * Copyright (c) 2013 Sami Ylönen sami.ylonen@gmail.com
  */
 
-part of rtc_util;
+part of rtc_common;
 
 /**
  * Utility class
