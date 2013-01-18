@@ -24,9 +24,10 @@
       
         <div class="nav">
         
-<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
 <li><a href="../rtc_server/BaseChannelContainer.html"><div class="icon-class"></div>BaseChannelContainer</a></li>
 <li><a href="../rtc_server/BaseContainer.html"><div class="icon-class"></div>BaseContainer&lt;T&gt;</a></li>
+<li><a href="../rtc_server/BaseUser.html"><div class="icon-class"></div>BaseUser</a></li>
 <li><a href="../rtc_server/BaseUserContainer.html"><div class="icon-class"></div>BaseUserContainer</a></li>
 <li><a href="../rtc_server/Channel.html"><div class="icon-class"></div>Channel</a></li>
 <li><a href="../rtc_server/ChannelConnectionEventListener.html"><div class="icon-class"></div>ChannelConnectionEventListener</a></li>
@@ -49,7 +50,7 @@
 <li><a href="../rtc_server/WheelServer.html"><div class="icon-class"></div>WheelServer</a></li>
 <li><a href="../rtc_server/WheelUser.html"><div class="icon-class"></div>WheelUser</a></li>
 </ul>
-<h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+</div>
 <div class="content">
         <h2><strong>QueueContainer</strong>
           class
@@ -58,19 +59,50 @@
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
 <pre class="source">
-class QueueContainer extends ChannelContainer {
+class QueueContainer extends ChannelContainer implements ChannelQueueEventListener {
  
  QueueContainer(Server s) : super(s) {
    _channelLimit = 2;
  }
  
+ void onEnterQueue(Channel c, User u, int count, int position) {
+   String positionToDisplay = (position + 1).toString();
+   new Logger().Debug("User ${u.id} enters queue with $count users at position $position");
+   _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, positionToDisplay));
+ }
  
+ void onMoveInQueue(Channel c, User u, int count, int position) {
+   String positionToDisplay = (position + 1).toString();
+   new Logger().Debug("User ${u.id} moves in queue with $count users at position $position");
+   _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, positionToDisplay));
+ }
+ 
+ void onLeaveQueue(Channel c, User u) {
+   new Logger().Debug("User ${u.id} leaves queue");
+   _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, "0"));
+ }
+ 
+ /**
+  * Create channel with specified id
+  */
+ Channel createChannelWithId(String id) {
+   if (channelExists(id))
+     return findChannel(id);
+   
+   Channel c = new QueueChannel(this, id);
+   c.subscribe(this);
+   add(c);
+   return c;
+ }
 }
 </pre>
 </div>
 <h3>Extends</h3>
 <p>
 <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/GenericEventTarget.html">GenericEventTarget&lt;ContainerEventListener&gt;</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/BaseContainer.html">BaseContainer&lt;Channel&gt;</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/BaseChannelContainer.html">BaseChannelContainer</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/ChannelContainer.html">ChannelContainer</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>QueueContainer</strong></span></p>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/ChannelQueueEventListener.html">ChannelQueueEventListener</a></span></p>
 <div>
 <h3>Constructors</h3>
 <div class="method"><h4 id="QueueContainer">
@@ -129,7 +161,7 @@ List&lt;T&gt; get listeners =&gt; _listeners;
 </div>
 <div class="field inherited"><h4 id="logger">
 <button class="show-code">Code</button>
-<a href="../rtc_util/Logger.html">Logger</a>         <strong>logger</strong> <a class="anchor-link"
+<a href="../rtc_common/Logger.html">Logger</a>         <strong>logger</strong> <a class="anchor-link"
             href="#logger"
             title="Permalink to QueueContainer.logger">#</a>
         </h4>
@@ -153,7 +185,7 @@ Server get server =&gt; getServer();
 </div>
 </div>
 </div>
-<div class="inherited">
+<div>
 <h3>Methods</h3>
 <div class="method inherited"><h4 id="add">
 <button class="show-code">Code</button>
@@ -199,42 +231,21 @@ Channel createChannel() {
 </pre>
 </div>
 </div>
-<div class="method inherited"><h4 id="createChannelWithId">
+<div class="method"><h4 id="createChannelWithId">
 <button class="show-code">Code</button>
 <a href="../rtc_server/Channel.html">Channel</a> <strong>createChannelWithId</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> id) <a class="anchor-link" href="#createChannelWithId"
               title="Permalink to QueueContainer.createChannelWithId">#</a></h4>
-<div class="inherited-from">inherited from <a href="../rtc_server/ChannelContainer.html">ChannelContainer</a> </div><div class="doc">
+<div class="doc">
 <p>Create channel with specified id</p>
 <pre class="source">
 Channel createChannelWithId(String id) {
  if (channelExists(id))
    return findChannel(id);
  
- Channel r = new Channel(this, id, _channelLimit);
- add(r);
- //_list.add(r);
- 
- return r;
-}
-</pre>
-</div>
-</div>
-<div class="method inherited"><h4 id="createQueueChannel">
-<button class="show-code">Code</button>
-<a href="../rtc_server/Channel.html">Channel</a> <strong>createQueueChannel</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> id) <a class="anchor-link" href="#createQueueChannel"
-              title="Permalink to QueueContainer.createQueueChannel">#</a></h4>
-<div class="inherited-from">inherited from <a href="../rtc_server/ChannelContainer.html">ChannelContainer</a> </div><div class="doc">
-<p>Create queue enabled channel with specified id</p>
-<pre class="source">
-Channel createQueueChannel(String id) {
- if (channelExists(id))
-   return findChannel(id);
- 
- Channel r = new QueueChannel(this, id);
- add(r);
- //_list.add(r);
- 
- return r;
+ Channel c = new QueueChannel(this, id);
+ c.subscribe(this);
+ add(c);
+ return c;
 }
 </pre>
 </div>
@@ -280,6 +291,47 @@ List&lt;T&gt; getListeners() {
 <pre class="source">
 Server getServer() {
  return _server;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onEnterQueue">
+<button class="show-code">Code</button>
+void <strong>onEnterQueue</strong>(<a href="../rtc_server/Channel.html">Channel</a> c, <a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> count, <a href="http://api.dartlang.org/dart_core/int.html">int</a> position) <a class="anchor-link" href="#onEnterQueue"
+              title="Permalink to QueueContainer.onEnterQueue">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onEnterQueue(Channel c, User u, int count, int position) {
+ String positionToDisplay = (position + 1).toString();
+ new Logger().Debug("User ${u.id} enters queue with $count users at position $position");
+ _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, positionToDisplay));
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onLeaveQueue">
+<button class="show-code">Code</button>
+void <strong>onLeaveQueue</strong>(<a href="../rtc_server/Channel.html">Channel</a> c, <a href="../rtc_server/User.html">User</a> u) <a class="anchor-link" href="#onLeaveQueue"
+              title="Permalink to QueueContainer.onLeaveQueue">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onLeaveQueue(Channel c, User u) {
+ new Logger().Debug("User ${u.id} leaves queue");
+ _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, "0"));
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onMoveInQueue">
+<button class="show-code">Code</button>
+void <strong>onMoveInQueue</strong>(<a href="../rtc_server/Channel.html">Channel</a> c, <a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> count, <a href="http://api.dartlang.org/dart_core/int.html">int</a> position) <a class="anchor-link" href="#onMoveInQueue"
+              title="Permalink to QueueContainer.onMoveInQueue">#</a></h4>
+<div class="doc">
+<pre class="source">
+void onMoveInQueue(Channel c, User u, int count, int position) {
+ String positionToDisplay = (position + 1).toString();
+ new Logger().Debug("User ${u.id} moves in queue with $count users at position $position");
+ _server.sendPacket(u.connection, new QueuePacket.With(u.id, c.id, positionToDisplay));
 }
 </pre>
 </div>
@@ -369,7 +421,7 @@ List&lt;User&gt; usersInChannel(Channel c) {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-15 19:35:56.941</div>
+          <div>This page was generated at 2013-01-18 18:51:14.968</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

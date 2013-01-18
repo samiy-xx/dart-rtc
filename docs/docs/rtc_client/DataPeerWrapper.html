@@ -24,7 +24,7 @@
       
         <div class="nav">
         
-<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><ul class="icon">
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><ul class="icon">
 <li><a href="../rtc_client/BaseSignalHandler.html"><div class="icon-class"></div>BaseSignalHandler</a></li>
 <li><a href="../rtc_client/ChannelSignalHandler.html"><div class="icon-class"></div>ChannelSignalHandler</a></li>
 <li><div class="icon-class"></div><strong>DataPeerWrapper</strong></li>
@@ -44,7 +44,7 @@
 <li><a href="../rtc_client/SimpleSignalHandler.html"><div class="icon-class"></div>SimpleSignalHandler</a></li>
 <li><a href="../rtc_client/WebSocketDataSource.html"><div class="icon-class"></div>WebSocketDataSource</a></li>
 </ul>
-<h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+<h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2></div>
 <div class="content">
         <h2><strong>DataPeerWrapper</strong>
           class
@@ -66,11 +66,11 @@ class DataPeerWrapper extends PeerWrapper {
  
  /**
   * Constructor
+  * TODO: Ice gathering doesnt start for some reason
   */
- DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p){
-   _peer.on.iceCandidate.add(_onIceCandidate);
-   _peer.on.open.add(_onOpen);
-   _peer.on['datachannel'].add(_onNewDataChannelOpen);
+ DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p) {
+   _peer.onOpen.listen(_onOpen);
+   _peer.onDataChannel.listen(_onNewDataChannelOpen);
  }
  
  void setAsHost(bool value) {
@@ -91,32 +91,22 @@ class DataPeerWrapper extends PeerWrapper {
    
    
  }
- /*
-  * When receiving null ice candidate, assume connection established
-  * create datachannel
-  */
- void _onIceCandidate(RtcIceCandidateEvent c) {
-   if (c.candidate == null) {
-     // Assume done?
-   }
- }
- 
+   
  void _onOpen(Event e) {
   
  }
  
  void initChannel() {
    window.setTimeout(() {
-     _dataChannel = _peer.createDataChannel("somelabelhere", { 'reliable' : false });
+     _dataChannel = _peer.createDataChannel("somelabelhere", {'reliable': false});
      _log.Debug("(datapeerwrapper.dart) DataChannel created");
-     _dataChannel.on.close.add(onDataChannelClose);
-     _dataChannel.on.open.add(onDataChannelOpen);
-     _dataChannel.on.error.add(onDataChannelError);
-     _dataChannel.on.message.add(onDataChannelMessage);
+     _dataChannel.onClose.listen(onDataChannelClose);
+     _dataChannel.onOpen.listen(onDataChannelOpen);
+     _dataChannel.onError.listen(onDataChannelError);
+     _dataChannel.onMessage.listen(onDataChannelMessage);
+     _dataChannel.binaryType = "blob";
+     
    }, 2000);
-   
-   
-   
  }
  
  void _onNewDataChannelOpen(RtcDataChannelEvent e) {
@@ -126,10 +116,10 @@ class DataPeerWrapper extends PeerWrapper {
    _log.Debug("(datapeerwrapper.dart) Channel label : ${_dataChannel.label}");
    _log.Debug("(datapeerwrapper.dart) Channel state : ${_dataChannel.readyState}");
    _log.Debug("(datapeerwrapper.dart) Channel reliable : ${_dataChannel.reliable}");
-   _dataChannel.on.close.add(onDataChannelClose);
-   _dataChannel.on.open.add(onDataChannelOpen);
-   _dataChannel.on.error.add(onDataChannelError);
-   _dataChannel.on.message.add(onDataChannelMessage);
+   _dataChannel.onClose.listen(onDataChannelClose);
+   _dataChannel.onOpen.listen(onDataChannelOpen);
+   _dataChannel.onError.listen(onDataChannelError);
+   _dataChannel.onMessage.listen(onDataChannelMessage);
    
    window.setTimeout(() {
      _log.Debug("(datapeerwrapper.dart) DataChannel received");
@@ -139,7 +129,7 @@ class DataPeerWrapper extends PeerWrapper {
    }, 1000);
  }
  
- void onDataChannelOpen(Event e) {
+ void onDataChannelOpen(RtcDataChannelEvent e) {
    
    _log.Debug("(datapeerwrapper.dart) DataChannelOpen $e");
    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
@@ -147,19 +137,19 @@ class DataPeerWrapper extends PeerWrapper {
    _dataChannel.send("I HAS OPENED");
  }
  
- void onDataChannelClose(Event e) {
+ void onDataChannelClose(RtcDataChannelEvent e) {
    _log.Debug("(datapeerwrapper.dart) DataChannelClose $e");
    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
  }
 
- void onDataChannelMessage(Event e) {
+ void onDataChannelMessage(MessageEvent e) {
    
    _log.Debug("(datapeerwrapper.dart) DataChannelMessage $e");
    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
    
  }
 
- void onDataChannelError(Event e) {
+ void onDataChannelError(RtcDataChannelEvent e) {
    _log.Debug("(datapeerwrapper.dart) DataChannelError $e");
    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
  }
@@ -186,12 +176,12 @@ class DataPeerWrapper extends PeerWrapper {
 new <strong>DataPeerWrapper</strong>(<a href="../rtc_client/PeerManager.html">PeerManager</a> pm, <a href="http://api.dartlang.org/dart_html/RtcPeerConnection.html">RtcPeerConnection</a> p) <a class="anchor-link" href="#DataPeerWrapper"
               title="Permalink to DataPeerWrapper.DataPeerWrapper">#</a></h4>
 <div class="doc">
-<p>Constructor</p>
+<p>Constructor
+TODO: Ice gathering doesnt start for some reason</p>
 <pre class="source">
-DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p){
- _peer.on.iceCandidate.add(_onIceCandidate);
- _peer.on.open.add(_onOpen);
- _peer.on['datachannel'].add(_onNewDataChannelOpen);
+DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p) {
+ _peer.onOpen.listen(_onOpen);
+ _peer.onDataChannel.listen(_onNewDataChannelOpen);
 }
 </pre>
 </div>
@@ -273,7 +263,7 @@ List&lt;T&gt; get listeners =&gt; _listeners;
 </div>
 <div class="field inherited"><h4 id="log">
 <button class="show-code">Code</button>
-final <a href="../rtc_util/Logger.html">Logger</a>         <strong>log</strong> <a class="anchor-link"
+final <a href="../rtc_common/Logger.html">Logger</a>         <strong>log</strong> <a class="anchor-link"
             href="#log"
             title="Permalink to DataPeerWrapper.log">#</a>
         </h4>
@@ -404,8 +394,11 @@ void <strong>close</strong>() <a class="anchor-link" href="#close"
 <p>Close the peer connection if not closed already</p>
 <pre class="source">
 void close() {
- if (_peer.readyState != READYSTATE_CLOSED)
-   _peer.close();  
+ log.Error("(peerwrapper.dart) Closing peer");
+ if (_peer.readyState != READYSTATE_CLOSED) {
+   _peer.close();
+   log.Error("(peerwrapper.dart) Peer close called");
+ }
 }
 </pre>
 </div>
@@ -446,16 +439,15 @@ void <strong>initChannel</strong>() <a class="anchor-link" href="#initChannel"
 <pre class="source">
 void initChannel() {
  window.setTimeout(() {
-   _dataChannel = _peer.createDataChannel("somelabelhere", { 'reliable' : false });
+   _dataChannel = _peer.createDataChannel("somelabelhere", {'reliable': false});
    _log.Debug("(datapeerwrapper.dart) DataChannel created");
-   _dataChannel.on.close.add(onDataChannelClose);
-   _dataChannel.on.open.add(onDataChannelOpen);
-   _dataChannel.on.error.add(onDataChannelError);
-   _dataChannel.on.message.add(onDataChannelMessage);
+   _dataChannel.onClose.listen(onDataChannelClose);
+   _dataChannel.onOpen.listen(onDataChannelOpen);
+   _dataChannel.onError.listen(onDataChannelError);
+   _dataChannel.onMessage.listen(onDataChannelMessage);
+   _dataChannel.binaryType = "blob";
+   
  }, 2000);
- 
- 
- 
 }
 </pre>
 </div>
@@ -485,11 +477,11 @@ void initialize() {
 </div>
 <div class="method"><h4 id="onDataChannelClose">
 <button class="show-code">Code</button>
-void <strong>onDataChannelClose</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onDataChannelClose"
+void <strong>onDataChannelClose</strong>(<a href="http://api.dartlang.org/dart_html/RtcDataChannelEvent.html">RtcDataChannelEvent</a> e) <a class="anchor-link" href="#onDataChannelClose"
               title="Permalink to DataPeerWrapper.onDataChannelClose">#</a></h4>
 <div class="doc">
 <pre class="source">
-void onDataChannelClose(Event e) {
+void onDataChannelClose(RtcDataChannelEvent e) {
  _log.Debug("(datapeerwrapper.dart) DataChannelClose $e");
  _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
 }
@@ -498,11 +490,11 @@ void onDataChannelClose(Event e) {
 </div>
 <div class="method"><h4 id="onDataChannelError">
 <button class="show-code">Code</button>
-void <strong>onDataChannelError</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onDataChannelError"
+void <strong>onDataChannelError</strong>(<a href="http://api.dartlang.org/dart_html/RtcDataChannelEvent.html">RtcDataChannelEvent</a> e) <a class="anchor-link" href="#onDataChannelError"
               title="Permalink to DataPeerWrapper.onDataChannelError">#</a></h4>
 <div class="doc">
 <pre class="source">
-void onDataChannelError(Event e) {
+void onDataChannelError(RtcDataChannelEvent e) {
  _log.Debug("(datapeerwrapper.dart) DataChannelError $e");
  _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
 }
@@ -511,11 +503,11 @@ void onDataChannelError(Event e) {
 </div>
 <div class="method"><h4 id="onDataChannelMessage">
 <button class="show-code">Code</button>
-void <strong>onDataChannelMessage</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onDataChannelMessage"
+void <strong>onDataChannelMessage</strong>(<a href="http://api.dartlang.org/dart_html/MessageEvent.html">MessageEvent</a> e) <a class="anchor-link" href="#onDataChannelMessage"
               title="Permalink to DataPeerWrapper.onDataChannelMessage">#</a></h4>
 <div class="doc">
 <pre class="source">
-void onDataChannelMessage(Event e) {
+void onDataChannelMessage(MessageEvent e) {
  
  _log.Debug("(datapeerwrapper.dart) DataChannelMessage $e");
  _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
@@ -526,11 +518,11 @@ void onDataChannelMessage(Event e) {
 </div>
 <div class="method"><h4 id="onDataChannelOpen">
 <button class="show-code">Code</button>
-void <strong>onDataChannelOpen</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onDataChannelOpen"
+void <strong>onDataChannelOpen</strong>(<a href="http://api.dartlang.org/dart_html/RtcDataChannelEvent.html">RtcDataChannelEvent</a> e) <a class="anchor-link" href="#onDataChannelOpen"
               title="Permalink to DataPeerWrapper.onDataChannelOpen">#</a></h4>
 <div class="doc">
 <pre class="source">
-void onDataChannelOpen(Event e) {
+void onDataChannelOpen(RtcDataChannelEvent e) {
  
  _log.Debug("(datapeerwrapper.dart) DataChannelOpen $e");
  _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
@@ -622,7 +614,7 @@ void unsubscribe(T listener) {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-15 19:35:56.449</div>
+          <div>This page was generated at 2013-01-18 18:51:14.458</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

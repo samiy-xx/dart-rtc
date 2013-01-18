@@ -2,6 +2,274 @@
 [
   {
     "kind": "library",
+    "name": "metadata",
+    "children": [
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "Metadata that specifies that that member is editable through generated\nfiles.",
+        "name": "DocsEditable",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "DocsEditable",
+            "id": "DocsEditable0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "DocsEditable",
+            "id": "DocsEditable0()"
+          }
+        ],
+        "id": "DocsEditable"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\nMetadata that specifies the DOM name associated with the element.\n\nThis is used for API generation.\n\n[name] should be formatted as `interface.member`.\n",
+        "name": "DomName",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "DomName",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "name",
+                "id": "name"
+              }
+            ],
+            "id": "DomName1()"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "name",
+            "id": "name"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "DomName",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "name",
+                "id": "name"
+              }
+            ],
+            "id": "DomName1()"
+          }
+        ],
+        "id": "DomName"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\nAn annotation used to mark an API as being experimental.\n\nAn API is considered to be experimental if it is still going through the\nprocess of stabilizing and is subject to change or removal.\n\nSee also:\n\n* [W3C recommendation](http://en.wikipedia.org/wiki/W3C_recommendation)\n",
+        "name": "Experimental",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "Experimental",
+            "id": "Experimental0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "Experimental",
+            "id": "Experimental0()"
+          }
+        ],
+        "id": "Experimental"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\nAn annotation used to mark a feature as only being supported by a subset\nof the browsers that Dart supports by default.\n\nIf an API is not annotated with [SupportedBrowser] then it is assumed to\nwork on all browsers Dart supports.\n",
+        "name": "SupportedBrowser",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "SupportedBrowser",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "browserName",
+                "id": "browserName"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "isOptional": true,
+                "kind": "param",
+                "name": "minimumVersion",
+                "id": "minimumVersion"
+              }
+            ],
+            "id": "SupportedBrowser2()"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "CHROME",
+            "id": "CHROME"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "FIREFOX",
+            "id": "FIREFOX"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "IE",
+            "id": "IE"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "OPERA",
+            "id": "OPERA"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "SAFARI",
+            "id": "SAFARI"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "browserName",
+            "id": "browserName"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "minimumVersion",
+            "id": "minimumVersion"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "SupportedBrowser",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "browserName",
+                "id": "browserName"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "isOptional": true,
+                "kind": "param",
+                "name": "minimumVersion",
+                "id": "minimumVersion"
+              }
+            ],
+            "id": "SupportedBrowser2()"
+          }
+        ],
+        "id": "SupportedBrowser"
+      }
+    ],
+    "id": "file:///C:/edge/dart/dart-sdk/lib/html/html_common/metadata.dart"
+  },
+  {
+    "kind": "library",
     "name": "rtc_client",
     "children": [
       {
@@ -1737,7 +2005,7 @@
               "refId": "dynamic"
             },
             "kind": "method",
-            "comment": "\r\nConstructor\n",
+            "comment": "\r\nConstructor\nTODO: Ice gathering doesnt start for some reason\n",
             "name": "DataPeerWrapper",
             "children": [
               {
@@ -1789,26 +2057,6 @@
             "kind": "method",
             "name": "initialize",
             "id": "initialize0()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "name": "_onIceCandidate",
-            "children": [
-              {
-                "ref": {
-                  "name": "RtcIceCandidateEvent",
-                  "refId": "RtcIceCandidateEvent"
-                },
-                "kind": "param",
-                "name": "c",
-                "id": "c"
-              }
-            ],
-            "id": "_onIceCandidate1()"
           },
           {
             "returnType": {
@@ -1869,8 +2117,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "Event",
-                  "refId": "Event"
+                  "name": "RtcDataChannelEvent",
+                  "refId": "RtcDataChannelEvent"
                 },
                 "kind": "param",
                 "name": "e",
@@ -1889,8 +2137,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "Event",
-                  "refId": "Event"
+                  "name": "RtcDataChannelEvent",
+                  "refId": "RtcDataChannelEvent"
                 },
                 "kind": "param",
                 "name": "e",
@@ -1909,8 +2157,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "Event",
-                  "refId": "Event"
+                  "name": "MessageEvent",
+                  "refId": "MessageEvent"
                 },
                 "kind": "param",
                 "name": "e",
@@ -1929,8 +2177,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "Event",
-                  "refId": "Event"
+                  "name": "RtcDataChannelEvent",
+                  "refId": "RtcDataChannelEvent"
                 },
                 "kind": "param",
                 "name": "e",
@@ -1981,7 +2229,7 @@
               "refId": "dynamic"
             },
             "kind": "constructor",
-            "comment": "\r\nConstructor\n",
+            "comment": "\r\nConstructor\nTODO: Ice gathering doesnt start for some reason\n",
             "name": "DataPeerWrapper",
             "children": [
               {
@@ -3065,6 +3313,1265 @@
     "kind": "library",
     "name": "rtc_common",
     "children": [
+      {
+        "interfaces": [
+          {
+            "name": "Constraints",
+            "refId": "Constraints"
+          }
+        ],
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "name": "PeerConstraints",
+        "children": [
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "Sets the bitrate of the stream ",
+            "name": "dataChannelEnabled=",
+            "children": [
+              {
+                "ref": {
+                  "name": "bool",
+                  "refId": "bool"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "dataChannelEnabled=1()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "PeerConstraints",
+            "id": "PeerConstraints0()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "setDataChannelEnabled",
+            "children": [
+              {
+                "ref": {
+                  "name": "bool",
+                  "refId": "bool"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "setDataChannelEnabled1()"
+          },
+          {
+            "returnType": {
+              "name": "Map",
+              "refId": "Map"
+            },
+            "kind": "method",
+            "name": "toMap",
+            "id": "toMap0()"
+          },
+          {
+            "ref": {
+              "name": "bool",
+              "refId": "bool"
+            },
+            "kind": "property",
+            "name": "_dataChannelEnabled",
+            "id": "_dataChannelEnabled"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "PeerConstraints",
+            "id": "PeerConstraints0()"
+          }
+        ],
+        "id": "PeerConstraints"
+      },
+      {
+        "interfaces": [
+          {
+            "name": "Constraints",
+            "refId": "Constraints"
+          }
+        ],
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\nConstraints for getUserMedia\n",
+        "name": "VideoConstraints",
+        "children": [
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "Sets the max width of the video ",
+            "name": "maxWidth=",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "maxWidth=1()"
+          },
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "Sets the max height of the video ",
+            "name": "maxHeight=",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "maxHeight=1()"
+          },
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "Sets the min width of the video ",
+            "name": "minWidth=",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "minWidth=1()"
+          },
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "Sets the min height of the video ",
+            "name": "minHeight=",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "minHeight=1()"
+          },
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "Sets the video framerate ",
+            "name": "frameRate=",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "frameRate=1()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "VideoConstraints",
+            "id": "VideoConstraints0()"
+          },
+          {
+            "returnType": {
+              "name": "VideoConstraints",
+              "refId": "VideoConstraints"
+            },
+            "kind": "method",
+            "comment": "\nSets the max width of the video\n",
+            "name": "setMaxWidth",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "setMaxWidth1()"
+          },
+          {
+            "returnType": {
+              "name": "VideoConstraints",
+              "refId": "VideoConstraints"
+            },
+            "kind": "method",
+            "comment": "\nSets the max height of the video\n",
+            "name": "setMaxHeight",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "setMaxHeight1()"
+          },
+          {
+            "returnType": {
+              "name": "VideoConstraints",
+              "refId": "VideoConstraints"
+            },
+            "kind": "method",
+            "comment": "\nSets the min width of the video\n",
+            "name": "setMinWidth",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "setMinWidth1()"
+          },
+          {
+            "returnType": {
+              "name": "VideoConstraints",
+              "refId": "VideoConstraints"
+            },
+            "kind": "method",
+            "comment": "\nSets the min height of the video\n",
+            "name": "setMinHeight",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "setMinHeight1()"
+          },
+          {
+            "returnType": {
+              "name": "VideoConstraints",
+              "refId": "VideoConstraints"
+            },
+            "kind": "method",
+            "comment": "\nSets the framerate of the video\n",
+            "name": "setFrameRate",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "setFrameRate1()"
+          },
+          {
+            "returnType": {
+              "name": "Map",
+              "refId": "Map"
+            },
+            "kind": "method",
+            "name": "toMap",
+            "id": "toMap0()"
+          },
+          {
+            "ref": {
+              "name": "bool",
+              "refId": "bool"
+            },
+            "kind": "property",
+            "name": "_audio",
+            "id": "_audio"
+          },
+          {
+            "ref": {
+              "name": "bool",
+              "refId": "bool"
+            },
+            "kind": "property",
+            "name": "_video",
+            "id": "_video"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "name": "_maxWidth",
+            "id": "_maxWidth"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "name": "_maxHeight",
+            "id": "_maxHeight"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "name": "_minWidth",
+            "id": "_minWidth"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "name": "_minHeight",
+            "id": "_minHeight"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "name": "_frameRate",
+            "id": "_frameRate"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "VideoConstraints",
+            "id": "VideoConstraints0()"
+          }
+        ],
+        "id": "VideoConstraints"
+      },
+      {
+        "interfaces": [
+          {
+            "name": "Constraints",
+            "refId": "Constraints"
+          }
+        ],
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\nConstraints for Peer stream\n",
+        "name": "StreamConstraints",
+        "children": [
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "Sets the bitrate of the stream ",
+            "name": "bitRate=",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "bitRate=1()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\nConstructor\n",
+            "name": "StreamConstraints",
+            "id": "StreamConstraints0()"
+          },
+          {
+            "returnType": {
+              "name": "StreamConstraints",
+              "refId": "StreamConstraints"
+            },
+            "kind": "method",
+            "comment": "\nSets the bitrate of the stream\n",
+            "name": "setBitrate",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "setBitrate1()"
+          },
+          {
+            "returnType": {
+              "name": "Map",
+              "refId": "Map"
+            },
+            "kind": "method",
+            "name": "toMap",
+            "id": "toMap0()"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "name": "_bitRate",
+            "id": "_bitRate"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "comment": "\nConstructor\n",
+            "name": "StreamConstraints",
+            "id": "StreamConstraints0()"
+          }
+        ],
+        "id": "StreamConstraints"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\nAbstract base class for defining constraints\nto getUserMedia and mediastream in peer connection\n",
+        "name": "Constraints",
+        "children": [
+          {
+            "returnType": {
+              "name": "Map",
+              "refId": "Map"
+            },
+            "kind": "method",
+            "comment": "\nReturns the object converted into a Map\n",
+            "name": "toMap",
+            "id": "toMap0()"
+          }
+        ],
+        "id": "Constraints"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\r\nUtility class\n",
+        "name": "Util",
+        "children": [
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "method",
+            "comment": "\r\nMethod to return aspectratio based on width and height\n",
+            "name": "aspectRatio",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "x",
+                "id": "x"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "y",
+                "id": "y"
+              }
+            ],
+            "id": "aspectRatio2()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "method",
+            "name": "getHeight",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "width",
+                "id": "width"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "aspectRatio",
+                "id": "aspectRatio"
+              }
+            ],
+            "id": "getHeight2()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "method",
+            "name": "getWidth",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "height",
+                "id": "height"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "aspectRatio",
+                "id": "aspectRatio"
+              }
+            ],
+            "id": "getWidth2()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "method",
+            "comment": "\r\nGenerates more or less random string\n@param length of the requied random string\n",
+            "name": "generateId",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "length",
+                "id": "length"
+              }
+            ],
+            "id": "generateId1()"
+          }
+        ],
+        "id": "Util"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\r\nEnum like class to define logging levels\n",
+        "name": "LogLevel",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\r\nConstant constructor\n",
+            "name": "LogLevel",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "l",
+                "id": "l"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "t",
+                "id": "t"
+              }
+            ],
+            "id": "LogLevel2()"
+          },
+          {
+            "isOperator": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "<",
+            "children": [
+              {
+                "ref": {
+                  "name": "LogLevel",
+                  "refId": "LogLevel"
+                },
+                "kind": "param",
+                "name": "o",
+                "id": "o"
+              }
+            ],
+            "id": "<1()"
+          },
+          {
+            "isOperator": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "<=",
+            "children": [
+              {
+                "ref": {
+                  "name": "LogLevel",
+                  "refId": "LogLevel"
+                },
+                "kind": "param",
+                "name": "o",
+                "id": "o"
+              }
+            ],
+            "id": "<=1()"
+          },
+          {
+            "ref": {
+              "name": "LogLevel",
+              "refId": "LogLevel"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "INFO",
+            "id": "INFO"
+          },
+          {
+            "ref": {
+              "name": "LogLevel",
+              "refId": "LogLevel"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "WARN",
+            "id": "WARN"
+          },
+          {
+            "ref": {
+              "name": "LogLevel",
+              "refId": "LogLevel"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "ERROR",
+            "id": "ERROR"
+          },
+          {
+            "ref": {
+              "name": "LogLevel",
+              "refId": "LogLevel"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "DEBUG",
+            "id": "DEBUG"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "name": "_level",
+            "id": "_level"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "_type",
+            "id": "_type"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "comment": "\r\nConstant constructor\n",
+            "name": "LogLevel",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "l",
+                "id": "l"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "t",
+                "id": "t"
+              }
+            ],
+            "id": "LogLevel2()"
+          }
+        ],
+        "id": "LogLevel"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "comment": "\r\nCustom Logger class\n",
+        "name": "Logger",
+        "children": [
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "Setter for current log level ",
+            "name": "level=",
+            "children": [
+              {
+                "ref": {
+                  "name": "LogLevel",
+                  "refId": "LogLevel"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "level=1()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\r\nFactory constructor\n",
+            "name": "Logger",
+            "id": "Logger0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "Logger._internal",
+            "id": "Logger._internal0()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nSets the current log level\n@param l the new LogLevel\n",
+            "name": "setLevel",
+            "children": [
+              {
+                "ref": {
+                  "name": "LogLevel",
+                  "refId": "LogLevel"
+                },
+                "kind": "param",
+                "name": "l",
+                "id": "l"
+              }
+            ],
+            "id": "setLevel1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nLogs Debug LogLevel messages\n@param message to ouput\n",
+            "name": "Debug",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "message",
+                "id": "message"
+              }
+            ],
+            "id": "Debug1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nLogs Error LogLevel messages\n@param message to ouput\n",
+            "name": "Error",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "message",
+                "id": "message"
+              }
+            ],
+            "id": "Error1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nLogs Info LogLevel messages\n@param message to ouput\n",
+            "name": "Info",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "message",
+                "id": "message"
+              }
+            ],
+            "id": "Info1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nLogs Warning LogLevel messages\n@param message to ouput\n",
+            "name": "Warning",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "message",
+                "id": "message"
+              }
+            ],
+            "id": "Warning1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "_log",
+            "children": [
+              {
+                "ref": {
+                  "name": "LogLevel",
+                  "refId": "LogLevel"
+                },
+                "kind": "param",
+                "name": "level",
+                "id": "level"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "message",
+                "id": "message"
+              }
+            ],
+            "id": "_log2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nOutputs the generated log message to console, firebug etc..\nOverride this to add logging to DOMtree for example\n",
+            "name": "output",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "message",
+                "id": "message"
+              }
+            ],
+            "id": "output1()"
+          },
+          {
+            "ref": {
+              "name": "Logger",
+              "refId": "Logger"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "instance",
+            "id": "instance"
+          },
+          {
+            "ref": {
+              "name": "LogLevel",
+              "refId": "LogLevel"
+            },
+            "kind": "property",
+            "name": "_logLevel",
+            "id": "_logLevel"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "comment": "\r\nFactory constructor\n",
+            "name": "Logger",
+            "id": "Logger0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "Logger._internal",
+            "id": "Logger._internal0()"
+          }
+        ],
+        "id": "Logger"
+      },
+      {
+        "interfaces": [
+          {
+            "name": "Packet",
+            "refId": "Packet"
+          }
+        ],
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "name": "QueuePacket",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "QueuePacket",
+            "id": "QueuePacket0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "QueuePacket.With",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "id",
+                "id": "id"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "channelId",
+                "id": "channelId"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "position",
+                "id": "position"
+              }
+            ],
+            "id": "QueuePacket.With3()"
+          },
+          {
+            "returnType": {
+              "name": "Map",
+              "refId": "Map"
+            },
+            "kind": "method",
+            "name": "toJson",
+            "id": "toJson0()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "QueuePacket",
+              "refId": "QueuePacket"
+            },
+            "kind": "method",
+            "name": "fromMap",
+            "children": [
+              {
+                "ref": {
+                  "name": "Map",
+                  "refId": "Map"
+                },
+                "kind": "param",
+                "name": "m",
+                "id": "m"
+              }
+            ],
+            "id": "fromMap1()"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "packetType",
+            "id": "packetType"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "id",
+            "id": "id"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "channelId",
+            "id": "channelId"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "position",
+            "id": "position"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "QueuePacket",
+            "id": "QueuePacket0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "QueuePacket.With",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "id",
+                "id": "id"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "channelId",
+                "id": "channelId"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "position",
+                "id": "position"
+              }
+            ],
+            "id": "QueuePacket.With3()"
+          }
+        ],
+        "id": "QueuePacket"
+      },
       {
         "superclass": {
           "name": "Packet",
@@ -5255,6 +6762,16 @@
             "kind": "property",
             "name": "DISCONNECTED",
             "id": "DISCONNECTED"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "QUEUE",
+            "id": "QUEUE"
           }
         ],
         "id": "PacketType"
@@ -5586,7 +7103,7 @@
           "refId": "Object"
         },
         "kind": "class",
-        "comment": "\nPacketHandler\nSignaling server and client should extend this\n",
+        "comment": "\r\nPacketHandler\nSignaling server and client should extend this\n",
         "name": "PacketHandler",
         "children": [
           {
@@ -5595,7 +7112,7 @@
               "refId": "dynamic"
             },
             "kind": "method",
-            "comment": "\nConstructor\ninitialize array\n",
+            "comment": "\r\nConstructor\ninitialize array\n",
             "name": "PacketHandler",
             "id": "PacketHandler0()"
           },
@@ -5605,7 +7122,7 @@
               "refId": "void"
             },
             "kind": "method",
-            "comment": "\nAdd a new handler for given type\n",
+            "comment": "\r\nAdd a new handler for given type\n",
             "name": "registerHandler",
             "children": [
               {
@@ -5635,7 +7152,7 @@
               "refId": "void"
             },
             "kind": "method",
-            "comment": "\nClears all handlers associated to \"type\"\n",
+            "comment": "\r\nClears all handlers associated to \"type\"\n",
             "name": "clearHandlers",
             "children": [
               {
@@ -5662,7 +7179,7 @@
               ]
             },
             "kind": "method",
-            "comment": "\nReturns a list of handler functions for given packet type\n",
+            "comment": "\r\nReturns a list of handler functions for given packet type\n",
             "name": "getHandlers",
             "children": [
               {
@@ -5683,7 +7200,7 @@
               "refId": "bool"
             },
             "kind": "method",
-            "comment": "\nExecutes packet handlers for given packet if any\n",
+            "comment": "\r\nExecutes packet handlers for given packet if any\n",
             "name": "executeHandler",
             "children": [
               {
@@ -5704,7 +7221,7 @@
               "refId": "bool"
             },
             "kind": "method",
-            "comment": "\nExecutes packet handlers for given object and packet if any\n",
+            "comment": "\r\nExecutes packet handlers for given object and packet if any\n",
             "name": "executeHandlerFor",
             "children": [
               {
@@ -5759,7 +7276,7 @@
               "refId": "dynamic"
             },
             "kind": "constructor",
-            "comment": "\nConstructor\ninitialize array\n",
+            "comment": "\r\nConstructor\ninitialize array\n",
             "name": "PacketHandler",
             "id": "PacketHandler0()"
           }
@@ -6030,6 +7547,15 @@
             "children": [
               {
                 "ref": {
+                  "name": "Channel",
+                  "refId": "Channel"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              },
+              {
+                "ref": {
                   "name": "User",
                   "refId": "User"
                 },
@@ -6056,7 +7582,7 @@
                 "id": "position"
               }
             ],
-            "id": "onEnterQueue3()"
+            "id": "onEnterQueue4()"
           },
           {
             "returnType": {
@@ -6068,6 +7594,15 @@
             "children": [
               {
                 "ref": {
+                  "name": "Channel",
+                  "refId": "Channel"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              },
+              {
+                "ref": {
                   "name": "User",
                   "refId": "User"
                 },
@@ -6094,7 +7629,7 @@
                 "id": "position"
               }
             ],
-            "id": "onMoveInQueue3()"
+            "id": "onMoveInQueue4()"
           },
           {
             "returnType": {
@@ -6106,6 +7641,15 @@
             "children": [
               {
                 "ref": {
+                  "name": "Channel",
+                  "refId": "Channel"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              },
+              {
+                "ref": {
                   "name": "User",
                   "refId": "User"
                 },
@@ -6114,7 +7658,7 @@
                 "id": "u"
               }
             ],
-            "id": "onLeaveQueue1()"
+            "id": "onLeaveQueue2()"
           }
         ],
         "id": "ChannelQueueEventListener"
@@ -6313,102 +7857,6 @@
               "refId": "void"
             },
             "kind": "method",
-            "name": "onEnterQueue",
-            "children": [
-              {
-                "ref": {
-                  "name": "User",
-                  "refId": "User"
-                },
-                "kind": "param",
-                "name": "u",
-                "id": "u"
-              },
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "count",
-                "id": "count"
-              },
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "position",
-                "id": "position"
-              }
-            ],
-            "id": "onEnterQueue3()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "name": "onMoveInQueue",
-            "children": [
-              {
-                "ref": {
-                  "name": "User",
-                  "refId": "User"
-                },
-                "kind": "param",
-                "name": "u",
-                "id": "u"
-              },
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "count",
-                "id": "count"
-              },
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "position",
-                "id": "position"
-              }
-            ],
-            "id": "onMoveInQueue3()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "name": "onLeaveQueue",
-            "children": [
-              {
-                "ref": {
-                  "name": "User",
-                  "refId": "User"
-                },
-                "kind": "param",
-                "name": "u",
-                "id": "u"
-              }
-            ],
-            "id": "onLeaveQueue1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
             "name": "onCountChanged",
             "children": [
               {
@@ -6460,6 +7908,93 @@
               }
             ],
             "id": "handleHelo2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "handleBye",
+            "children": [
+              {
+                "ref": {
+                  "name": "ByePacket",
+                  "refId": "ByePacket"
+                },
+                "kind": "param",
+                "name": "bp",
+                "id": "bp"
+              },
+              {
+                "ref": {
+                  "name": "WebSocketConnection",
+                  "refId": "WebSocketConnection"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              }
+            ],
+            "id": "handleBye2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "handlePeerCreated",
+            "children": [
+              {
+                "ref": {
+                  "name": "PeerCreatedPacket",
+                  "refId": "PeerCreatedPacket"
+                },
+                "kind": "param",
+                "name": "pcp",
+                "id": "pcp"
+              },
+              {
+                "ref": {
+                  "name": "WebSocketConnection",
+                  "refId": "WebSocketConnection"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              }
+            ],
+            "id": "handlePeerCreated2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "handleUserMessage",
+            "children": [
+              {
+                "ref": {
+                  "name": "UserMessage",
+                  "refId": "UserMessage"
+                },
+                "kind": "param",
+                "name": "um",
+                "id": "um"
+              },
+              {
+                "ref": {
+                  "name": "WebSocketConnection",
+                  "refId": "WebSocketConnection"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              }
+            ],
+            "id": "handleUserMessage2()"
           },
           {
             "ref": {
@@ -6851,6 +8386,12 @@
         "id": "ChannelServer"
       },
       {
+        "interfaces": [
+          {
+            "name": "ChannelQueueEventListener",
+            "refId": "ChannelQueueEventListener"
+          }
+        ],
         "superclass": {
           "name": "ChannelContainer",
           "refId": "ChannelContainer"
@@ -6877,6 +8418,150 @@
               }
             ],
             "id": "QueueContainer1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "onEnterQueue",
+            "children": [
+              {
+                "ref": {
+                  "name": "Channel",
+                  "refId": "Channel"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              },
+              {
+                "ref": {
+                  "name": "User",
+                  "refId": "User"
+                },
+                "kind": "param",
+                "name": "u",
+                "id": "u"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "count",
+                "id": "count"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "position",
+                "id": "position"
+              }
+            ],
+            "id": "onEnterQueue4()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "onMoveInQueue",
+            "children": [
+              {
+                "ref": {
+                  "name": "Channel",
+                  "refId": "Channel"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              },
+              {
+                "ref": {
+                  "name": "User",
+                  "refId": "User"
+                },
+                "kind": "param",
+                "name": "u",
+                "id": "u"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "count",
+                "id": "count"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "position",
+                "id": "position"
+              }
+            ],
+            "id": "onMoveInQueue4()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "onLeaveQueue",
+            "children": [
+              {
+                "ref": {
+                  "name": "Channel",
+                  "refId": "Channel"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              },
+              {
+                "ref": {
+                  "name": "User",
+                  "refId": "User"
+                },
+                "kind": "param",
+                "name": "u",
+                "id": "u"
+              }
+            ],
+            "id": "onLeaveQueue2()"
+          },
+          {
+            "returnType": {
+              "name": "Channel",
+              "refId": "Channel"
+            },
+            "kind": "method",
+            "comment": "\r\nCreate channel with specified id\n",
+            "name": "createChannelWithId",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "id",
+                "id": "id"
+              }
+            ],
+            "id": "createChannelWithId1()"
           },
           {
             "returnType": {
@@ -7060,27 +8745,6 @@
               }
             ],
             "id": "createChannelWithId1()"
-          },
-          {
-            "returnType": {
-              "name": "Channel",
-              "refId": "Channel"
-            },
-            "kind": "method",
-            "comment": "\r\nCreate queue enabled channel with specified id\n",
-            "name": "createQueueChannel",
-            "children": [
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "id",
-                "id": "id"
-              }
-            ],
-            "id": "createQueueChannel1()"
           },
           {
             "ref": {
@@ -7854,6 +9518,12 @@
         "id": "BaseContainer"
       },
       {
+        "interfaces": [
+          {
+            "name": "UserConnectionEventListener",
+            "refId": "UserConnectionEventListener"
+          }
+        ],
         "superclass": {
           "name": "Channel",
           "refId": "Channel"
@@ -7867,6 +9537,7 @@
               "refId": "bool"
             },
             "kind": "method",
+            "comment": "Override canJoin from Channel ",
             "name": "canJoin",
             "id": "canJoin0()"
           },
@@ -7876,6 +9547,7 @@
               "refId": "dynamic"
             },
             "kind": "method",
+            "comment": "\r\nSet the channel limit to 2\n",
             "name": "QueueChannel",
             "children": [
               {
@@ -7898,6 +9570,45 @@
               }
             ],
             "id": "QueueChannel2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nImplements UserConnectionEventListener\n",
+            "name": "onClose",
+            "children": [
+              {
+                "ref": {
+                  "name": "User",
+                  "refId": "User"
+                },
+                "kind": "param",
+                "name": "user",
+                "id": "user"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "code",
+                "id": "code"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "reason",
+                "id": "reason"
+              }
+            ],
+            "id": "onClose3()"
           },
           {
             "returnType": {
@@ -7974,6 +9685,7 @@
               "refId": "bool"
             },
             "kind": "property",
+            "comment": "Override canJoin from Channel ",
             "name": "canJoin",
             "id": "canJoin"
           },
@@ -7998,6 +9710,7 @@
               "refId": "dynamic"
             },
             "kind": "constructor",
+            "comment": "\r\nSet the channel limit to 2\n",
             "name": "QueueChannel",
             "children": [
               {
@@ -8050,6 +9763,7 @@
               "refId": "bool"
             },
             "kind": "method",
+            "comment": "\r\nReturns true if users length is less than limit\n",
             "name": "canJoin",
             "id": "canJoin0()"
           },
@@ -8059,6 +9773,17 @@
               "refId": "int"
             },
             "kind": "method",
+            "comment": "\r\nLimit of users in channel\n",
+            "name": "channelLimit",
+            "id": "channelLimit0()"
+          },
+          {
+            "returnType": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "method",
+            "comment": "\r\nCurrent usercount\n",
             "name": "userCount",
             "id": "userCount0()"
           },
@@ -8068,6 +9793,7 @@
               "refId": "String"
             },
             "kind": "method",
+            "comment": "\r\nChannel id\n",
             "name": "id",
             "id": "id0()"
           },
@@ -8155,7 +9881,7 @@
               "refId": "void"
             },
             "kind": "method",
-            "comment": "\r\nJoins the room\n@param User joining the room\n",
+            "comment": "\r\nJoins the room\n",
             "name": "join",
             "children": [
               {
@@ -8176,15 +9902,7 @@
               "refId": "void"
             },
             "kind": "method",
-            "name": "killAll",
-            "id": "killAll0()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
+            "comment": "\r\nRemove user from channel\nNotify everyone else in channel\nNotify listeners\n",
             "name": "leave",
             "children": [
               {
@@ -8205,6 +9923,16 @@
               "refId": "void"
             },
             "kind": "method",
+            "name": "killAll",
+            "id": "killAll0()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nSend packet to everyone in channel\n",
             "name": "sendToAll",
             "children": [
               {
@@ -8225,6 +9953,7 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nSend packet to everyone in channel except the sender\n",
             "name": "sendToAllExceptSender",
             "children": [
               {
@@ -8276,6 +10005,7 @@
               "refId": "bool"
             },
             "kind": "property",
+            "comment": "\r\nReturns true if users length is less than limit\n",
             "name": "canJoin",
             "id": "canJoin"
           },
@@ -8285,6 +10015,17 @@
               "refId": "int"
             },
             "kind": "property",
+            "comment": "\r\nLimit of users in channel\n",
+            "name": "channelLimit",
+            "id": "channelLimit"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "comment": "\r\nCurrent usercount\n",
             "name": "userCount",
             "id": "userCount"
           },
@@ -8294,6 +10035,7 @@
               "refId": "String"
             },
             "kind": "property",
+            "comment": "\r\nChannel id\n",
             "name": "id",
             "id": "id"
           },
@@ -8391,6 +10133,157 @@
         "id": "Channel"
       },
       {
+        "superclass": {
+          "name": "BaseUser",
+          "refId": "BaseUser"
+        },
+        "kind": "class",
+        "comment": "\r\nUser class\n",
+        "name": "User",
+        "children": [
+          {
+            "returnType": {
+              "name": "WebSocketConnection",
+              "refId": "WebSocketConnection"
+            },
+            "kind": "method",
+            "comment": "Getter for the connection ",
+            "name": "connection",
+            "id": "connection0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\r\nConstructor\n",
+            "name": "User",
+            "children": [
+              {
+                "ref": {
+                  "name": "UserContainer",
+                  "refId": "UserContainer"
+                },
+                "kind": "param",
+                "name": "container",
+                "id": "container"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "id",
+                "id": "id"
+              },
+              {
+                "ref": {
+                  "name": "WebSocketConnection",
+                  "refId": "WebSocketConnection"
+                },
+                "kind": "param",
+                "name": "_conn",
+                "id": "_conn"
+              }
+            ],
+            "id": "User3()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nKill the user\n",
+            "name": "terminate",
+            "id": "terminate0()"
+          },
+          {
+            "isOperator": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\r\nEquality operator ==\n",
+            "name": "==",
+            "children": [
+              {
+                "ref": {
+                  "name": "Object",
+                  "refId": "Object"
+                },
+                "kind": "param",
+                "name": "o",
+                "id": "o"
+              }
+            ],
+            "id": "==1()"
+          },
+          {
+            "ref": {
+              "name": "WebSocketConnection",
+              "refId": "WebSocketConnection"
+            },
+            "kind": "property",
+            "comment": "Getter for the connection ",
+            "name": "connection",
+            "id": "connection"
+          },
+          {
+            "ref": {
+              "name": "WebSocketConnection",
+              "refId": "WebSocketConnection"
+            },
+            "kind": "property",
+            "name": "_conn",
+            "id": "_conn"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "comment": "\r\nConstructor\n",
+            "name": "User",
+            "children": [
+              {
+                "ref": {
+                  "name": "UserContainer",
+                  "refId": "UserContainer"
+                },
+                "kind": "param",
+                "name": "container",
+                "id": "container"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "id",
+                "id": "id"
+              },
+              {
+                "ref": {
+                  "name": "WebSocketConnection",
+                  "refId": "WebSocketConnection"
+                },
+                "kind": "param",
+                "name": "_conn",
+                "id": "_conn"
+              }
+            ],
+            "id": "User3()"
+          }
+        ],
+        "id": "User"
+      },
+      {
         "interfaces": [
           {
             "name": "Comparable",
@@ -8408,8 +10301,7 @@
           ]
         },
         "kind": "class",
-        "comment": "\r\nUser class\n",
-        "name": "User",
+        "name": "BaseUser",
         "children": [
           {
             "returnType": {
@@ -8447,8 +10339,8 @@
               "refId": "List",
               "arguments": [
                 {
-                  "name": "User",
-                  "refId": "User"
+                  "name": "BaseUser",
+                  "refId": "BaseUser"
                 }
               ]
             },
@@ -8466,16 +10358,6 @@
             "comment": "Getter for user id ",
             "name": "id",
             "id": "id0()"
-          },
-          {
-            "returnType": {
-              "name": "WebSocketConnection",
-              "refId": "WebSocketConnection"
-            },
-            "kind": "method",
-            "comment": "Getter for the connection ",
-            "name": "connection",
-            "id": "connection0()"
           },
           {
             "isSetter": true,
@@ -8549,8 +10431,7 @@
               "refId": "dynamic"
             },
             "kind": "method",
-            "comment": "\r\nConstructor\n",
-            "name": "User",
+            "name": "BaseUser",
             "children": [
               {
                 "ref": {
@@ -8569,18 +10450,9 @@
                 "kind": "param",
                 "name": "_id",
                 "id": "_id"
-              },
-              {
-                "ref": {
-                  "name": "WebSocketConnection",
-                  "refId": "WebSocketConnection"
-                },
-                "kind": "param",
-                "name": "_conn",
-                "id": "_conn"
               }
             ],
-            "id": "User3()"
+            "id": "BaseUser2()"
           },
           {
             "returnType": {
@@ -8622,8 +10494,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "User",
-                  "refId": "User"
+                  "name": "BaseUser",
+                  "refId": "BaseUser"
                 },
                 "kind": "param",
                 "name": "u",
@@ -8643,8 +10515,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "User",
-                  "refId": "User"
+                  "name": "BaseUser",
+                  "refId": "BaseUser"
                 },
                 "kind": "param",
                 "name": "u",
@@ -8652,16 +10524,6 @@
               }
             ],
             "id": "talkTo1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "comment": "\r\nKill the user\n",
-            "name": "terminate",
-            "id": "terminate0()"
           },
           {
             "returnType": {
@@ -8737,8 +10599,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "User",
-                  "refId": "User"
+                  "name": "BaseUser",
+                  "refId": "BaseUser"
                 },
                 "kind": "param",
                 "name": "other",
@@ -8758,8 +10620,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "User",
-                  "refId": "User"
+                  "name": "BaseUser",
+                  "refId": "BaseUser"
                 },
                 "kind": "param",
                 "name": "other",
@@ -8767,28 +10629,6 @@
               }
             ],
             "id": ">=1()"
-          },
-          {
-            "isOperator": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "\r\nEquality operator ==\n",
-            "name": "==",
-            "children": [
-              {
-                "ref": {
-                  "name": "Object",
-                  "refId": "Object"
-                },
-                "kind": "param",
-                "name": "o",
-                "id": "o"
-              }
-            ],
-            "id": "==1()"
           },
           {
             "ref": {
@@ -8826,8 +10666,8 @@
               "refId": "List",
               "arguments": [
                 {
-                  "name": "User",
-                  "refId": "User"
+                  "name": "BaseUser",
+                  "refId": "BaseUser"
                 }
               ]
             },
@@ -8848,22 +10688,12 @@
           },
           {
             "ref": {
-              "name": "WebSocketConnection",
-              "refId": "WebSocketConnection"
-            },
-            "kind": "property",
-            "comment": "Getter for the connection ",
-            "name": "connection",
-            "id": "connection"
-          },
-          {
-            "ref": {
               "name": "List",
               "refId": "List",
               "arguments": [
                 {
-                  "name": "User",
-                  "refId": "User"
+                  "name": "BaseUser",
+                  "refId": "BaseUser"
                 }
               ]
             },
@@ -8879,15 +10709,6 @@
             "kind": "property",
             "name": "_id",
             "id": "_id"
-          },
-          {
-            "ref": {
-              "name": "WebSocketConnection",
-              "refId": "WebSocketConnection"
-            },
-            "kind": "property",
-            "name": "_conn",
-            "id": "_conn"
           },
           {
             "ref": {
@@ -8913,8 +10734,8 @@
               "refId": "Logger"
             },
             "kind": "property",
-            "name": "log",
-            "id": "log"
+            "name": "logger",
+            "id": "logger"
           },
           {
             "ref": {
@@ -8931,8 +10752,7 @@
               "refId": "dynamic"
             },
             "kind": "constructor",
-            "comment": "\r\nConstructor\n",
-            "name": "User",
+            "name": "BaseUser",
             "children": [
               {
                 "ref": {
@@ -8951,21 +10771,12 @@
                 "kind": "param",
                 "name": "_id",
                 "id": "_id"
-              },
-              {
-                "ref": {
-                  "name": "WebSocketConnection",
-                  "refId": "WebSocketConnection"
-                },
-                "kind": "param",
-                "name": "_conn",
-                "id": "_conn"
               }
             ],
-            "id": "User3()"
+            "id": "BaseUser2()"
           }
         ],
-        "id": "User"
+        "id": "BaseUser"
       },
       {
         "interfaces": [
@@ -9452,1095 +11263,5 @@
       }
     ],
     "id": "file:///C:/Users/lena/Documents/git/rtc/rtc_server/lib/rtc_server.dart"
-  },
-  {
-    "kind": "library",
-    "comment": "\r\nrtc_utils.dart\nCopyright (c) 2013 Sami Ylönen sami.ylonen@gmail.com\n",
-    "name": "rtc_util",
-    "children": [
-      {
-        "interfaces": [
-          {
-            "name": "Constraints",
-            "refId": "Constraints"
-          }
-        ],
-        "superclass": {
-          "name": "Object",
-          "refId": "Object"
-        },
-        "kind": "class",
-        "name": "PeerConstraints",
-        "children": [
-          {
-            "isSetter": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "Sets the bitrate of the stream ",
-            "name": "dataChannelEnabled=",
-            "children": [
-              {
-                "ref": {
-                  "name": "bool",
-                  "refId": "bool"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "dataChannelEnabled=1()"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "name": "PeerConstraints",
-            "id": "PeerConstraints0()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "name": "setDataChannelEnabled",
-            "children": [
-              {
-                "ref": {
-                  "name": "bool",
-                  "refId": "bool"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "setDataChannelEnabled1()"
-          },
-          {
-            "returnType": {
-              "name": "Map",
-              "refId": "Map"
-            },
-            "kind": "method",
-            "name": "toMap",
-            "id": "toMap0()"
-          },
-          {
-            "ref": {
-              "name": "bool",
-              "refId": "bool"
-            },
-            "kind": "property",
-            "name": "_dataChannelEnabled",
-            "id": "_dataChannelEnabled"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "constructor",
-            "name": "PeerConstraints",
-            "id": "PeerConstraints0()"
-          }
-        ],
-        "id": "PeerConstraints"
-      },
-      {
-        "interfaces": [
-          {
-            "name": "Constraints",
-            "refId": "Constraints"
-          }
-        ],
-        "superclass": {
-          "name": "Object",
-          "refId": "Object"
-        },
-        "kind": "class",
-        "comment": "\nConstraints for getUserMedia\n",
-        "name": "VideoConstraints",
-        "children": [
-          {
-            "isSetter": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "Sets the max width of the video ",
-            "name": "maxWidth=",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "maxWidth=1()"
-          },
-          {
-            "isSetter": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "Sets the max height of the video ",
-            "name": "maxHeight=",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "maxHeight=1()"
-          },
-          {
-            "isSetter": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "Sets the min width of the video ",
-            "name": "minWidth=",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "minWidth=1()"
-          },
-          {
-            "isSetter": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "Sets the min height of the video ",
-            "name": "minHeight=",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "minHeight=1()"
-          },
-          {
-            "isSetter": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "Sets the video framerate ",
-            "name": "frameRate=",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "frameRate=1()"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "name": "VideoConstraints",
-            "id": "VideoConstraints0()"
-          },
-          {
-            "returnType": {
-              "name": "VideoConstraints",
-              "refId": "VideoConstraints"
-            },
-            "kind": "method",
-            "comment": "\nSets the max width of the video\n",
-            "name": "setMaxWidth",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "setMaxWidth1()"
-          },
-          {
-            "returnType": {
-              "name": "VideoConstraints",
-              "refId": "VideoConstraints"
-            },
-            "kind": "method",
-            "comment": "\nSets the max height of the video\n",
-            "name": "setMaxHeight",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "setMaxHeight1()"
-          },
-          {
-            "returnType": {
-              "name": "VideoConstraints",
-              "refId": "VideoConstraints"
-            },
-            "kind": "method",
-            "comment": "\nSets the min width of the video\n",
-            "name": "setMinWidth",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "setMinWidth1()"
-          },
-          {
-            "returnType": {
-              "name": "VideoConstraints",
-              "refId": "VideoConstraints"
-            },
-            "kind": "method",
-            "comment": "\nSets the min height of the video\n",
-            "name": "setMinHeight",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "setMinHeight1()"
-          },
-          {
-            "returnType": {
-              "name": "VideoConstraints",
-              "refId": "VideoConstraints"
-            },
-            "kind": "method",
-            "comment": "\nSets the framerate of the video\n",
-            "name": "setFrameRate",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "setFrameRate1()"
-          },
-          {
-            "returnType": {
-              "name": "Map",
-              "refId": "Map"
-            },
-            "kind": "method",
-            "name": "toMap",
-            "id": "toMap0()"
-          },
-          {
-            "ref": {
-              "name": "bool",
-              "refId": "bool"
-            },
-            "kind": "property",
-            "name": "_audio",
-            "id": "_audio"
-          },
-          {
-            "ref": {
-              "name": "bool",
-              "refId": "bool"
-            },
-            "kind": "property",
-            "name": "_video",
-            "id": "_video"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "property",
-            "name": "_maxWidth",
-            "id": "_maxWidth"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "property",
-            "name": "_maxHeight",
-            "id": "_maxHeight"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "property",
-            "name": "_minWidth",
-            "id": "_minWidth"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "property",
-            "name": "_minHeight",
-            "id": "_minHeight"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "property",
-            "name": "_frameRate",
-            "id": "_frameRate"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "constructor",
-            "name": "VideoConstraints",
-            "id": "VideoConstraints0()"
-          }
-        ],
-        "id": "VideoConstraints"
-      },
-      {
-        "interfaces": [
-          {
-            "name": "Constraints",
-            "refId": "Constraints"
-          }
-        ],
-        "superclass": {
-          "name": "Object",
-          "refId": "Object"
-        },
-        "kind": "class",
-        "comment": "\nConstraints for Peer stream\n",
-        "name": "StreamConstraints",
-        "children": [
-          {
-            "isSetter": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "Sets the bitrate of the stream ",
-            "name": "bitRate=",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "bitRate=1()"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "\nConstructor\n",
-            "name": "StreamConstraints",
-            "id": "StreamConstraints0()"
-          },
-          {
-            "returnType": {
-              "name": "StreamConstraints",
-              "refId": "StreamConstraints"
-            },
-            "kind": "method",
-            "comment": "\nSets the bitrate of the stream\n",
-            "name": "setBitrate",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "setBitrate1()"
-          },
-          {
-            "returnType": {
-              "name": "Map",
-              "refId": "Map"
-            },
-            "kind": "method",
-            "name": "toMap",
-            "id": "toMap0()"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "property",
-            "name": "_bitRate",
-            "id": "_bitRate"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "constructor",
-            "comment": "\nConstructor\n",
-            "name": "StreamConstraints",
-            "id": "StreamConstraints0()"
-          }
-        ],
-        "id": "StreamConstraints"
-      },
-      {
-        "superclass": {
-          "name": "Object",
-          "refId": "Object"
-        },
-        "kind": "class",
-        "comment": "\nAbstract base class for defining constraints\nto getUserMedia and mediastream in peer connection\n",
-        "name": "Constraints",
-        "children": [
-          {
-            "returnType": {
-              "name": "Map",
-              "refId": "Map"
-            },
-            "kind": "method",
-            "comment": "\nReturns the object converted into a Map\n",
-            "name": "toMap",
-            "id": "toMap0()"
-          }
-        ],
-        "id": "Constraints"
-      },
-      {
-        "superclass": {
-          "name": "Object",
-          "refId": "Object"
-        },
-        "kind": "class",
-        "comment": "\r\nUtility class\n",
-        "name": "Util",
-        "children": [
-          {
-            "isStatic": true,
-            "returnType": {
-              "name": "String",
-              "refId": "String"
-            },
-            "kind": "method",
-            "comment": "\r\nMethod to return aspectratio based on width and height\n",
-            "name": "aspectRatio",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "x",
-                "id": "x"
-              },
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "y",
-                "id": "y"
-              }
-            ],
-            "id": "aspectRatio2()"
-          },
-          {
-            "isStatic": true,
-            "returnType": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "method",
-            "name": "getHeight",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "width",
-                "id": "width"
-              },
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "aspectRatio",
-                "id": "aspectRatio"
-              }
-            ],
-            "id": "getHeight2()"
-          },
-          {
-            "isStatic": true,
-            "returnType": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "method",
-            "name": "getWidth",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "height",
-                "id": "height"
-              },
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "aspectRatio",
-                "id": "aspectRatio"
-              }
-            ],
-            "id": "getWidth2()"
-          },
-          {
-            "isStatic": true,
-            "returnType": {
-              "name": "String",
-              "refId": "String"
-            },
-            "kind": "method",
-            "comment": "\r\nGenerates more or less random string\n@param length of the requied random string\n",
-            "name": "generateId",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "length",
-                "id": "length"
-              }
-            ],
-            "id": "generateId1()"
-          }
-        ],
-        "id": "Util"
-      },
-      {
-        "superclass": {
-          "name": "Object",
-          "refId": "Object"
-        },
-        "kind": "class",
-        "comment": "\r\nEnum like class to define logging levels\n",
-        "name": "LogLevel",
-        "children": [
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "\r\nConstant constructor\n",
-            "name": "LogLevel",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "l",
-                "id": "l"
-              },
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "t",
-                "id": "t"
-              }
-            ],
-            "id": "LogLevel2()"
-          },
-          {
-            "isOperator": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "name": "<",
-            "children": [
-              {
-                "ref": {
-                  "name": "LogLevel",
-                  "refId": "LogLevel"
-                },
-                "kind": "param",
-                "name": "o",
-                "id": "o"
-              }
-            ],
-            "id": "<1()"
-          },
-          {
-            "isOperator": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "name": "<=",
-            "children": [
-              {
-                "ref": {
-                  "name": "LogLevel",
-                  "refId": "LogLevel"
-                },
-                "kind": "param",
-                "name": "o",
-                "id": "o"
-              }
-            ],
-            "id": "<=1()"
-          },
-          {
-            "ref": {
-              "name": "LogLevel",
-              "refId": "LogLevel"
-            },
-            "isStatic": true,
-            "kind": "property",
-            "name": "INFO",
-            "id": "INFO"
-          },
-          {
-            "ref": {
-              "name": "LogLevel",
-              "refId": "LogLevel"
-            },
-            "isStatic": true,
-            "kind": "property",
-            "name": "WARN",
-            "id": "WARN"
-          },
-          {
-            "ref": {
-              "name": "LogLevel",
-              "refId": "LogLevel"
-            },
-            "isStatic": true,
-            "kind": "property",
-            "name": "ERROR",
-            "id": "ERROR"
-          },
-          {
-            "ref": {
-              "name": "LogLevel",
-              "refId": "LogLevel"
-            },
-            "isStatic": true,
-            "kind": "property",
-            "name": "DEBUG",
-            "id": "DEBUG"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "property",
-            "name": "_level",
-            "id": "_level"
-          },
-          {
-            "ref": {
-              "name": "String",
-              "refId": "String"
-            },
-            "kind": "property",
-            "name": "_type",
-            "id": "_type"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "constructor",
-            "comment": "\r\nConstant constructor\n",
-            "name": "LogLevel",
-            "children": [
-              {
-                "ref": {
-                  "name": "int",
-                  "refId": "int"
-                },
-                "kind": "param",
-                "name": "l",
-                "id": "l"
-              },
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "t",
-                "id": "t"
-              }
-            ],
-            "id": "LogLevel2()"
-          }
-        ],
-        "id": "LogLevel"
-      },
-      {
-        "superclass": {
-          "name": "Object",
-          "refId": "Object"
-        },
-        "kind": "class",
-        "comment": "\r\nCustom Logger class\n",
-        "name": "Logger",
-        "children": [
-          {
-            "isSetter": true,
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "Setter for current log level ",
-            "name": "level=",
-            "children": [
-              {
-                "ref": {
-                  "name": "LogLevel",
-                  "refId": "LogLevel"
-                },
-                "kind": "param",
-                "name": "value",
-                "id": "value"
-              }
-            ],
-            "id": "level=1()"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "comment": "\r\nFactory constructor\n",
-            "name": "Logger",
-            "id": "Logger0()"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "method",
-            "name": "Logger._internal",
-            "id": "Logger._internal0()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "comment": "\r\nSets the current log level\n@param l the new LogLevel\n",
-            "name": "setLevel",
-            "children": [
-              {
-                "ref": {
-                  "name": "LogLevel",
-                  "refId": "LogLevel"
-                },
-                "kind": "param",
-                "name": "l",
-                "id": "l"
-              }
-            ],
-            "id": "setLevel1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "comment": "\r\nLogs Debug LogLevel messages\n@param message to ouput\n",
-            "name": "Debug",
-            "children": [
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "message",
-                "id": "message"
-              }
-            ],
-            "id": "Debug1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "comment": "\r\nLogs Error LogLevel messages\n@param message to ouput\n",
-            "name": "Error",
-            "children": [
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "message",
-                "id": "message"
-              }
-            ],
-            "id": "Error1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "comment": "\r\nLogs Info LogLevel messages\n@param message to ouput\n",
-            "name": "Info",
-            "children": [
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "message",
-                "id": "message"
-              }
-            ],
-            "id": "Info1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "comment": "\r\nLogs Warning LogLevel messages\n@param message to ouput\n",
-            "name": "Warning",
-            "children": [
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "message",
-                "id": "message"
-              }
-            ],
-            "id": "Warning1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "name": "_log",
-            "children": [
-              {
-                "ref": {
-                  "name": "LogLevel",
-                  "refId": "LogLevel"
-                },
-                "kind": "param",
-                "name": "level",
-                "id": "level"
-              },
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "message",
-                "id": "message"
-              }
-            ],
-            "id": "_log2()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "comment": "\r\nOutputs the generated log message to console, firebug etc..\nOverride this to add logging to DOMtree for example\n",
-            "name": "output",
-            "children": [
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "message",
-                "id": "message"
-              }
-            ],
-            "id": "output1()"
-          },
-          {
-            "ref": {
-              "name": "Logger",
-              "refId": "Logger"
-            },
-            "isStatic": true,
-            "kind": "property",
-            "name": "instance",
-            "id": "instance"
-          },
-          {
-            "ref": {
-              "name": "LogLevel",
-              "refId": "LogLevel"
-            },
-            "kind": "property",
-            "name": "_logLevel",
-            "id": "_logLevel"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "constructor",
-            "comment": "\r\nFactory constructor\n",
-            "name": "Logger",
-            "id": "Logger0()"
-          },
-          {
-            "returnType": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "constructor",
-            "name": "Logger._internal",
-            "id": "Logger._internal0()"
-          }
-        ],
-        "id": "Logger"
-      }
-    ],
-    "id": "file:///C:/Users/lena/Documents/git/rtc/rtc_util/lib/rtc_util.dart"
   }
 ]

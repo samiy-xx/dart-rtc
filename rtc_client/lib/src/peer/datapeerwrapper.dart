@@ -16,10 +16,9 @@ class DataPeerWrapper extends PeerWrapper {
   /**
    * Constructor
    */
-  DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p){
-    _peer.on.iceCandidate.add(_onIceCandidate);
-    _peer.on.open.add(_onOpen);
-    _peer.on['datachannel'].add(_onNewDataChannelOpen);
+  DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p) {
+    _peer.onOpen.listen(_onOpen);
+    _peer.onDataChannel.listen(_onNewDataChannelOpen);
   }
   
   void setAsHost(bool value) {
@@ -40,32 +39,22 @@ class DataPeerWrapper extends PeerWrapper {
     
     
   }
-  /*
-   * When receiving null ice candidate, assume connection established
-   * create datachannel
-   */
-  void _onIceCandidate(RtcIceCandidateEvent c) {
-    if (c.candidate == null) {
-      // Assume done?
-    }
-  }
-  
+    
   void _onOpen(Event e) {
    
   }
   
   void initChannel() {
     window.setTimeout(() {
-      _dataChannel = _peer.createDataChannel("somelabelhere", { 'reliable' : false });
+      _dataChannel = _peer.createDataChannel("somelabelhere", {'reliable': false});
       _log.Debug("(datapeerwrapper.dart) DataChannel created");
-      _dataChannel.on.close.add(onDataChannelClose);
-      _dataChannel.on.open.add(onDataChannelOpen);
-      _dataChannel.on.error.add(onDataChannelError);
-      _dataChannel.on.message.add(onDataChannelMessage);
+      _dataChannel.onClose.listen(onDataChannelClose);
+      _dataChannel.onOpen.listen(onDataChannelOpen);
+      _dataChannel.onError.listen(onDataChannelError);
+      _dataChannel.onMessage.listen(onDataChannelMessage);
+      //_dataChannel.binaryType = "blob";
+      
     }, 2000);
-    
-    
-    
   }
   
   void _onNewDataChannelOpen(RtcDataChannelEvent e) {
@@ -75,10 +64,10 @@ class DataPeerWrapper extends PeerWrapper {
     _log.Debug("(datapeerwrapper.dart) Channel label : ${_dataChannel.label}");
     _log.Debug("(datapeerwrapper.dart) Channel state : ${_dataChannel.readyState}");
     _log.Debug("(datapeerwrapper.dart) Channel reliable : ${_dataChannel.reliable}");
-    _dataChannel.on.close.add(onDataChannelClose);
-    _dataChannel.on.open.add(onDataChannelOpen);
-    _dataChannel.on.error.add(onDataChannelError);
-    _dataChannel.on.message.add(onDataChannelMessage);
+    _dataChannel.onClose.listen(onDataChannelClose);
+    _dataChannel.onOpen.listen(onDataChannelOpen);
+    _dataChannel.onError.listen(onDataChannelError);
+    _dataChannel.onMessage.listen(onDataChannelMessage);
     
     window.setTimeout(() {
       _log.Debug("(datapeerwrapper.dart) DataChannel received");
@@ -89,7 +78,7 @@ class DataPeerWrapper extends PeerWrapper {
   }
   
   void onDataChannelOpen(Event e) {
-    
+    _signalStateChanged();
     _log.Debug("(datapeerwrapper.dart) DataChannelOpen $e");
     _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
     
@@ -97,18 +86,19 @@ class DataPeerWrapper extends PeerWrapper {
   }
   
   void onDataChannelClose(Event e) {
+    _signalStateChanged();
     _log.Debug("(datapeerwrapper.dart) DataChannelClose $e");
     _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
   }
 
-  void onDataChannelMessage(Event e) {
+  void onDataChannelMessage(MessageEvent e) {
     
-    _log.Debug("(datapeerwrapper.dart) DataChannelMessage $e");
+    _log.Debug("(datapeerwrapper.dart) DataChannelMessage ${e.data}");
     _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
     
   }
 
-  void onDataChannelError(Event e) {
+  void onDataChannelError(RtcDataChannelEvent e) {
     _log.Debug("(datapeerwrapper.dart) DataChannelError $e");
     _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
   }

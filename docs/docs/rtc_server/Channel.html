@@ -24,9 +24,10 @@
       
         <div class="nav">
         
-<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
 <li><a href="../rtc_server/BaseChannelContainer.html"><div class="icon-class"></div>BaseChannelContainer</a></li>
 <li><a href="../rtc_server/BaseContainer.html"><div class="icon-class"></div>BaseContainer&lt;T&gt;</a></li>
+<li><a href="../rtc_server/BaseUser.html"><div class="icon-class"></div>BaseUser</a></li>
 <li><a href="../rtc_server/BaseUserContainer.html"><div class="icon-class"></div>BaseUserContainer</a></li>
 <li><div class="icon-class"></div><strong>Channel</strong></li>
 <li><a href="../rtc_server/ChannelConnectionEventListener.html"><div class="icon-class"></div>ChannelConnectionEventListener</a></li>
@@ -49,7 +50,7 @@
 <li><a href="../rtc_server/WheelServer.html"><div class="icon-class"></div>WheelServer</a></li>
 <li><a href="../rtc_server/WheelUser.html"><div class="icon-class"></div>WheelUser</a></li>
 </ul>
-<h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+</div>
 <div class="content">
         <h2><strong>Channel</strong>
           class
@@ -71,12 +72,27 @@ class Channel extends GenericEventTarget&lt;ChannelEventListener&gt; implements 
  // TODO: needed?
  bool _hasBeenJoined = false;
  
+ /* users */
  List&lt;User&gt; _users;
  
- // returns true id users in room is less or equal than limit
+ /**
+  * Returns true if users length is less than limit
+  */
  bool get canJoin =&gt; _users.length &lt; _limit;
  
+ /**
+  * Limit of users in channel
+  */
+ int get channelLimit =&gt; _limit;
+ 
+ /**
+  * Current usercount
+  */
  int get userCount =&gt; _users.length;
+ 
+ /**
+  * Channel id
+  */
  String get id =&gt; _id;
  
  /**
@@ -96,9 +112,9 @@ class Channel extends GenericEventTarget&lt;ChannelEventListener&gt; implements 
    new Logger().Debug("(channel.dart) onClose fired for user ${u.id}");
    leave(u);
  }
+ 
  /**
   * Joins the room
-  * @param User joining the room
   */
  void join(User newUser) {
    //newUser.channel = this;
@@ -128,10 +144,11 @@ class Channel extends GenericEventTarget&lt;ChannelEventListener&gt; implements 
    });
  }
  
- void killAll() {
-    
- }
- 
+ /**
+  * Remove user from channel
+  * Notify everyone else in channel
+  * Notify listeners
+  */
  void leave(User u) {
    new Logger().Debug("(channel.dart) User ${u.id} leaving channel $id");
    
@@ -139,6 +156,7 @@ class Channel extends GenericEventTarget&lt;ChannelEventListener&gt; implements 
    if (_users.contains(u))
      _users.removeAt(_users.indexOf(u));
    
+   sendToAll(new ByePacket.With(u.id));
    listeners.where((l) =&gt; l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
      l.onLeaveChannel(this, u);
    });
@@ -149,12 +167,25 @@ class Channel extends GenericEventTarget&lt;ChannelEventListener&gt; implements 
    }
  }
  
+ void killAll() {
+   for (int i = 0; i &lt; _users.length; i++) {
+     User u = _users[i];
+     leave(u);
+   }
+ }
+ 
+ /**
+  * Send packet to everyone in channel
+  */
  void sendToAll(Packet p) {
    _users.forEach((User u) {
        _container.getServer().sendPacket(u.connection, p);
    });
  }
  
+ /**
+  * Send packet to everyone in channel except the sender
+  */
  void sendToAllExceptSender(User sender, Packet p) {
    _users.forEach((User u) {
      if (sender != u) {
@@ -162,6 +193,7 @@ class Channel extends GenericEventTarget&lt;ChannelEventListener&gt; implements 
      }
    });
  }
+ 
  /**
   * Equality operator ==
   * Check that id strings match
@@ -213,8 +245,22 @@ final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <st
             title="Permalink to Channel.canJoin">#</a>
         </h4>
         <div class="doc">
+<p>Returns true if users length is less than limit</p>
 <pre class="source">
 bool get canJoin =&gt; _users.length &lt; _limit;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="channelLimit">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>channelLimit</strong> <a class="anchor-link"
+            href="#channelLimit"
+            title="Permalink to Channel.channelLimit">#</a>
+        </h4>
+        <div class="doc">
+<p>Limit of users in channel</p>
+<pre class="source">
+int get channelLimit =&gt; _limit;
 </pre>
 </div>
 </div>
@@ -225,6 +271,7 @@ final <a href="http://api.dartlang.org/dart_core/String.html">String</a>        
             title="Permalink to Channel.id">#</a>
         </h4>
         <div class="doc">
+<p>Channel id</p>
 <pre class="source">
 String get id =&gt; _id;
 </pre>
@@ -250,6 +297,7 @@ final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <stro
             title="Permalink to Channel.userCount">#</a>
         </h4>
         <div class="doc">
+<p>Current usercount</p>
 <pre class="source">
 int get userCount =&gt; _users.length;
 </pre>
@@ -297,8 +345,7 @@ List&lt;T&gt; getListeners() {
 void <strong>join</strong>(<a href="../rtc_server/User.html">User</a> newUser) <a class="anchor-link" href="#join"
               title="Permalink to Channel.join">#</a></h4>
 <div class="doc">
-<p>Joins the room
-@param User joining the room</p>
+<p>Joins the room</p>
 <pre class="source">
 void join(User newUser) {
  //newUser.channel = this;
@@ -337,7 +384,10 @@ void <strong>killAll</strong>() <a class="anchor-link" href="#killAll"
 <div class="doc">
 <pre class="source">
 void killAll() {
-  
+ for (int i = 0; i &lt; _users.length; i++) {
+   User u = _users[i];
+   leave(u);
+ }
 }
 </pre>
 </div>
@@ -347,6 +397,9 @@ void killAll() {
 void <strong>leave</strong>(<a href="../rtc_server/User.html">User</a> u) <a class="anchor-link" href="#leave"
               title="Permalink to Channel.leave">#</a></h4>
 <div class="doc">
+<p>Remove user from channel
+Notify everyone else in channel
+Notify listeners</p>
 <pre class="source">
 void leave(User u) {
  new Logger().Debug("(channel.dart) User ${u.id} leaving channel $id");
@@ -355,6 +408,7 @@ void leave(User u) {
  if (_users.contains(u))
    _users.removeAt(_users.indexOf(u));
  
+ sendToAll(new ByePacket.With(u.id));
  listeners.where((l) =&gt; l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
    l.onLeaveChannel(this, u);
  });
@@ -386,6 +440,7 @@ void onClose(User u, int status, String reason) {
 void <strong>sendToAll</strong>(<a href="../rtc_common/Packet.html">Packet</a> p) <a class="anchor-link" href="#sendToAll"
               title="Permalink to Channel.sendToAll">#</a></h4>
 <div class="doc">
+<p>Send packet to everyone in channel</p>
 <pre class="source">
 void sendToAll(Packet p) {
  _users.forEach((User u) {
@@ -400,6 +455,7 @@ void sendToAll(Packet p) {
 void <strong>sendToAllExceptSender</strong>(<a href="../rtc_server/User.html">User</a> sender, <a href="../rtc_common/Packet.html">Packet</a> p) <a class="anchor-link" href="#sendToAllExceptSender"
               title="Permalink to Channel.sendToAllExceptSender">#</a></h4>
 <div class="doc">
+<p>Send packet to everyone in channel except the sender</p>
 <pre class="source">
 void sendToAllExceptSender(User sender, Packet p) {
  _users.forEach((User u) {
@@ -445,7 +501,7 @@ void unsubscribe(T listener) {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-15 19:35:57.446</div>
+          <div>This page was generated at 2013-01-18 18:51:15.131</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

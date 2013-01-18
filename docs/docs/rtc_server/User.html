@@ -24,9 +24,10 @@
       
         <div class="nav">
         
-<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
 <li><a href="../rtc_server/BaseChannelContainer.html"><div class="icon-class"></div>BaseChannelContainer</a></li>
 <li><a href="../rtc_server/BaseContainer.html"><div class="icon-class"></div>BaseContainer&lt;T&gt;</a></li>
+<li><a href="../rtc_server/BaseUser.html"><div class="icon-class"></div>BaseUser</a></li>
 <li><a href="../rtc_server/BaseUserContainer.html"><div class="icon-class"></div>BaseUserContainer</a></li>
 <li><a href="../rtc_server/Channel.html"><div class="icon-class"></div>Channel</a></li>
 <li><a href="../rtc_server/ChannelConnectionEventListener.html"><div class="icon-class"></div>ChannelConnectionEventListener</a></li>
@@ -49,7 +50,7 @@
 <li><a href="../rtc_server/WheelServer.html"><div class="icon-class"></div>WheelServer</a></li>
 <li><a href="../rtc_server/WheelUser.html"><div class="icon-class"></div>WheelUser</a></li>
 </ul>
-<h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+</div>
 <div class="content">
         <h2><strong>User</strong>
           class
@@ -59,93 +60,20 @@
 <div class="doc">
 <p>User class</p>
 <pre class="source">
-class User extends GenericEventTarget&lt;UserEventListener&gt; implements Comparable {
- /* talking to */
- List&lt;User&gt; _talkingTo;
- 
- /* name (id) of the user */
- String _id;
- 
+class User extends BaseUser {
  /* WebSocketConnection */
  WebSocketConnection _conn;
- 
- /* millisecond timestamp when last activity was registered*/
- int _lastActivity;
- 
- /* millisecond timestamp when last connection to another user was done */
- int _timeSinceLastConnection;
- 
- /** millisecond timestamp when last activity was registered */
- int get lastActivity =&gt; _lastActivity;
- 
- /** millisecond timestamp when last connection to another user was done */
- int get timeSinceLastConnection =&gt; _timeSinceLastConnection;
- 
- /** Is the user talking to another user */ 
- bool get isTalking =&gt; _talkingTo.length &gt; 0;
- 
- /** Users this user it talking with */
- List&lt;User&gt; get talkers =&gt; _talkingTo;
- 
- /** Getter for user id */
- String get id =&gt; _id;
  
  /** Getter for the connection */
  WebSocketConnection get connection =&gt; _conn;
  
- /** Setter for user id */
- set id(String value) =&gt; _id = value;
- 
- /** Set the timestamp for last activity */
- set lastActivity(int value) =&gt; _lastActivity = value;
- 
- /** Set the timestamp for last connection */
- set timeSinceLastConnection(int value) =&gt; _timeSinceLastConnection = value;
- 
- /** Logger =) */
- Logger log = new Logger();
- 
- UserContainer _container;
  /**
   * Constructor
   */
- User(this._container, this._id, this._conn) {
-   _talkingTo = new List&lt;User&gt;();
+ User(UserContainer container, String id, this._conn) : super(container, id){
    _conn.onClosed = _onClose;
-   _lastActivity = new Date.now().millisecondsSinceEpoch;
-   _timeSinceLastConnection = new Date.now().millisecondsSinceEpoch;
  }
 
- /*
-  * Called when websocket connection closes
-  */ 
- void _onClose(int status, String reason) {
-   log.Debug("User connection closed with status $status and reason $reason");
-   //_container.removeUser(this);
-   _talkingTo.forEach((User u) =&gt; u.hangup(this));
-   
-   listeners.where((l) =&gt; l is UserConnectionEventListener).forEach((l) {
-     l.onClose(this, status, reason);
-   });
- }
- 
- /**
-  * Hangup with other users
-  */
- void hangup(User u) {
-   if (_talkingTo.contains(u))
-     _talkingTo.removeAt(_talkingTo.indexOf(u));
- }
- 
- /**
-  * Talk to other user
-  */
- void talkTo(User u) {
-   if (!_talkingTo.contains(u)) {
-     _talkingTo.add(u);
-   }
- }
- 
  /**
   * Kill the user
   */
@@ -153,53 +81,11 @@ class User extends GenericEventTarget&lt;UserEventListener&gt; implements Compar
    try {
      _conn.close(1000, "Leaving");
    } on Exception catch(e) {
-     log.Error("terminate Exception: $e");
+     logger.Error("terminate Exception: $e");
    } catch (e) {
-     log.Error("terminate Error: $e");
+     logger.Error("terminate Error: $e");
    }
- }
- 
- /**
-  * Checks if the user needs to be pinged
-  */
- bool needsPing(int currentTime) {
-   return currentTime &gt;= lastActivity + DEAD_SOCKET_CHECK &amp;&amp; currentTime &lt; lastActivity + DEAD_SOCKET_KILL;
- }
- 
- /**
-  * Checks if the user needs to be killed
-  * User has not responded to ping with pong
-  */
- bool needsKill(int currentTime) {
-   return currentTime &gt;= lastActivity + DEAD_SOCKET_KILL;
- }
- 
- /**
-  * Implements Comparable
-  */
- int compareTo(Comparable other) {
-   if (!(other is User))
-     throw new ArgumentError("Cannot compare to anything else but User");
-   
-   int toReturn;
-   
-   if (_timeSinceLastConnection &lt; other.timeSinceLastConnection)
-     toReturn = -1;
-   else if (_timeSinceLastConnection &gt; other.timeSinceLastConnection)
-     toReturn = 1;
-   else
-     toReturn = 0;
-   
-   return toReturn;
- }
- 
- operator &gt;(User other) {
-   return _timeSinceLastConnection &gt; other.timeSinceLastConnection;
- }
- 
- operator &gt;=(User other) {
-   return _timeSinceLastConnection &gt;= other.timeSinceLastConnection;
- }
+ } 
  
  /**
   * Equality operator ==
@@ -220,27 +106,21 @@ class User extends GenericEventTarget&lt;UserEventListener&gt; implements Compar
 </div>
 <h3>Extends</h3>
 <p>
-<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/GenericEventTarget.html">GenericEventTarget&lt;UserEventListener&gt;</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>User</strong></span></p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/GenericEventTarget.html">GenericEventTarget&lt;UserEventListener&gt;</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/BaseUser.html">BaseUser</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>User</strong></span></p>
 <h3>Subclasses</h3>
 <p>
 <span class="type-box"><span class="icon-class"></span><a href="../rtc_server/WheelUser.html">WheelUser</a></span></p>
-<h3>Implements</h3>
-<p>
-<span class="type-box"><span class="icon-class"></span><a href="../dart_core/Comparable.html">Comparable</a></span></p>
 <div>
 <h3>Constructors</h3>
 <div class="method"><h4 id="User">
 <button class="show-code">Code</button>
-new <strong>User</strong>(<a href="../rtc_server/UserContainer.html">UserContainer</a> _container, <a href="http://api.dartlang.org/dart_core/String.html">String</a> _id, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> _conn) <a class="anchor-link" href="#User"
+new <strong>User</strong>(<a href="../rtc_server/UserContainer.html">UserContainer</a> container, <a href="http://api.dartlang.org/dart_core/String.html">String</a> id, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> _conn) <a class="anchor-link" href="#User"
               title="Permalink to User.User">#</a></h4>
 <div class="doc">
 <p>Constructor</p>
 <pre class="source">
-User(this._container, this._id, this._conn) {
- _talkingTo = new List&lt;User&gt;();
+User(UserContainer container, String id, this._conn) : super(container, id){
  _conn.onClosed = _onClose;
- _lastActivity = new Date.now().millisecondsSinceEpoch;
- _timeSinceLastConnection = new Date.now().millisecondsSinceEpoch;
 }
 </pre>
 </div>
@@ -261,57 +141,57 @@ WebSocketConnection get connection =&gt; _conn;
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="id">
+<div class="method inherited"><h4 id="id">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>get id</strong> <a class="anchor-link" href="#id"
               title="Permalink to User.get id">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Getter for user id </p>
 <pre class="source">
 String get id =&gt; _id;
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="id=">
+<div class="method inherited"><h4 id="id=">
 <button class="show-code">Code</button>
 <strong>set id</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> value) <a class="anchor-link" href="#id="
               title="Permalink to User.set id">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Setter for user id </p>
 <pre class="source">
 set id(String value) =&gt; _id = value;
 </pre>
 </div>
 </div>
-<div class="field"><h4 id="isTalking">
+<div class="field inherited"><h4 id="isTalking">
 <button class="show-code">Code</button>
 final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isTalking</strong> <a class="anchor-link"
             href="#isTalking"
             title="Permalink to User.isTalking">#</a>
         </h4>
-        <div class="doc">
+        <div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Is the user talking to another user </p>
 <pre class="source">
 bool get isTalking =&gt; _talkingTo.length &gt; 0;
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="lastActivity">
+<div class="method inherited"><h4 id="lastActivity">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>get lastActivity</strong> <a class="anchor-link" href="#lastActivity"
               title="Permalink to User.get lastActivity">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>millisecond timestamp when last activity was registered </p>
 <pre class="source">
 int get lastActivity =&gt; _lastActivity;
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="lastActivity=">
+<div class="method inherited"><h4 id="lastActivity=">
 <button class="show-code">Code</button>
 <strong>set lastActivity</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#lastActivity="
               title="Permalink to User.set lastActivity">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Set the timestamp for last activity </p>
 <pre class="source">
 set lastActivity(int value) =&gt; _lastActivity = value;
@@ -331,47 +211,47 @@ List&lt;T&gt; get listeners =&gt; _listeners;
 </pre>
 </div>
 </div>
-<div class="field"><h4 id="log">
+<div class="field inherited"><h4 id="logger">
 <button class="show-code">Code</button>
-<a href="../rtc_util/Logger.html">Logger</a>         <strong>log</strong> <a class="anchor-link"
-            href="#log"
-            title="Permalink to User.log">#</a>
+<a href="../rtc_common/Logger.html">Logger</a>         <strong>logger</strong> <a class="anchor-link"
+            href="#logger"
+            title="Permalink to User.logger">#</a>
         </h4>
-        <div class="doc">
+        <div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <pre class="source">
-log = new Logger()
+logger = new Logger()
 </pre>
 </div>
 </div>
-<div class="field"><h4 id="talkers">
+<div class="field inherited"><h4 id="talkers">
 <button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_server/User.html">User</a>&gt;         <strong>talkers</strong> <a class="anchor-link"
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../rtc_server/BaseUser.html">BaseUser</a>&gt;         <strong>talkers</strong> <a class="anchor-link"
             href="#talkers"
             title="Permalink to User.talkers">#</a>
         </h4>
-        <div class="doc">
+        <div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Users this user it talking with </p>
 <pre class="source">
-List&lt;User&gt; get talkers =&gt; _talkingTo;
+List&lt;BaseUser&gt; get talkers =&gt; _talkingTo;
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="timeSinceLastConnection">
+<div class="method inherited"><h4 id="timeSinceLastConnection">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>get timeSinceLastConnection</strong> <a class="anchor-link" href="#timeSinceLastConnection"
               title="Permalink to User.get timeSinceLastConnection">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>millisecond timestamp when last connection to another user was done </p>
 <pre class="source">
 int get timeSinceLastConnection =&gt; _timeSinceLastConnection;
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="timeSinceLastConnection=">
+<div class="method inherited"><h4 id="timeSinceLastConnection=">
 <button class="show-code">Code</button>
 <strong>set timeSinceLastConnection</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#timeSinceLastConnection="
               title="Permalink to User.set timeSinceLastConnection">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Set the timestamp for last connection </p>
 <pre class="source">
 set timeSinceLastConnection(int value) =&gt; _timeSinceLastConnection = value;
@@ -381,25 +261,25 @@ set timeSinceLastConnection(int value) =&gt; _timeSinceLastConnection = value;
 </div>
 <div>
 <h3>Operators</h3>
-<div class="method"><h4 id=">">
+<div class="method inherited"><h4 id=">">
 <button class="show-code">Code</button>
-<strong>operator ></strong>(<a href="../rtc_server/User.html">User</a> other) <a class="anchor-link" href="#>"
+<strong>operator ></strong>(<a href="../rtc_server/BaseUser.html">BaseUser</a> other) <a class="anchor-link" href="#>"
               title="Permalink to User.operator >">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <pre class="source">
-operator &gt;(User other) {
+operator &gt;(BaseUser other) {
  return _timeSinceLastConnection &gt; other.timeSinceLastConnection;
 }
 </pre>
 </div>
 </div>
-<div class="method"><h4 id=">=">
+<div class="method inherited"><h4 id=">=">
 <button class="show-code">Code</button>
-<strong>operator >=</strong>(<a href="../rtc_server/User.html">User</a> other) <a class="anchor-link" href="#>="
+<strong>operator >=</strong>(<a href="../rtc_server/BaseUser.html">BaseUser</a> other) <a class="anchor-link" href="#>="
               title="Permalink to User.operator >=">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <pre class="source">
-operator &gt;=(User other) {
+operator &gt;=(BaseUser other) {
  return _timeSinceLastConnection &gt;= other.timeSinceLastConnection;
 }
 </pre>
@@ -429,15 +309,15 @@ operator ==(Object o) {
 </div>
 <div>
 <h3>Methods</h3>
-<div class="method"><h4 id="compareTo">
+<div class="method inherited"><h4 id="compareTo">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareTo</strong>(<a href="http://api.dartlang.org/dart_core/Comparable.html">Comparable</a> other) <a class="anchor-link" href="#compareTo"
               title="Permalink to User.compareTo">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Implements Comparable</p>
 <pre class="source">
 int compareTo(Comparable other) {
- if (!(other is User))
+ if (!(other is BaseUser))
    throw new ArgumentError("Cannot compare to anything else but User");
  
  int toReturn;
@@ -467,25 +347,25 @@ List&lt;T&gt; getListeners() {
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="hangup">
+<div class="method inherited"><h4 id="hangup">
 <button class="show-code">Code</button>
-void <strong>hangup</strong>(<a href="../rtc_server/User.html">User</a> u) <a class="anchor-link" href="#hangup"
+void <strong>hangup</strong>(<a href="../rtc_server/BaseUser.html">BaseUser</a> u) <a class="anchor-link" href="#hangup"
               title="Permalink to User.hangup">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Hangup with other users</p>
 <pre class="source">
-void hangup(User u) {
+void hangup(BaseUser u) {
  if (_talkingTo.contains(u))
    _talkingTo.removeAt(_talkingTo.indexOf(u));
 }
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="needsKill">
+<div class="method inherited"><h4 id="needsKill">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>needsKill</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> currentTime) <a class="anchor-link" href="#needsKill"
               title="Permalink to User.needsKill">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Checks if the user needs to be killed
 User has not responded to ping with pong</p>
 <pre class="source">
@@ -495,11 +375,11 @@ bool needsKill(int currentTime) {
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="needsPing">
+<div class="method inherited"><h4 id="needsPing">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>needsPing</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> currentTime) <a class="anchor-link" href="#needsPing"
               title="Permalink to User.needsPing">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Checks if the user needs to be pinged</p>
 <pre class="source">
 bool needsPing(int currentTime) {
@@ -522,14 +402,14 @@ void subscribe(T listener) {
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="talkTo">
+<div class="method inherited"><h4 id="talkTo">
 <button class="show-code">Code</button>
-void <strong>talkTo</strong>(<a href="../rtc_server/User.html">User</a> u) <a class="anchor-link" href="#talkTo"
+void <strong>talkTo</strong>(<a href="../rtc_server/BaseUser.html">BaseUser</a> u) <a class="anchor-link" href="#talkTo"
               title="Permalink to User.talkTo">#</a></h4>
-<div class="doc">
+<div class="inherited-from">inherited from <a href="../rtc_server/BaseUser.html">BaseUser</a> </div><div class="doc">
 <p>Talk to other user</p>
 <pre class="source">
-void talkTo(User u) {
+void talkTo(BaseUser u) {
  if (!_talkingTo.contains(u)) {
    _talkingTo.add(u);
  }
@@ -548,9 +428,9 @@ void terminate() {
  try {
    _conn.close(1000, "Leaving");
  } on Exception catch(e) {
-   log.Error("terminate Exception: $e");
+   logger.Error("terminate Exception: $e");
  } catch (e) {
-   log.Error("terminate Error: $e");
+   logger.Error("terminate Error: $e");
  }
 }
 </pre>
@@ -576,7 +456,7 @@ void unsubscribe(T listener) {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-15 19:35:57.459</div>
+          <div>This page was generated at 2013-01-18 18:51:15.145</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

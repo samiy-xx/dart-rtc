@@ -52,11 +52,11 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   PeerWrapper(PeerManager pm, RtcPeerConnection p) {
     _peer = p;
     _manager = pm;
-    _peer.on.iceCandidate.add(_onIceCandidate);
-    _peer.on.iceChange.add(_onIceChange);
-    _peer.on.removeStream.add(_onRemoveStream);
-    _peer.on.negotiationNeeded.add(_onNegotiationNeeded);
-    _peer.on.open.add((Event e) => _isOpen = true);
+    _peer.onIceCandidate.listen(_onIceCandidate);
+    _peer.onIceChange.listen(_onIceChange);
+    _peer.onRemoveStream.listen(_onRemoveStream);
+    _peer.onNegotiationNeeded.listen(_onNegotiationNeeded);
+    _peer.onOpen.listen((Event e) => _isOpen = true);
   }
   
   void setAsHost(bool value) {

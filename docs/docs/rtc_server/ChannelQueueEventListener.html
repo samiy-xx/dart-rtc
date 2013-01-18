@@ -24,9 +24,10 @@
       
         <div class="nav">
         
-<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
 <li><a href="../rtc_server/BaseChannelContainer.html"><div class="icon-class"></div>BaseChannelContainer</a></li>
 <li><a href="../rtc_server/BaseContainer.html"><div class="icon-class"></div>BaseContainer&lt;T&gt;</a></li>
+<li><a href="../rtc_server/BaseUser.html"><div class="icon-class"></div>BaseUser</a></li>
 <li><a href="../rtc_server/BaseUserContainer.html"><div class="icon-class"></div>BaseUserContainer</a></li>
 <li><a href="../rtc_server/Channel.html"><div class="icon-class"></div>Channel</a></li>
 <li><a href="../rtc_server/ChannelConnectionEventListener.html"><div class="icon-class"></div>ChannelConnectionEventListener</a></li>
@@ -49,7 +50,7 @@
 <li><a href="../rtc_server/WheelServer.html"><div class="icon-class"></div>WheelServer</a></li>
 <li><a href="../rtc_server/WheelUser.html"><div class="icon-class"></div>WheelUser</a></li>
 </ul>
-<h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+</div>
 <div class="content">
         <h2><strong>ChannelQueueEventListener</strong>
           abstract class
@@ -59,31 +60,34 @@
 <div class="doc">
 <pre class="source">
 abstract class ChannelQueueEventListener extends ChannelEventListener {
- void onEnterQueue(User u, int count, int position);
- void onMoveInQueue(User u, int count, int position);
- void onLeaveQueue(User u);
+ void onEnterQueue(Channel c, User u, int count, int position);
+ void onMoveInQueue(Channel c, User u, int count, int position);
+ void onLeaveQueue(Channel c, User u);
 }
 </pre>
 </div>
 <h3>Extends</h3>
 <p>
 <span class="type-box"><span class="icon-class"></span><a href="../rtc_server/ChannelEventListener.html">ChannelEventListener</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>ChannelQueueEventListener</strong></span></p>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/QueueContainer.html">QueueContainer</a></span></p>
 <div>
 <h3>Methods</h3>
 <div class="method"><h4 id="onEnterQueue">
-abstract void <strong>onEnterQueue</strong>(<a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> count, <a href="http://api.dartlang.org/dart_core/int.html">int</a> position) <a class="anchor-link" href="#onEnterQueue"
+abstract void <strong>onEnterQueue</strong>(<a href="../rtc_server/Channel.html">Channel</a> c, <a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> count, <a href="http://api.dartlang.org/dart_core/int.html">int</a> position) <a class="anchor-link" href="#onEnterQueue"
               title="Permalink to ChannelQueueEventListener.onEnterQueue">#</a></h4>
 <div class="doc">
 </div>
 </div>
 <div class="method"><h4 id="onLeaveQueue">
-abstract void <strong>onLeaveQueue</strong>(<a href="../rtc_server/User.html">User</a> u) <a class="anchor-link" href="#onLeaveQueue"
+abstract void <strong>onLeaveQueue</strong>(<a href="../rtc_server/Channel.html">Channel</a> c, <a href="../rtc_server/User.html">User</a> u) <a class="anchor-link" href="#onLeaveQueue"
               title="Permalink to ChannelQueueEventListener.onLeaveQueue">#</a></h4>
 <div class="doc">
 </div>
 </div>
 <div class="method"><h4 id="onMoveInQueue">
-abstract void <strong>onMoveInQueue</strong>(<a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> count, <a href="http://api.dartlang.org/dart_core/int.html">int</a> position) <a class="anchor-link" href="#onMoveInQueue"
+abstract void <strong>onMoveInQueue</strong>(<a href="../rtc_server/Channel.html">Channel</a> c, <a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> count, <a href="http://api.dartlang.org/dart_core/int.html">int</a> position) <a class="anchor-link" href="#onMoveInQueue"
               title="Permalink to ChannelQueueEventListener.onMoveInQueue">#</a></h4>
 <div class="doc">
 </div>
@@ -94,7 +98,7 @@ abstract void <strong>onMoveInQueue</strong>(<a href="../rtc_server/User.html">U
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-15 19:35:56.844</div>
+          <div>This page was generated at 2013-01-18 18:51:14.866</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

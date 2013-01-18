@@ -24,9 +24,10 @@
       
         <div class="nav">
         
-<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
 <li><a href="../rtc_server/BaseChannelContainer.html"><div class="icon-class"></div>BaseChannelContainer</a></li>
 <li><a href="../rtc_server/BaseContainer.html"><div class="icon-class"></div>BaseContainer&lt;T&gt;</a></li>
+<li><a href="../rtc_server/BaseUser.html"><div class="icon-class"></div>BaseUser</a></li>
 <li><a href="../rtc_server/BaseUserContainer.html"><div class="icon-class"></div>BaseUserContainer</a></li>
 <li><a href="../rtc_server/Channel.html"><div class="icon-class"></div>Channel</a></li>
 <li><a href="../rtc_server/ChannelConnectionEventListener.html"><div class="icon-class"></div>ChannelConnectionEventListener</a></li>
@@ -49,7 +50,7 @@
 <li><a href="../rtc_server/WheelServer.html"><div class="icon-class"></div>WheelServer</a></li>
 <li><a href="../rtc_server/WheelUser.html"><div class="icon-class"></div>WheelUser</a></li>
 </ul>
-<h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+</div>
 <div class="content">
         <h2><strong>QueueChannel</strong>
           class
@@ -58,14 +59,25 @@
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
 <pre class="source">
-class QueueChannel extends Channel {
+class QueueChannel extends Channel implements UserConnectionEventListener {
+ /* Queue users here */
  List&lt;User&gt; _queue;
  
+ /** Override canJoin from Channel */
  bool get canJoin =&gt; true;
  
+ /**
+  * Set the channel limit to 2
+  */
  QueueChannel(ChannelContainer rc, String id) : super(rc, id, 2){
    _queue = new List&lt;User&gt;();
-   //subscribe(this);
+ }
+ 
+ /**
+  * Implements UserConnectionEventListener
+  */
+ void onClose(User user, int code, String reason){
+   leave(user);
  }
  
  void join(User u) {
@@ -73,6 +85,7 @@ class QueueChannel extends Channel {
      super.join(u);
    } else {
      insertIntoQueue(u);
+     u.subscribe(this);
    }
  }
  
@@ -82,12 +95,14 @@ class QueueChannel extends Channel {
    User n = popFromQueue();
    if (n != null) {
      super.join(n);
+     n.unsubscribe(this);
    }
  }
+ 
  void insertIntoQueue(User u) {
    _queue.addLast(u);
    listeners.where((l) =&gt; l is ChannelQueueEventListener).forEach((ChannelQueueEventListener l) {
-     l.onEnterQueue(u, _queue.length, _queue.indexOf(u));
+     l.onEnterQueue(this, u, _queue.length, _queue.indexOf(u));
    });
  }
  
@@ -97,17 +112,19 @@ class QueueChannel extends Channel {
    
    User u = _queue.removeAt(0);
    listeners.where((l) =&gt; l is ChannelQueueEventListener).forEach((ChannelQueueEventListener l) {
-     l.onLeaveQueue(u);
+     l.onLeaveQueue(this, u);
    });
    
    if (_queue.length &gt; 0) {
      for (int i = 0; i &lt; _queue.length; i++) {
        User qu = _queue[i];
        listeners.where((l) =&gt; l is ChannelQueueEventListener).forEach((ChannelQueueEventListener l) {
-         l.onMoveInQueue(qu, _queue.length, i);
+         l.onMoveInQueue(this, qu, _queue.length, i);
        });
      }
    }
+   
+   return u;
  }
 }
 </pre>
@@ -115,6 +132,9 @@ class QueueChannel extends Channel {
 <h3>Extends</h3>
 <p>
 <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/GenericEventTarget.html">GenericEventTarget&lt;ChannelEventListener&gt;</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/Channel.html">Channel</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>QueueChannel</strong></span></p>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_server/UserConnectionEventListener.html">UserConnectionEventListener</a></span></p>
 <div>
 <h3>Constructors</h3>
 <div class="method"><h4 id="QueueChannel">
@@ -122,10 +142,10 @@ class QueueChannel extends Channel {
 new <strong>QueueChannel</strong>(<a href="../rtc_server/ChannelContainer.html">ChannelContainer</a> rc, <a href="http://api.dartlang.org/dart_core/String.html">String</a> id) <a class="anchor-link" href="#QueueChannel"
               title="Permalink to QueueChannel.QueueChannel">#</a></h4>
 <div class="doc">
+<p>Set the channel limit to 2</p>
 <pre class="source">
 QueueChannel(ChannelContainer rc, String id) : super(rc, id, 2){
  _queue = new List&lt;User&gt;();
- //subscribe(this);
 }
 </pre>
 </div>
@@ -140,8 +160,22 @@ final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <st
             title="Permalink to QueueChannel.canJoin">#</a>
         </h4>
         <div class="doc">
+<p>Override canJoin from Channel </p>
 <pre class="source">
 bool get canJoin =&gt; true;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="channelLimit">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>channelLimit</strong> <a class="anchor-link"
+            href="#channelLimit"
+            title="Permalink to QueueChannel.channelLimit">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../rtc_server/Channel.html">Channel</a> </div><div class="doc">
+<p>Limit of users in channel</p>
+<pre class="source">
+int get channelLimit =&gt; _limit;
 </pre>
 </div>
 </div>
@@ -152,6 +186,7 @@ final <a href="http://api.dartlang.org/dart_core/String.html">String</a>        
             title="Permalink to QueueChannel.id">#</a>
         </h4>
         <div class="inherited-from">inherited from <a href="../rtc_server/Channel.html">Channel</a> </div><div class="doc">
+<p>Channel id</p>
 <pre class="source">
 String get id =&gt; _id;
 </pre>
@@ -177,6 +212,7 @@ final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <stro
             title="Permalink to QueueChannel.userCount">#</a>
         </h4>
         <div class="inherited-from">inherited from <a href="../rtc_server/Channel.html">Channel</a> </div><div class="doc">
+<p>Current usercount</p>
 <pre class="source">
 int get userCount =&gt; _users.length;
 </pre>
@@ -228,7 +264,7 @@ void <strong>insertIntoQueue</strong>(<a href="../rtc_server/User.html">User</a>
 void insertIntoQueue(User u) {
  _queue.addLast(u);
  listeners.where((l) =&gt; l is ChannelQueueEventListener).forEach((ChannelQueueEventListener l) {
-   l.onEnterQueue(u, _queue.length, _queue.indexOf(u));
+   l.onEnterQueue(this, u, _queue.length, _queue.indexOf(u));
  });
 }
 </pre>
@@ -240,8 +276,7 @@ void <strong>join</strong>(<a href="../rtc_server/User.html">User</a> u) <a clas
               title="Permalink to QueueChannel.join">#</a></h4>
 <div class="doc">
 <div class="inherited">
-<p>Joins the room
-@param User joining the room</p>
+<p>Joins the room</p>
 <div class="docs-inherited-from">docs inherited from <a href="../rtc_server/Channel.html">Channel</a> </div></div>
 <pre class="source">
 void join(User u) {
@@ -249,6 +284,7 @@ void join(User u) {
    super.join(u);
  } else {
    insertIntoQueue(u);
+   u.subscribe(this);
  }
 }
 </pre>
@@ -261,7 +297,10 @@ void <strong>killAll</strong>() <a class="anchor-link" href="#killAll"
 <div class="inherited-from">inherited from <a href="../rtc_server/Channel.html">Channel</a> </div><div class="doc">
 <pre class="source">
 void killAll() {
-  
+ for (int i = 0; i &lt; _users.length; i++) {
+   User u = _users[i];
+   leave(u);
+ }
 }
 </pre>
 </div>
@@ -271,6 +310,11 @@ void killAll() {
 void <strong>leave</strong>(<a href="../rtc_server/User.html">User</a> u) <a class="anchor-link" href="#leave"
               title="Permalink to QueueChannel.leave">#</a></h4>
 <div class="doc">
+<div class="inherited">
+<p>Remove user from channel
+Notify everyone else in channel
+Notify listeners</p>
+<div class="docs-inherited-from">docs inherited from <a href="../rtc_server/Channel.html">Channel</a> </div></div>
 <pre class="source">
 void leave(User u) {
  super.leave(u);
@@ -278,21 +322,21 @@ void leave(User u) {
  User n = popFromQueue();
  if (n != null) {
    super.join(n);
+   n.unsubscribe(this);
  }
 }
 </pre>
 </div>
 </div>
-<div class="method inherited"><h4 id="onClose">
+<div class="method"><h4 id="onClose">
 <button class="show-code">Code</button>
-void <strong>onClose</strong>(<a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> status, <a href="http://api.dartlang.org/dart_core/String.html">String</a> reason) <a class="anchor-link" href="#onClose"
+void <strong>onClose</strong>(<a href="../rtc_server/User.html">User</a> user, <a href="http://api.dartlang.org/dart_core/int.html">int</a> code, <a href="http://api.dartlang.org/dart_core/String.html">String</a> reason) <a class="anchor-link" href="#onClose"
               title="Permalink to QueueChannel.onClose">#</a></h4>
-<div class="inherited-from">inherited from <a href="../rtc_server/Channel.html">Channel</a> </div><div class="doc">
+<div class="doc">
 <p>Implements UserConnectionEventListener</p>
 <pre class="source">
-void onClose(User u, int status, String reason) {
- new Logger().Debug("(channel.dart) onClose fired for user ${u.id}");
- leave(u);
+void onClose(User user, int code, String reason){
+ leave(user);
 }
 </pre>
 </div>
@@ -309,17 +353,19 @@ User popFromQueue() {
  
  User u = _queue.removeAt(0);
  listeners.where((l) =&gt; l is ChannelQueueEventListener).forEach((ChannelQueueEventListener l) {
-   l.onLeaveQueue(u);
+   l.onLeaveQueue(this, u);
  });
  
  if (_queue.length &gt; 0) {
    for (int i = 0; i &lt; _queue.length; i++) {
      User qu = _queue[i];
      listeners.where((l) =&gt; l is ChannelQueueEventListener).forEach((ChannelQueueEventListener l) {
-       l.onMoveInQueue(qu, _queue.length, i);
+       l.onMoveInQueue(this, qu, _queue.length, i);
      });
    }
  }
+ 
+ return u;
 }
 </pre>
 </div>
@@ -329,6 +375,7 @@ User popFromQueue() {
 void <strong>sendToAll</strong>(<a href="../rtc_common/Packet.html">Packet</a> p) <a class="anchor-link" href="#sendToAll"
               title="Permalink to QueueChannel.sendToAll">#</a></h4>
 <div class="inherited-from">inherited from <a href="../rtc_server/Channel.html">Channel</a> </div><div class="doc">
+<p>Send packet to everyone in channel</p>
 <pre class="source">
 void sendToAll(Packet p) {
  _users.forEach((User u) {
@@ -343,6 +390,7 @@ void sendToAll(Packet p) {
 void <strong>sendToAllExceptSender</strong>(<a href="../rtc_server/User.html">User</a> sender, <a href="../rtc_common/Packet.html">Packet</a> p) <a class="anchor-link" href="#sendToAllExceptSender"
               title="Permalink to QueueChannel.sendToAllExceptSender">#</a></h4>
 <div class="inherited-from">inherited from <a href="../rtc_server/Channel.html">Channel</a> </div><div class="doc">
+<p>Send packet to everyone in channel except the sender</p>
 <pre class="source">
 void sendToAllExceptSender(User sender, Packet p) {
  _users.forEach((User u) {
@@ -388,7 +436,7 @@ void unsubscribe(T listener) {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-15 19:35:57.433</div>
+          <div>This page was generated at 2013-01-18 18:51:15.119</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

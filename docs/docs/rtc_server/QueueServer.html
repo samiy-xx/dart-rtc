@@ -24,9 +24,10 @@
       
         <div class="nav">
         
-<h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2><ul class="icon">
 <li><a href="../rtc_server/BaseChannelContainer.html"><div class="icon-class"></div>BaseChannelContainer</a></li>
 <li><a href="../rtc_server/BaseContainer.html"><div class="icon-class"></div>BaseContainer&lt;T&gt;</a></li>
+<li><a href="../rtc_server/BaseUser.html"><div class="icon-class"></div>BaseUser</a></li>
 <li><a href="../rtc_server/BaseUserContainer.html"><div class="icon-class"></div>BaseUserContainer</a></li>
 <li><a href="../rtc_server/Channel.html"><div class="icon-class"></div>Channel</a></li>
 <li><a href="../rtc_server/ChannelConnectionEventListener.html"><div class="icon-class"></div>ChannelConnectionEventListener</a></li>
@@ -49,7 +50,7 @@
 <li><a href="../rtc_server/WheelServer.html"><div class="icon-class"></div>WheelServer</a></li>
 <li><a href="../rtc_server/WheelUser.html"><div class="icon-class"></div>WheelUser</a></li>
 </ul>
-<h2><div class="icon-library"></div><a href="../rtc_util.html">rtc_util</a></h2></div>
+</div>
 <div class="content">
         <h2><strong>QueueServer</strong>
           class
@@ -63,23 +64,15 @@ class QueueServer extends WebSocketServer implements ContainerContentsEventListe
  
  QueueServer() : super() {
    registerHandler("helo", handleHelo);
-   //registerHandler("bye", handleBye);
-   //registerHandler("peercreated", handlePeerCreated);
-   //registerHandler("usermessage", handleUserMessage);
+   registerHandler("bye", handleBye);
+   registerHandler("peercreated", handlePeerCreated);
+   registerHandler("usermessage", handleUserMessage);
    
    _queueContainer = new QueueContainer(this);
    _queueContainer.subscribe(this);
  }
  
- void onEnterQueue(User u, int count, int position) {
-   
- }
- void onMoveInQueue(User u, int count, int position) {
-   
- }
- void onLeaveQueue(User u) {
-   
- }
+ 
  void onCountChanged(BaseContainer bc) {
    new Logger().Info("Container count changed ${bc.count}");
    displayStatus();
@@ -102,29 +95,63 @@ class QueueServer extends WebSocketServer implements ContainerContentsEventListe
      else
        u = _container.createChannelUser(c);
      
-     sendToClient(c, PacketFactory.get(new ConnectionSuccessPacket.With(u.id)));
+     sendPacket(c, new ConnectionSuccessPacket.With(u.id));
      
      Channel chan;
      chan = _queueContainer.findChannel(hp.channelId);
-     if (chan != null) {
-       if (chan.canJoin) {
-         chan.join(u);
-       } else {
-         c.close(1003, "Channel was full");
-         //_container.removeUser(u);
-         //u = null;
-         return;
-       }
-     } else {
+     if (chan == null)
        chan = _queueContainer.createChannelWithId(hp.channelId);
-       chan.join(u);
-     }
+     chan.join(u); 
    } catch(e, s) {
      new Logger().Error(e);
      new Logger().Info(s);
    }
  }
  
+ void handleBye(ByePacket bp, WebSocketConnection c) {
+   User user = _container.findUserByConn(c);
+   
+   try {
+     if (user != null) {
+       user.terminate();
+     }
+   } catch(e) {
+     print(e);
+   }
+ }
+
+ void handlePeerCreated(PeerCreatedPacket pcp, WebSocketConnection c) {
+   User user = _container.findUserByConn(c);
+   User other = _container.findUserById(pcp.id);
+   
+   if (user != null &amp;&amp; other != null)
+     user.talkTo(other);
+ }
+
+ void handleUserMessage(UserMessage um, WebSocketConnection c) {
+   try {
+     if (um.id == null || um.id.isEmpty) {
+       print ("id was null or empty");
+       return;
+     }
+     User user = _container.findUserByConn(c);
+     User other = _container.findUserById(um.id);
+     
+     if (user == null || other == null) {
+       new Logger().Warning("(channelserver.dart) User was not found");
+       return;
+     }
+     
+     um.id = user.id;
+     
+     sendToClient(other.connection, PacketFactory.get(um));
+     
+   } on NoSuchMethodError catch(e) {
+     new Logger().Error("Error: $e");
+   } catch(e) {
+     new Logger().Error("Error: $e");
+   }
+ }
 }
 </pre>
 </div>
@@ -144,9 +171,9 @@ new <strong>QueueServer</strong>() <a class="anchor-link" href="#QueueServer"
 <pre class="source">
 QueueServer() : super() {
  registerHandler("helo", handleHelo);
- //registerHandler("bye", handleBye);
- //registerHandler("peercreated", handlePeerCreated);
- //registerHandler("usermessage", handleUserMessage);
+ registerHandler("bye", handleBye);
+ registerHandler("peercreated", handlePeerCreated);
+ registerHandler("usermessage", handleUserMessage);
  
  _queueContainer = new QueueContainer(this);
  _queueContainer.subscribe(this);
@@ -159,7 +186,7 @@ QueueServer() : super() {
 <h3>Properties</h3>
 <div class="field inherited"><h4 id="logger">
 <button class="show-code">Code</button>
-<a href="../rtc_util/Logger.html">Logger</a>         <strong>logger</strong> <a class="anchor-link"
+<a href="../rtc_common/Logger.html">Logger</a>         <strong>logger</strong> <a class="anchor-link"
             href="#logger"
             title="Permalink to QueueServer.logger">#</a>
         </h4>
@@ -285,6 +312,26 @@ List&lt;Function&gt; getHandlers(String type) {
 </pre>
 </div>
 </div>
+<div class="method"><h4 id="handleBye">
+<button class="show-code">Code</button>
+void <strong>handleBye</strong>(<a href="../rtc_common/ByePacket.html">ByePacket</a> bp, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c) <a class="anchor-link" href="#handleBye"
+              title="Permalink to QueueServer.handleBye">#</a></h4>
+<div class="doc">
+<pre class="source">
+void handleBye(ByePacket bp, WebSocketConnection c) {
+ User user = _container.findUserByConn(c);
+ 
+ try {
+   if (user != null) {
+     user.terminate();
+   }
+ } catch(e) {
+   print(e);
+ }
+}
+</pre>
+</div>
+</div>
 <div class="method"><h4 id="handleHelo">
 <button class="show-code">Code</button>
 void <strong>handleHelo</strong>(<a href="../rtc_common/HeloPacket.html">HeloPacket</a> hp, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c) <a class="anchor-link" href="#handleHelo"
@@ -304,23 +351,13 @@ void handleHelo(HeloPacket hp, WebSocketConnection c) {
    else
      u = _container.createChannelUser(c);
    
-   sendToClient(c, PacketFactory.get(new ConnectionSuccessPacket.With(u.id)));
+   sendPacket(c, new ConnectionSuccessPacket.With(u.id));
    
    Channel chan;
    chan = _queueContainer.findChannel(hp.channelId);
-   if (chan != null) {
-     if (chan.canJoin) {
-       chan.join(u);
-     } else {
-       c.close(1003, "Channel was full");
-       //_container.removeUser(u);
-       //u = null;
-       return;
-     }
-   } else {
+   if (chan == null)
      chan = _queueContainer.createChannelWithId(hp.channelId);
-     chan.join(u);
-   }
+   chan.join(u); 
  } catch(e, s) {
    new Logger().Error(e);
    new Logger().Info(s);
@@ -414,6 +451,55 @@ void handleIncomingPong(PongPacket p, c) {
 </pre>
 </div>
 </div>
+<div class="method"><h4 id="handlePeerCreated">
+<button class="show-code">Code</button>
+void <strong>handlePeerCreated</strong>(<a href="../rtc_common/PeerCreatedPacket.html">PeerCreatedPacket</a> pcp, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c) <a class="anchor-link" href="#handlePeerCreated"
+              title="Permalink to QueueServer.handlePeerCreated">#</a></h4>
+<div class="doc">
+<pre class="source">
+void handlePeerCreated(PeerCreatedPacket pcp, WebSocketConnection c) {
+ User user = _container.findUserByConn(c);
+ User other = _container.findUserById(pcp.id);
+ 
+ if (user != null &amp;&amp; other != null)
+   user.talkTo(other);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleUserMessage">
+<button class="show-code">Code</button>
+void <strong>handleUserMessage</strong>(<a href="../rtc_common/UserMessage.html">UserMessage</a> um, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c) <a class="anchor-link" href="#handleUserMessage"
+              title="Permalink to QueueServer.handleUserMessage">#</a></h4>
+<div class="doc">
+<pre class="source">
+void handleUserMessage(UserMessage um, WebSocketConnection c) {
+ try {
+   if (um.id == null || um.id.isEmpty) {
+     print ("id was null or empty");
+     return;
+   }
+   User user = _container.findUserByConn(c);
+   User other = _container.findUserById(um.id);
+   
+   if (user == null || other == null) {
+     new Logger().Warning("(channelserver.dart) User was not found");
+     return;
+   }
+   
+   um.id = user.id;
+   
+   sendToClient(other.connection, PacketFactory.get(um));
+   
+ } on NoSuchMethodError catch(e) {
+   new Logger().Error("Error: $e");
+ } catch(e) {
+   new Logger().Error("Error: $e");
+ }
+}
+</pre>
+</div>
+</div>
 <div class="method inherited"><h4 id="listen">
 <button class="show-code">Code</button>
 void <strong>listen</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> ip = "0.0.0.0", <a href="http://api.dartlang.org/dart_core/int.html">int</a> port = 8234, <a href="http://api.dartlang.org/dart_core/String.html">String</a> path = "/ws"]) <a class="anchor-link" href="#listen"
@@ -458,42 +544,6 @@ void <strong>onCountChanged</strong>(<a href="../rtc_server/BaseContainer.html">
 void onCountChanged(BaseContainer bc) {
  new Logger().Info("Container count changed ${bc.count}");
  displayStatus();
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="onEnterQueue">
-<button class="show-code">Code</button>
-void <strong>onEnterQueue</strong>(<a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> count, <a href="http://api.dartlang.org/dart_core/int.html">int</a> position) <a class="anchor-link" href="#onEnterQueue"
-              title="Permalink to QueueServer.onEnterQueue">#</a></h4>
-<div class="doc">
-<pre class="source">
-void onEnterQueue(User u, int count, int position) {
- 
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="onLeaveQueue">
-<button class="show-code">Code</button>
-void <strong>onLeaveQueue</strong>(<a href="../rtc_server/User.html">User</a> u) <a class="anchor-link" href="#onLeaveQueue"
-              title="Permalink to QueueServer.onLeaveQueue">#</a></h4>
-<div class="doc">
-<pre class="source">
-void onLeaveQueue(User u) {
- 
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="onMoveInQueue">
-<button class="show-code">Code</button>
-void <strong>onMoveInQueue</strong>(<a href="../rtc_server/User.html">User</a> u, <a href="http://api.dartlang.org/dart_core/int.html">int</a> count, <a href="http://api.dartlang.org/dart_core/int.html">int</a> position) <a class="anchor-link" href="#onMoveInQueue"
-              title="Permalink to QueueServer.onMoveInQueue">#</a></h4>
-<div class="doc">
-<pre class="source">
-void onMoveInQueue(User u, int count, int position) {
- 
 }
 </pre>
 </div>
@@ -638,7 +688,7 @@ void stop() {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-15 19:35:56.888</div>
+          <div>This page was generated at 2013-01-18 18:51:14.911</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

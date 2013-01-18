@@ -2,19 +2,19 @@
         <html>
         <head>
                 <meta charset="utf-8">
-        <title>IdPacket class / rtc_common Library / Dart Documentation</title>
+        <title>QueuePacket class / rtc_common Library / Dart Documentation</title>
         <link rel="stylesheet" type="text/css"
             href="../styles.css">
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="../favicon.ico">
         
         </head>
-        <body data-library="rtc_common" data-type="IdPacket">
+        <body data-library="rtc_common" data-type="QueuePacket">
         <div class="page">
         <div class="header">
           <a href="../index.html"><div class="logo"></div></a>
           <a href="../index.html">Dart Documentation</a>
-         &rsaquo; <a href="../rtc_common.html">rtc_common</a> &rsaquo; <a href="../rtc_common/IdPacket.html">IdPacket</a>        <div id="search-box">
+         &rsaquo; <a href="../rtc_common.html">rtc_common</a> &rsaquo; <a href="../rtc_common/QueuePacket.html">QueuePacket</a>        <div id="search-box">
           <input type="search" name="q" id="q" autocomplete="off"
               class="search-input" placeholder="Search API">
         </div>
@@ -33,7 +33,7 @@
 <li><a href="../rtc_common/GenericEventTarget.html"><div class="icon-class"></div>GenericEventTarget&lt;T&gt;</a></li>
 <li><a href="../rtc_common/HeloPacket.html"><div class="icon-class"></div>HeloPacket</a></li>
 <li><a href="../rtc_common/IcePacket.html"><div class="icon-class"></div>IcePacket</a></li>
-<li><div class="icon-class"></div><strong>IdPacket</strong></li>
+<li><a href="../rtc_common/IdPacket.html"><div class="icon-class"></div>IdPacket</a></li>
 <li><a href="../rtc_common/JoinPacket.html"><div class="icon-class"></div>JoinPacket</a></li>
 <li><a href="../rtc_common/Logger.html"><div class="icon-class"></div>Logger</a></li>
 <li><a href="../rtc_common/LogLevel.html"><div class="icon-class"></div>LogLevel</a></li>
@@ -46,7 +46,7 @@
 <li><a href="../rtc_common/PeerCreatedPacket.html"><div class="icon-class"></div>PeerCreatedPacket</a></li>
 <li><a href="../rtc_common/PingPacket.html"><div class="icon-class"></div>PingPacket</a></li>
 <li><a href="../rtc_common/PongPacket.html"><div class="icon-class"></div>PongPacket</a></li>
-<li><a href="../rtc_common/QueuePacket.html"><div class="icon-class"></div>QueuePacket</a></li>
+<li><div class="icon-class"></div><strong>QueuePacket</strong></li>
 <li><a href="../rtc_common/RandomUserPacket.html"><div class="icon-class"></div>RandomUserPacket</a></li>
 <li><a href="../rtc_common/StreamConstraints.html"><div class="icon-class"></div>StreamConstraints</a></li>
 <li><a href="../rtc_common/UserMessage.html"><div class="icon-class"></div>UserMessage</a></li>
@@ -56,31 +56,33 @@
 </ul>
 <h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2></div>
 <div class="content">
-        <h2><strong>IdPacket</strong>
+        <h2><strong>QueuePacket</strong>
           class
         </h2>
         
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
 <pre class="source">
-class IdPacket implements Packet {
- IdPacket();
- IdPacket.With(this.id, this.channelId);
+class QueuePacket implements Packet {
+ QueuePacket() : super();
+ QueuePacket.With(this.id, this.channelId, this.position);
  
- String packetType = PacketType.ID;
- String channelId = "";
- String id = "";
+ String packetType = PacketType.QUEUE;
+ String id;
+ String channelId;
+ String position;
  
  Map toJson() {
    return {
-     'packetType': packetType,
+     'id': id,
      'channelId': channelId,
-     'id': id
+     'position': position,
+     'packetType': packetType
    };
  }
  
- static IdPacket fromMap(Map m) {
-   return new IdPacket.With(m['id'], m['channelId']);
+ static QueuePacket fromMap(Map m) {
+   return new QueuePacket.With(m['id'], m['channelId'], m['position']);
  }
 }
 </pre>
@@ -92,12 +94,12 @@ class IdPacket implements Packet {
 <h3>Static Methods</h3>
 <div class="method"><h4 id="fromMap">
 <button class="show-code">Code</button>
-<a href="../rtc_common/IdPacket.html">IdPacket</a> <strong>fromMap</strong>(<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> m) <a class="anchor-link" href="#fromMap"
-              title="Permalink to IdPacket.fromMap">#</a></h4>
+<a href="../rtc_common/QueuePacket.html">QueuePacket</a> <strong>fromMap</strong>(<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> m) <a class="anchor-link" href="#fromMap"
+              title="Permalink to QueuePacket.fromMap">#</a></h4>
 <div class="doc">
 <pre class="source">
-static IdPacket fromMap(Map m) {
- return new IdPacket.With(m['id'], m['channelId']);
+static QueuePacket fromMap(Map m) {
+ return new QueuePacket.With(m['id'], m['channelId'], m['position']);
 }
 </pre>
 </div>
@@ -105,23 +107,23 @@ static IdPacket fromMap(Map m) {
 </div>
 <div>
 <h3>Constructors</h3>
-<div class="method"><h4 id="IdPacket">
+<div class="method"><h4 id="QueuePacket">
 <button class="show-code">Code</button>
-new <strong>IdPacket</strong>() <a class="anchor-link" href="#IdPacket"
-              title="Permalink to IdPacket.IdPacket">#</a></h4>
+new <strong>QueuePacket</strong>() <a class="anchor-link" href="#QueuePacket"
+              title="Permalink to QueuePacket.QueuePacket">#</a></h4>
 <div class="doc">
 <pre class="source">
-IdPacket();
+QueuePacket() : super();
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="IdPacket.With">
+<div class="method"><h4 id="QueuePacket.With">
 <button class="show-code">Code</button>
-new <strong>IdPacket.With</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> id, <a href="http://api.dartlang.org/dart_core/String.html">String</a> channelId) <a class="anchor-link" href="#IdPacket.With"
-              title="Permalink to IdPacket.IdPacket.With">#</a></h4>
+new <strong>QueuePacket.With</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> id, <a href="http://api.dartlang.org/dart_core/String.html">String</a> channelId, <a href="http://api.dartlang.org/dart_core/String.html">String</a> position) <a class="anchor-link" href="#QueuePacket.With"
+              title="Permalink to QueuePacket.QueuePacket.With">#</a></h4>
 <div class="doc">
 <pre class="source">
-IdPacket.With(this.id, this.channelId);
+QueuePacket.With(this.id, this.channelId, this.position);
 </pre>
 </div>
 </div>
@@ -132,11 +134,11 @@ IdPacket.With(this.id, this.channelId);
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>channelId</strong> <a class="anchor-link"
             href="#channelId"
-            title="Permalink to IdPacket.channelId">#</a>
+            title="Permalink to QueuePacket.channelId">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-channelId = ""
+channelId
 </pre>
 </div>
 </div>
@@ -144,11 +146,11 @@ channelId = ""
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>id</strong> <a class="anchor-link"
             href="#id"
-            title="Permalink to IdPacket.id">#</a>
+            title="Permalink to QueuePacket.id">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-id = ""
+id
 </pre>
 </div>
 </div>
@@ -156,11 +158,23 @@ id = ""
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>packetType</strong> <a class="anchor-link"
             href="#packetType"
-            title="Permalink to IdPacket.packetType">#</a>
+            title="Permalink to QueuePacket.packetType">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-packetType = PacketType.ID
+packetType = PacketType.QUEUE
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="position">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>position</strong> <a class="anchor-link"
+            href="#position"
+            title="Permalink to QueuePacket.position">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+position
 </pre>
 </div>
 </div>
@@ -170,7 +184,7 @@ packetType = PacketType.ID
 <div class="method"><h4 id="toJson">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
-              title="Permalink to IdPacket.toJson">#</a></h4>
+              title="Permalink to QueuePacket.toJson">#</a></h4>
 <div class="doc">
 <div class="inherited">
 <p>Returns the object as Map.
@@ -179,9 +193,10 @@ WebSocket sends only native objects and maps</p>
 <pre class="source">
 Map toJson() {
  return {
-   'packetType': packetType,
+   'id': id,
    'channelId': channelId,
-   'id': id
+   'position': position,
+   'packetType': packetType
  };
 }
 </pre>
@@ -190,7 +205,7 @@ Map toJson() {
 <div class="method inherited"><h4 id="toString">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>toString</strong>() <a class="anchor-link" href="#toString"
-              title="Permalink to IdPacket.toString">#</a></h4>
+              title="Permalink to QueuePacket.toString">#</a></h4>
 <div class="inherited-from">inherited from <a href="../rtc_common/Packet.html">Packet</a> </div><div class="doc">
 <p>Calls JSON.stringify on Map returned by toJson</p>
 <pre class="source">
@@ -206,7 +221,7 @@ String toString() {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-18 18:51:14.742</div>
+          <div>This page was generated at 2013-01-18 18:51:14.609</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>
