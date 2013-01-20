@@ -58,4 +58,27 @@ class Util {
   }
 }
 
+class FileSizeConverter {
+  static final double SPACE_KB = 1024.0;
+  static final double SPACE_MB = 1024 * SPACE_KB;
+  static final double SPACE_GB = 1024 * SPACE_MB;
+  static final double SPACE_TB = 1024 * SPACE_GB;
+  
+  static String convert(int sizeInBytes) {
+    
+    
+    if ( sizeInBytes < SPACE_KB ) {
+      return "${sizeInBytes.toStringAsFixed(2)} Byte(s)";
+    } else if ( sizeInBytes < SPACE_MB ) {
+      return "${(sizeInBytes/SPACE_KB).toStringAsFixed(2)} KB";
+    } else if ( sizeInBytes < SPACE_GB ) {
+      return "${(sizeInBytes/SPACE_MB).toStringAsFixed(2)} MB";
+    } else if ( sizeInBytes < SPACE_TB ) {
+      return "${(sizeInBytes/SPACE_GB).toStringAsFixed(2)} GB";
+    } else {
+      return "${(sizeInBytes/SPACE_TB).toStringAsFixed(2)} TB";
+    }          
+  }
+}
+
 

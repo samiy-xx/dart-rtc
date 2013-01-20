@@ -65,6 +65,9 @@ class PacketFactory {
         case "random":
           p = RandomUserPacket.fromMap(m);
           break;
+        case "file":
+          p = FilePacket.fromMap(m);
+          break;
         default:
           print("(packetfactory.dart) Unkown packet");
           p = null;

@@ -13,3 +13,5 @@ part "webvideomanager.dart";
 part "notifier.dart";
 part "wheelsignalhandler.dart";
 part "weblogger.dart";
+part "filemanager.dart";
+part "dndmanager.dart";

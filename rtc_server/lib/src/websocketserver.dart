@@ -44,6 +44,7 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
     registerHandler("pong", handleIncomingPong);
     registerHandler("desc", handleIncomingDescription);
     registerHandler("ice", handleIncomingIce);
+    registerHandler("file", handleIncomingFile);
   }
   
   /**
@@ -251,6 +252,16 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
    * handle incoming pong replies
    */
   void handleIncomingPong(PongPacket p, c) {
+    try {
+      logger.Debug("Handling pong");
+      User sender = _container.findUserByConn(c);
+      sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+    } catch(e) {
+      logger.Error("handleIncomingPong: $e");
+    }
+  }
+  
+  void handleIncomingFile(FilePacket p, c) {
     try {
       logger.Debug("Handling pong");
       User sender = _container.findUserByConn(c);

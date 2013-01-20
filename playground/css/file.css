@@ -1,0 +1,64 @@
+#container {
+  position: relative;
+  width: 800px;
+  height: 600px;  
+}
+
+#filecontainer_left {
+  position: absolute;
+  height: 600px;
+  width: 300px;
+  top: 0px;
+  left: 0px;
+  border: 1px solid #000;
+  overflow: auto;
+}
+
+#filecontainer_right {
+  position: absolute;
+  height: 600px;
+  width: 300px;
+  top: 0px;
+  left: 500px;
+  border: 1px solid #000;
+  overflow: auto;
+}
+
+#copy_from_left {
+  position: absolute;
+  width: 190px;
+  height: 30px;
+  top: 200px;
+  left: 305px;
+}
+
+#copy_from_right {
+  position: absolute;
+  width: 190px;
+  height: 30px;
+  top: 400px;
+  left: 305px;
+}
+#copy_from_filesystem {
+  position: absolute;
+  width: 190px;
+  height: 30px;
+  top: 500px;
+  left: 305px;
+}
+.fileEntry {
+  position: relative;
+  background: #ddd;
+  padding: 4px;
+  
+  -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}
