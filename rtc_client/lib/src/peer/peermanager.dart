@@ -64,7 +64,6 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
     PeerConstraints con = new PeerConstraints();
     con.dataChannelEnabled = _dataChannelsEnabled;
     
-    print(con.toMap());
     RtcPeerConnection peer = new RtcPeerConnection({
       'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]});
     
@@ -72,6 +71,7 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
     if (_dataChannelsEnabled) {
       log.Debug("Creating peer with data channels");
       wrapper = new DataPeerWrapper(this, peer);
+      //(wrapper as DataPeerWrapper).isReliable = true;
     } else {
       log.Debug("Creating peer without data channels");
       wrapper = new PeerWrapper(this, peer);

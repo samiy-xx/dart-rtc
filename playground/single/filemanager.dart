@@ -2,11 +2,10 @@ part of demo_client;
 
 class FileManager extends GenericEventTarget<FileEventListener>{
   FileSystem _fs;
-  DndManager _drag;
   List<File> _files;
+  List<File> get files => getAllFiles();
   
-  FileManager(DndManager d) {
-    _drag = d;
+  FileManager() {
     _files = new List<File>();
     window.requestFileSystem(Window.TEMPORARY, 1024*1024*1024, _onFileSystemAccess, _onFileSystemAccessError);
   }
@@ -32,6 +31,9 @@ class FileManager extends GenericEventTarget<FileEventListener>{
     
   }
   
+  List<File> getAllFiles() {
+    return _files;
+  }
   void notifyFileListeners(File f) {
     
     listeners.where((l) => l is FileCopyEventListener).forEach((FileCopyEventListener l)  {

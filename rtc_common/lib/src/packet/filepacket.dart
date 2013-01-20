@@ -2,7 +2,7 @@ part of rtc_common;
 
 class FilePacket implements Packet {
   FilePacket();
-  FilePacket.With(this.id, this.fileName, int fileSize);
+  FilePacket.With(this.id, this.fileName, this.fileSize);
   
   String packetType = PacketType.FILE;
   String id = "";

@@ -241,7 +241,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * Handles sdp description
    */
   void handleDescription(DescriptionPacket p) {
-    _log.Debug("(signalhandler.dart) RECV: DescriptionPacket channel ${p.channelId} user ${p.id} sdp ${p.sdp}");
+    _log.Debug("(signalhandler.dart) RECV: DescriptionPacket channel ${p.channelId} user ${p.id}");
    
     RtcSessionDescription t = new RtcSessionDescription({
       'sdp':p.sdp,

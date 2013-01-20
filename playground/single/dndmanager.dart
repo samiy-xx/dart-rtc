@@ -94,25 +94,8 @@ class DndManager implements FileCopyEventListener{
     node.onDragStart.listen(onDragStart);
     return node;
   }
-  
-  String humandReadableSize(int s) {
-    if (s <= 1024) {
-      return "$s bytes";
-    }
-    
-    if (s >= 1024) {
-      s = s ~/ 1024;
-      
-    }
-  }
 }
 
-abstract class FileEventListener {
-  
-}
 
-abstract class FileCopyEventListener extends FileEventListener {
-  onFileAdded(File f);
-}
 
 

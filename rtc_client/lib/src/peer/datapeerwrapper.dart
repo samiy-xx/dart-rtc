@@ -13,11 +13,16 @@ class DataPeerWrapper extends PeerWrapper {
   /* Current channel state */
   String _channelState = null;
   
+  /* reliable tcp, unreliable udp */
+  bool _isReliable = false;
+  
+  /** Set reliable */
+  set isReliable(bool r) => _isReliable = r;
+  
   /**
    * Constructor
    */
   DataPeerWrapper(PeerManager pm, RtcPeerConnection p) : super(pm, p) {
-    _peer.onOpen.listen(_onOpen);
     _peer.onDataChannel.listen(_onNewDataChannelOpen);
   }
   
@@ -29,83 +34,102 @@ class DataPeerWrapper extends PeerWrapper {
   }
   
   void initialize() {
-    //super.initialize();
     if (_isHost) {
       log.Debug("Is Host");
       initChannel();
       _sendOffer();
     }
-    //super.initialize();
-    
-    
-  }
-    
-  void _onOpen(Event e) {
-   
   }
   
+  /**
+   * Created the data channel
+   * TODO: Whenever these reliable and unreliable are implemented by whomever. fix this.
+   */
   void initChannel() {
-    window.setTimeout(() {
-      _dataChannel = _peer.createDataChannel("somelabelhere", {'reliable': false});
-      _log.Debug("(datapeerwrapper.dart) DataChannel created");
-      _dataChannel.onClose.listen(onDataChannelClose);
-      _dataChannel.onOpen.listen(onDataChannelOpen);
-      _dataChannel.onError.listen(onDataChannelError);
-      _dataChannel.onMessage.listen(onDataChannelMessage);
-      //_dataChannel.binaryType = "blob";
-      
-    }, 2000);
+    _dataChannel = _peer.createDataChannel("somelabelhere", {'reliable': _isReliable});
+    _dataChannel.onClose.listen(onDataChannelClose);
+    _dataChannel.onOpen.listen(onDataChannelOpen);
+    _dataChannel.onError.listen(onDataChannelError);
+    _dataChannel.onMessage.listen(onDataChannelMessage); 
   }
   
+  /**
+   * Sends a packet trough the data channel
+   */
+  void send(Packet p) {
+    String packet = PacketFactory.get(p);
+    _dataChannel.send(packet);
+  }
+  
+  /**
+   * Send blob
+   */
+  void sendData(Blob b) {
+    _dataChannel.send(b);
+  }
+  
+  /**
+   * Callback for when data channel created by the other party comes trough the peer
+   */
   void _onNewDataChannelOpen(RtcDataChannelEvent e) {
     _dataChannel = e.channel;
-   
-    _log.Debug("(datapeerwrapper.dart) DataChannel received");
-    _log.Debug("(datapeerwrapper.dart) Channel label : ${_dataChannel.label}");
-    _log.Debug("(datapeerwrapper.dart) Channel state : ${_dataChannel.readyState}");
-    _log.Debug("(datapeerwrapper.dart) Channel reliable : ${_dataChannel.reliable}");
     _dataChannel.onClose.listen(onDataChannelClose);
     _dataChannel.onOpen.listen(onDataChannelOpen);
     _dataChannel.onError.listen(onDataChannelError);
     _dataChannel.onMessage.listen(onDataChannelMessage);
-    
-    window.setTimeout(() {
-      _log.Debug("(datapeerwrapper.dart) DataChannel received");
-      _log.Debug("(datapeerwrapper.dart) Channel label : ${_dataChannel.label}");
-      _log.Debug("(datapeerwrapper.dart) Channel state : ${_dataChannel.readyState}");
-      _log.Debug("(datapeerwrapper.dart) Channel reliable : ${_dataChannel.reliable}");
-    }, 1000);
   }
   
+  /**
+   * Data channel is open and ready for data
+   */
   void onDataChannelOpen(Event e) {
     _signalStateChanged();
     _log.Debug("(datapeerwrapper.dart) DataChannelOpen $e");
-    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
-    
-    _dataChannel.send("I HAS OPENED");
   }
   
+  /**
+   * Ugh
+   */
   void onDataChannelClose(Event e) {
     _signalStateChanged();
-    _log.Debug("(datapeerwrapper.dart) DataChannelClose $e");
-    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
+    _log.Debug("(datapeerwrapper.dart) DataChannelClose $e"); 
   }
 
+  /**
+   * Message, check if blob, otherwise assume string data
+   */
   void onDataChannelMessage(MessageEvent e) {
-    
-    _log.Debug("(datapeerwrapper.dart) DataChannelMessage ${e.data}");
-    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
-    
+    if (e.data is Blob) {
+      throw new NotImplementedException("Blob is not implemented");
+    } else {
+      Packet p = PacketFactory.getPacketFromString(e.data);
+      if (p != null) {
+        _signalPacketArrived(p);
+      }
+    }
   }
 
+  /**
+   * Error
+   */
   void onDataChannelError(RtcDataChannelEvent e) {
     _log.Debug("(datapeerwrapper.dart) DataChannelError $e");
-    _log.Debug("(datapeerwrapper.dart) DataChannel readystate = ${_dataChannel.readyState}");
   }
- 
+  
+  /**
+   * Signal listeners that packet has arrived
+   */
+  void _signalPacketArrived(Packet p) {
+    listeners.where((l) => l is PeerDataEventListener).forEach((PeerDataEventListener l) {
+      l.onPacket(this, p);
+    });
+  }
+  
+  /**
+   * signal listeners that channel state has changed
+   */
   void _signalStateChanged() {
     if (_dataChannel.readyState != _channelState) {
-      
       listeners.where((l) => l is PeerDataEventListener).forEach((PeerDataEventListener l) {
         l.onChannelStateChanged(this, _dataChannel.readyState);
       });

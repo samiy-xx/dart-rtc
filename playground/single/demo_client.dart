@@ -15,3 +15,4 @@ part "wheelsignalhandler.dart";
 part "weblogger.dart";
 part "filemanager.dart";
 part "dndmanager.dart";
+part "fileevent.dart";

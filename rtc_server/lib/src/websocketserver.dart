@@ -263,9 +263,21 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
   
   void handleIncomingFile(FilePacket p, c) {
     try {
-      logger.Debug("Handling pong");
+      logger.Debug("Handling File packet");
+      
       User sender = _container.findUserByConn(c);
+      User receiver = _container.findUserById(p.id);
+      
+      if (sender == null || receiver == null) {
+        logger.Warning("Sender or Receiver not found");
+        return;
+      }
+      
       sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+      receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
+      
+      p.id = sender.id;
+      sendPacket(receiver.connection, p);
     } catch(e) {
       logger.Error("handleIncomingPong: $e");
     }

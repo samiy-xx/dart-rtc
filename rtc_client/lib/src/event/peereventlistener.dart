@@ -39,5 +39,8 @@ abstract class PeerDataEventListener extends PeerEventListener {
   /**
    * Channel state changed
    */
-  void onChannelStateChanged(PeerWrapper p, String state);
+  void onChannelStateChanged(DataPeerWrapper p, String state);
+  
+  void onPacket(DataPeerWrapper pw, Packet p);
+  
 }
