@@ -47,6 +47,7 @@ class DataPeerWrapper extends PeerWrapper {
    */
   void initChannel() {
     _dataChannel = _peer.createDataChannel("somelabelhere", {'reliable': _isReliable});
+    _dataChannel.binaryType = "arraybuffer";
     _dataChannel.onClose.listen(onDataChannelClose);
     _dataChannel.onOpen.listen(onDataChannelOpen);
     _dataChannel.onError.listen(onDataChannelError);
@@ -56,18 +57,27 @@ class DataPeerWrapper extends PeerWrapper {
   /**
    * Sends a packet trough the data channel
    */
-  void send(Packet p) {
+  void send(Packet p, [bool asArrayBuffer]) {
     String packet = PacketFactory.get(p);
-    _dataChannel.send(packet);
+    if (?asArrayBuffer) {
+      // No clue about this atm. does any browser implement this atm?
+      ArrayBufferView buf = new Uint8Array.fromList(packet.charCodes);
+      sendData(buf);
+    } else {
+      _dataChannel.send(packet);
+    }
   }
   
   /**
    * Send blob
    */
-  void sendData(Blob b) {
+  void sendBlob(Blob b) {
     _dataChannel.send(b);
   }
   
+  void sendData(ArrayBufferView d) {
+    _dataChannel.send(json.stringify(d));
+  }
   /**
    * Callback for when data channel created by the other party comes trough the peer
    */
@@ -100,8 +110,13 @@ class DataPeerWrapper extends PeerWrapper {
    */
   void onDataChannelMessage(MessageEvent e) {
     if (e.data is Blob) {
+      _log.Debug("Received Blob");
       throw new NotImplementedException("Blob is not implemented");
+    } else if (e.data is ArrayBuffer || e.data is ArrayBufferView) {
+      _log.Debug("Received ArrayBuffer ${e.data.runtimeType.toString()}");
+      throw new NotImplementedException("ArrayBuffer is not implemented");
     } else {
+      _log.Debug("Received Text");
       Packet p = PacketFactory.getPacketFromString(e.data);
       if (p != null) {
         _signalPacketArrived(p);

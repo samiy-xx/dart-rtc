@@ -1,6 +1,6 @@
 name:  rtc_client
 description: Client clibrary for webrtc on dart
 
-#dependencies:
+dependencies:
 #  js: any
-#  unittest: { sdk: unittest }
+  unittest: { sdk: unittest }

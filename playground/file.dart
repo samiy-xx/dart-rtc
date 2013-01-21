@@ -45,8 +45,10 @@ class WebFileChannelHandler implements PeerMediaEventListener, FileCopyEventList
   void onChannelStateChanged(DataPeerWrapper p, String state) {
     _notify.display("DataChannel state is now $state");  
     if (state == "open") {
+      p.send(new HeloPacket.With(_sh.id, ""));
       _fm.getAllFiles().forEach((File f) {
         p.send(new FilePacket.With(_sh.id, f.name, f.size.toString()));
+        
       });
     }
   }

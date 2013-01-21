@@ -1,7 +1,7 @@
 library rtc_client;
 
 import 'dart:html';
-import 'dart:json';
+import 'dart:json' as json;
 
 import '../../rtc_common/lib/rtc_common.dart';
 
