@@ -13,7 +13,7 @@ part "mocks/testableserver.dart";
 part "channeltests.dart";
 part "usertests.dart";
 void main() {
-  useVmConfiguration();
+  useVMConfiguration();
   new ChannelTests().run();
   new UserTests().run();
 }

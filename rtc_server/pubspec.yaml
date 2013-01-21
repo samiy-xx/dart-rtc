@@ -2,6 +2,6 @@ name:  sample_pubspec
 description:  A sample application
 
 dependencies:
-  args : any
+  args : { sdk: args}
 #  js: any
-  unittest: any
+  unittest: { sdk: unittest }
