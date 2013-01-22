@@ -115,9 +115,10 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
       wrapper = new PeerWrapper(this, peer);
     }
     
-    peer.on.addStream.add(onAddStream);
-    peer.on.open.add(onOpen);
-    peer.on.stateChange.add(onStateChanged);
+    peer.onAddStream.listen(onAddStream);
+    peer.onRemoveStream.listen(onRemoveStream);
+    peer.onOpen.listen(onOpen);
+    peer.onStateChange.listen(onStateChanged);
     
     _peers.add(wrapper);
     return wrapper;
@@ -147,11 +148,27 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
     return null;
   }
   
+  /**
+   * Callback for mediastream removed
+   * Notifies listeners that stream was removed from peer
+   */
+  void onRemoveStream(MediaStreamEvent e) {
+    PeerWrapper wrapper = getWrapperForPeer(e.target);
+    
+    listeners.where((l) => l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
+      l.onRemoteMediaStreamRemoved(wrapper);
+    });
+  }
+  
+  /**
+   * Callback for when a media stream is added to peer
+   * Notifies listeners that a media stream was added
+   */
   void onAddStream(MediaStreamEvent e) {
     PeerWrapper wrapper = getWrapperForPeer(e.target);
+    
     listeners.where((l) => l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
-      
-      l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
+      l.onRemoteMediaStreamAvailable(e.stream, wrapper, true);
     });
   }
   
@@ -188,10 +205,16 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
   
   /**
    * Peer state changed
+   * Notifies listeners about the state change
+   * If readystate changed to closed, remove the peer wrapper and containing peer
    */
   void onStateChanged(Event e) {
     PeerWrapper wrapper = getWrapperForPeer(e.target);
     _log.Debug("(peermanager.dart) onStateChanged: ${wrapper.peer.readyState}");
+    
+    listeners.where((l) => l is PeerConnectionEventListener).forEach((PeerConnectionEventListener l) {
+      l.onPeerStateChanged(wrapper, wrapper.peer.readyState);
+    });
     
     if (wrapper.peer.readyState == READYSTATE_CLOSED) {
       wrapper.dispose();

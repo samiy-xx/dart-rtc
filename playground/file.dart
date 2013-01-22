@@ -70,7 +70,11 @@ class WebFileChannelHandler implements PeerMediaEventListener, FileCopyEventList
     (query("#filecontainer_left") as DivElement).append(createNewFileNode(f));
   }
   
-  void onRemoteMediaStreamAvailable(MediaStream ms, String id, bool isMain) {
+  void onRemoteMediaStreamRemoved(PeerWrapper pw) {
+    
+  }
+  
+  void onRemoteMediaStreamAvailable(MediaStream ms, PeerWrapper pw, bool isMain) {
     new Logger().Debug("Incoming video stream");
     _notify.display("Incoming video stream");
     

@@ -59,10 +59,14 @@ class WebChannelHandler implements PeerMediaEventListener {
     _sh.initialize();
   }
   
-  void onRemoteMediaStreamAvailable(MediaStream ms, String id, bool isMain) {
+  void onRemoteMediaStreamRemoved(PeerWrapper pw) {
+    
+  }
+  
+  void onRemoteMediaStreamAvailable(MediaStream ms, PeerWrapper pw, bool isMain) {
     new Logger().Debug("Incoming video stream");
     _notify.display("Incoming video stream");
-    _vm.addStream(ms, id);
+    _vm.addStream(ms, pw.id);
   }
   
   void handleUserMessage(UserMessage um) {

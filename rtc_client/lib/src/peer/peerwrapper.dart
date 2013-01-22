@@ -15,7 +15,6 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   /** Session Description type answer */
   final String SDP_ANSWER = 'answer';
   
-  RtcDataChannel _dataChannel;
   /* The connection !! */
   RtcPeerConnection _peer;
   
@@ -27,7 +26,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   bool _isHost = false;
   
   /* Wee. logger */
-  final Logger log = new Logger();
+  final Logger _log = new Logger();
   
   String _id;
   String _channelId;
@@ -54,13 +53,12 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
     _manager = pm;
     _peer.onIceCandidate.listen(_onIceCandidate);
     _peer.onIceChange.listen(_onIceChange);
-    _peer.onRemoveStream.listen(_onRemoveStream);
     _peer.onNegotiationNeeded.listen(_onNegotiationNeeded);
     _peer.onOpen.listen((Event e) => _isOpen = true);
   }
   
   void setAsHost(bool value) {
-    log.Debug("(peerwrapper.dart) Setting as host");
+    _log.Debug("(peerwrapper.dart) Setting as host");
     _isHost = value;
   }
   
@@ -69,7 +67,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * after offer created or replied with answer
    */
   void setSessionDescription(RtcSessionDescription sdp) {
-    log.Debug("(peerwrapper.dart) Creating local description");
+    _log.Debug("(peerwrapper.dart) Creating local description");
     _peer.setLocalDescription(sdp, _onLocalDescriptionSuccess, _onRTCError);
   }
   
@@ -78,7 +76,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * if the type is offer, then a answer must be created
    */
   void setRemoteSessionDescription(RtcSessionDescription sdp) {
-      log.Debug("(peerwrapper.dart) Setting remote description ${sdp.type}");
+      _log.Debug("(peerwrapper.dart) Setting remote description ${sdp.type}");
       _peer.setRemoteDescription(sdp, _onRemoteDescriptionSuccess, _onRTCError);
       
       if (sdp.type == SDP_OFFER)
@@ -112,7 +110,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * and set is our local session description
    */
   void _onOfferSuccess(RtcSessionDescription sdp) {
-    log.Debug("(peerwrapper.dart) Offer created, sending");
+    _log.Debug("(peerwrapper.dart) Offer created, sending");
     setSessionDescription(sdp);
     _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'offer', _id, _channelId)));
     //_offerSent = true;
@@ -123,7 +121,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * and set it our local session description
    */
   void _onAnswerSuccess(RtcSessionDescription sdp) {
-    log.Debug("(peerwrapper.dart) Answer created, sending");
+    _log.Debug("(peerwrapper.dart) Answer created, sending");
     setSessionDescription(sdp);
     _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'answer', _id, _channelId)));
   }
@@ -134,7 +132,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   void addStream(MediaStream ms) {
     if (ms == null)
       throw new Exception("MediaStream was null");
-    log.Debug("(peerwrapper.dart) Adding stream to peer $id");
+    _log.Debug("(peerwrapper.dart) Adding stream to peer $id");
     _peer.addStream(ms, _manager._streamConstraints.toMap());
   }
   
@@ -146,8 +144,8 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * means we're hosting and the other party must reply with answer
    */
   void _onNegotiationNeeded(Event e) {
-    log.Info("(peerwrapper.dart) onNegotiationNeeded");   
-    //initialize();
+    _log.Info("(peerwrapper.dart) onNegotiationNeeded");   
+    
     if (isHost)
       _sendOffer();
   }
@@ -161,7 +159,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
       throw new Exception("RtcIceCandidate was null");
     
     if (_peer.readyState != READYSTATE_CLOSED) {
-      log.Debug("(peerwrapper.dart) Receiving remote ICE Candidate ${candidate.candidate}");
+      _log.Debug("(peerwrapper.dart) Receiving remote ICE Candidate ${candidate.candidate}");
       _peer.addIceCandidate(candidate);
     }
   }
@@ -173,11 +171,11 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   void _onIceCandidate(RtcIceCandidateEvent c) {
     
     if (c.candidate != null) {
-      log.Debug("(peerwrapper.dart) (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
+      _log.Debug("(peerwrapper.dart) (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
       IcePacket ice = new IcePacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id);
       _manager._sendPacket(PacketFactory.get(ice));
     } else {
-      log.Warning("(peerwrapper.dart) Local ICE Candidate was null  ${_peer.iceState}");
+      _log.Warning("(peerwrapper.dart) Local ICE Candidate was null  ${_peer.iceState}");
     }
   }
   
@@ -185,35 +183,28 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * Not sure
    */
   void _onIceChange(Event c) {
-    log.Debug("(peerwrapper.dart) ICE Change ${c} (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState})");
-  }
-  
-  
-  void _onRemoveStream(Event e) {
-    
+    _log.Debug("(peerwrapper.dart) ICE Change ${c} (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState})");
   }
   
   void _onLocalDescriptionSuccess() {
-    log.Debug("(peerwrapper.dart) Setting local description was success");
+    _log.Debug("(peerwrapper.dart) Setting local description was success");
   }
   
   void _onRemoteDescriptionSuccess() {
-    log.Debug("(peerwrapper.dart) Setting remote description was success");
+    _log.Debug("(peerwrapper.dart) Setting remote description was success");
   }
   
   void _onRTCError(String error) {
-    log.Error("(peerwrapper.dart) RTC ERROR : $error");
+    _log.Error("(peerwrapper.dart) RTC ERROR : $error");
   }
   
   /**
    * Close the peer connection if not closed already
    */
   void close() {
-    log.Error("(peerwrapper.dart) Closing peer");
-    if (_peer.readyState != READYSTATE_CLOSED) {
-      _peer.close();
-      log.Error("(peerwrapper.dart) Peer close called");
-    }
+    _log.Error("(peerwrapper.dart) Closing peer");
+    if (_peer.readyState != READYSTATE_CLOSED)
+      _peer.close();   
   }
   
   /**
@@ -222,6 +213,5 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   void dispose() {
     if (_peer.readyState != READYSTATE_CLOSED)
       _peer.close();
-    _peer = null;
   }
 }

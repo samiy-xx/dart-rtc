@@ -35,7 +35,7 @@ class DataPeerWrapper extends PeerWrapper {
   
   void initialize() {
     if (_isHost) {
-      log.Debug("Is Host");
+      _log.Debug("Is Host");
       initChannel();
       _sendOffer();
     }
