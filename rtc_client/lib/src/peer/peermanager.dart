@@ -3,9 +3,28 @@ part of rtc_client;
 /**
  * PeerManager takes care of all peer connections
  */
-class PeerManager extends GenericEventTarget<PeerEventListener>{
+class PeerManager extends GenericEventTarget<PeerEventListener> {
   /* instance */
   static PeerManager _instance;
+  
+  final Logger _log = new Logger();
+  
+  /* Enable or disable datachannels */
+  bool _dataChannelsEnabled = false;
+  
+  /* false = udp, true = tcp */
+  bool _reliableDataChannels = false;
+  
+  // TODO: Is this the right place for this?
+  /* Local media stream from webcam/microphone */
+  LocalMediaStream _ms;
+  
+  /* Created peerwrappers */
+  List<PeerWrapper> _peers;
+  
+  // TODO: dartbug.com 7030
+  /* Constraints for the stream */
+  StreamConstraints _streamConstraints;
   
   /** Closed readystate */
   final READYSTATE_CLOSED = "closed";
@@ -13,17 +32,28 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
   /** Open readystate */
   final READYSTATE_OPEN = "open";
   
-  final Logger log = new Logger();
-  bool _dataChannelsEnabled = false;
-  LocalMediaStream _ms;
-  List<PeerWrapper> _peers;
+  /**
+   * Sets the local media stream
+   */
+  set localMediaStream(LocalMediaStream lms) => setLocalStream(lms);
   
-  StreamConstraints _streamConstraints;
+  /**
+   * Returns the local media stream
+   */
+  LocalMediaStream get localMediaStream => getLocalStream();
   
+  /** 
+   * Set data channels enabled or disabled for all peers created
+   */
   set dataChannelsEnabled(bool value) => _dataChannelsEnabled = value;
   
   /**
-   * Factory constructor
+   * Set data channels reliable = tcp or unreliable = udp
+   */
+  set reliableDataChannels(bool value) => _reliableDataChannels = value;
+  
+  /**
+   * singleton constructor
    */
   factory PeerManager() {
     if (_instance == null)
@@ -32,20 +62,25 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
     return _instance;
   }
   
-  /**
+  /*
    * Internal constructor
    */
   PeerManager._internal() {
     _peers = new List<PeerWrapper>();
-    
     _streamConstraints = new StreamConstraints();
   }
   
-  
+  /**
+   * Convenience method
+   * Sets the max bit rate to stream constraints
+   */
   void setMaxBitRate(int b) {
     _streamConstraints.bitRate = b;
   }
   
+  /**
+   * Sets the local media stream from users webcam/microphone to all peers
+   */
   void setLocalStream(LocalMediaStream ms) {
     _ms = ms;
     _peers.forEach((PeerWrapper p) {
@@ -53,6 +88,9 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
     });
   }
   
+  /**
+   * Returns the current local media stream
+   */
   MediaStream getLocalStream() {
     return _ms;
   }
@@ -64,16 +102,16 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
     PeerConstraints con = new PeerConstraints();
     con.dataChannelEnabled = _dataChannelsEnabled;
     
+    // TODO: after 7030 is fixed, look into using constraints.
+    // before that, too much trouble finding what to fix in generated js code
     RtcPeerConnection peer = new RtcPeerConnection({
       'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]});
     
     PeerWrapper wrapper;
     if (_dataChannelsEnabled) {
-      log.Debug("Creating peer with data channels");
       wrapper = new DataPeerWrapper(this, peer);
-      //(wrapper as DataPeerWrapper).isReliable = true;
+      (wrapper as DataPeerWrapper).isReliable = _reliableDataChannels;
     } else {
-      log.Debug("Creating peer without data channels");
       wrapper = new PeerWrapper(this, peer);
     }
     
@@ -110,10 +148,9 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
   }
   
   void onAddStream(MediaStreamEvent e) {
-    log.Debug("PM: Adding peer");
     PeerWrapper wrapper = getWrapperForPeer(e.target);
     listeners.where((l) => l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
-      log.Debug("PM: notify class stream available");
+      
       l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
     });
   }
@@ -154,17 +191,19 @@ class PeerManager extends GenericEventTarget<PeerEventListener>{
    */
   void onStateChanged(Event e) {
     PeerWrapper wrapper = getWrapperForPeer(e.target);
-    log.Debug("(peermanager.dart) onStateChanged: ${wrapper.peer.readyState}");
+    _log.Debug("(peermanager.dart) onStateChanged: ${wrapper.peer.readyState}");
     
     if (wrapper.peer.readyState == READYSTATE_CLOSED) {
       wrapper.dispose();
-      _peers.removeAt(_peers.indexOf(wrapper));
-      log.Debug("Peer removed");
+      
+      int index = _peers.indexOf(wrapper);
+      if (index >= 0)
+        _peers.removeAt(index);
     }
   }
   
   void onOpen(Event e) {
-    log.Debug("Peer connection is open");
+    _log.Debug("Peer connection is open");
   }
   
   
