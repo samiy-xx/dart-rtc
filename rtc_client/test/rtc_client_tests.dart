@@ -1,16 +1,15 @@
 library rtc_client_tests;
 
-import '../packages/unittest/unittest.dart';
-import '../packages/unittest/html_config.dart';
-import '../packages/unittest/mock.dart';
-
 import 'dart:html';
-
-
+import '../packages/unittest/unittest.dart';
+import '../packages/unittest/html_enhanced_config.dart';
+import '../packages/unittest/mock.dart';
+import '../lib/rtc_client.dart';
+import '../../rtc_common/lib/rtc_common.dart';
 part 'packettests.dart';
 
-void main() {
-  useHtmlConfiguration();
-  new PacketTests().run();
+void run() {
+  useHtmlEnhancedConfiguration();
   
+  new PacketTests().run();
 }

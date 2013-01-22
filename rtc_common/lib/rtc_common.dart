@@ -8,7 +8,7 @@ part 'src/packetfactory.dart';
 part 'src/eventtarget.dart';
 
 // Exceptions
-part 'src/exception/InvalidPacketException.dart';
+part 'src/exception/invalidpacketexception.dart';
 
 // Packets
 part 'src/packet/packettype.dart';

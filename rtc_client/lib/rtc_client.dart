@@ -8,9 +8,12 @@ import '../../rtc_common/lib/rtc_common.dart';
 part 'src/peer/peermanager.dart';
 part 'src/peer/peerwrapper.dart';
 part 'src/peer/datapeerwrapper.dart';
+part 'src/peer/binarypackethandler.dart';
+
 part 'src/event/peereventlistener.dart';
 part 'src/event/signalingeventlistener.dart';
 part 'src/event/datasourceeventlistener.dart';
+
 part 'src/signaling/signalhandler.dart';
 part 'src/signaling/basesignalhandler.dart';
 part 'src/signaling/channelsignalhandler.dart';
