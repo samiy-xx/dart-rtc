@@ -10,7 +10,7 @@ import "../lib/rtc_common.dart";
 part "packettests.dart";
 
 void main() {
-  //useVmConfiguration();
-  // new PacketTests().run();
+  useVMConfiguration();
+  new PacketTests().run();
 }
 
