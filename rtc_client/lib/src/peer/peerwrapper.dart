@@ -128,12 +128,13 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   
   /**
    * Ads a MediaStream to the peer connection
+   * TODO: Reintroduce constraints when these compile to javascript properly
    */
   void addStream(MediaStream ms) {
     if (ms == null)
       throw new Exception("MediaStream was null");
     _log.Debug("(peerwrapper.dart) Adding stream to peer $id");
-    _peer.addStream(ms, _manager._streamConstraints.toMap());
+    _peer.addStream(ms);
   }
   
   /*
