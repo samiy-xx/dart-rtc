@@ -2,19 +2,19 @@
         <html>
         <head>
                 <meta charset="utf-8">
-        <title>DataSource abstract class / rtc_client Library / Dart Documentation</title>
+        <title>NotImplementedException class / rtc_client Library / Dart Documentation</title>
         <link rel="stylesheet" type="text/css"
             href="../styles.css">
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="../favicon.ico">
         
         </head>
-        <body data-library="rtc_client" data-type="DataSource">
+        <body data-library="rtc_client" data-type="NotImplementedException">
         <div class="page">
         <div class="header">
           <a href="../index.html"><div class="logo"></div></a>
           <a href="../index.html">Dart Documentation</a>
-         &rsaquo; <a href="../rtc_client.html">rtc_client</a> &rsaquo; <a href="../rtc_client/DataSource.html">DataSource</a>        <div id="search-box">
+         &rsaquo; <a href="../rtc_client.html">rtc_client</a> &rsaquo; <a href="../rtc_client/NotImplementedException.html">NotImplementedException</a>        <div id="search-box">
           <input type="search" name="q" id="q" autocomplete="off"
               class="search-input" placeholder="Search API">
         </div>
@@ -29,7 +29,7 @@
 <li><a href="../rtc_client/BinaryPacketHandler.html"><div class="icon-class"></div>BinaryPacketHandler</a></li>
 <li><a href="../rtc_client/ChannelSignalHandler.html"><div class="icon-class"></div>ChannelSignalHandler</a></li>
 <li><a href="../rtc_client/DataPeerWrapper.html"><div class="icon-class"></div>DataPeerWrapper</a></li>
-<li><div class="icon-class"></div><strong>DataSource</strong></li>
+<li><a href="../rtc_client/DataSource.html"><div class="icon-class"></div>DataSource</a></li>
 <li><a href="../rtc_client/DataSourceConnectionEventListener.html"><div class="icon-class"></div>DataSourceConnectionEventListener</a></li>
 <li><a href="../rtc_client/DataSourceEventListener.html"><div class="icon-class"></div>DataSourceEventListener</a></li>
 <li><a href="../rtc_client/PeerConnectionEventListener.html"><div class="icon-class"></div>PeerConnectionEventListener</a></li>
@@ -45,126 +45,81 @@
 <li><a href="../rtc_client/SignalingEventListener.html"><div class="icon-class"></div>SignalingEventListener</a></li>
 <li><a href="../rtc_client/SimpleSignalHandler.html"><div class="icon-class"></div>SimpleSignalHandler</a></li>
 <li><a href="../rtc_client/WebSocketDataSource.html"><div class="icon-class"></div>WebSocketDataSource</a></li>
-<li><a href="../rtc_client/NotImplementedException.html"><div class="icon-exception"></div>NotImplementedException</a></li>
+<li><div class="icon-exception"></div><strong>NotImplementedException</strong></li>
 </ul>
 <h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2></div>
 <div class="content">
-        <h2><strong>DataSource</strong>
-          abstract class
+        <h2><strong>NotImplementedException</strong>
+          class
         </h2>
         
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
-<p>DataSource interface</p>
 <pre class="source">
-abstract class DataSource {
- /** Closed state */
- static final int READYSTATE_CLOSE = 0;
- 
- /** Open state */
- static final int READYSTATE_OPEN = 1;
- 
- /** Getter for current readyState */
- int get readyState;
- 
- /**
-  * Closes the connection
-  */
- void close();
- 
- /**
-  * Initializes the connection
-  */
- void init();
- 
- /**
-  * Send data over connection
-  */
- void send(String p);
- 
- /**
-  * Subscribe for DataSource events
-  * TODO: Required? comes from GenericEventTarget
-  */
- void subscribe(DataSourceEventListener l);
+class NotImplementedException implements Exception{
+ final String msg;
+ final Exception original;
+ const NotImplementedException([this.msg, this.original]);
+ String toString() =&gt; msg == null ? "InvalidPacketException" : msg;
 }
 </pre>
 </div>
-<h3>Subclasses</h3>
+<h3>Implements</h3>
 <p>
-<span class="type-box"><span class="icon-class"></span><a href="../rtc_client/WebSocketDataSource.html">WebSocketDataSource</a></span></p>
+<span class="type-box"><span class="icon-exception"></span><a href="../dart_core/Exception.html">Exception</a></span></p>
 <div>
-<h3>Static Properties</h3>
-<div class="field"><h4 id="READYSTATE_CLOSE">
+<h3>Constructors</h3>
+<div class="method"><h4 id="NotImplementedException">
 <button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>READYSTATE_CLOSE</strong> <a class="anchor-link"
-            href="#READYSTATE_CLOSE"
-            title="Permalink to DataSource.READYSTATE_CLOSE">#</a>
-        </h4>
-        <div class="doc">
+const <strong>NotImplementedException</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> msg, <a href="http://api.dartlang.org/dart_core/Exception.html">Exception</a> original]) <a class="anchor-link" href="#NotImplementedException"
+              title="Permalink to NotImplementedException.NotImplementedException">#</a></h4>
+<div class="doc">
 <pre class="source">
-READYSTATE_CLOSE = 0
-</pre>
-</div>
-</div>
-<div class="field"><h4 id="READYSTATE_OPEN">
-<button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>READYSTATE_OPEN</strong> <a class="anchor-link"
-            href="#READYSTATE_OPEN"
-            title="Permalink to DataSource.READYSTATE_OPEN">#</a>
-        </h4>
-        <div class="doc">
-<pre class="source">
-READYSTATE_OPEN = 1
+const NotImplementedException([this.msg, this.original]);
 </pre>
 </div>
 </div>
 </div>
 <div>
 <h3>Properties</h3>
-<div class="field"><h4 id="readyState">
+<div class="field"><h4 id="msg">
 <button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>readyState</strong> <a class="anchor-link"
-            href="#readyState"
-            title="Permalink to DataSource.readyState">#</a>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>msg</strong> <a class="anchor-link"
+            href="#msg"
+            title="Permalink to NotImplementedException.msg">#</a>
         </h4>
         <div class="doc">
-<p>Getter for current readyState </p>
 <pre class="source">
-int get readyState;
+msg
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="original">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/Exception.html">Exception</a>         <strong>original</strong> <a class="anchor-link"
+            href="#original"
+            title="Permalink to NotImplementedException.original">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+original
 </pre>
 </div>
 </div>
 </div>
 <div>
 <h3>Methods</h3>
-<div class="method"><h4 id="close">
-abstract void <strong>close</strong>() <a class="anchor-link" href="#close"
-              title="Permalink to DataSource.close">#</a></h4>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to NotImplementedException.toString">#</a></h4>
 <div class="doc">
-<p>Closes the connection</p>
-</div>
-</div>
-<div class="method"><h4 id="init">
-abstract void <strong>init</strong>() <a class="anchor-link" href="#init"
-              title="Permalink to DataSource.init">#</a></h4>
-<div class="doc">
-<p>Initializes the connection</p>
-</div>
-</div>
-<div class="method"><h4 id="send">
-abstract void <strong>send</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> p) <a class="anchor-link" href="#send"
-              title="Permalink to DataSource.send">#</a></h4>
-<div class="doc">
-<p>Send data over connection</p>
-</div>
-</div>
-<div class="method"><h4 id="subscribe">
-abstract void <strong>subscribe</strong>(<a href="../rtc_client/DataSourceEventListener.html">DataSourceEventListener</a> l) <a class="anchor-link" href="#subscribe"
-              title="Permalink to DataSource.subscribe">#</a></h4>
-<div class="doc">
-<p>Subscribe for DataSource events
-TODO: Required? comes from GenericEventTarget</p>
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Object.html">Object</a> </div></div>
+<pre class="source">
+String toString() =&gt; msg == null ? "InvalidPacketException" : msg;
+</pre>
 </div>
 </div>
 </div>
@@ -173,7 +128,7 @@ TODO: Required? comes from GenericEventTarget</p>
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-23 17:09:58.657</div>
+          <div>This page was generated at 2013-01-23 17:09:58.589</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

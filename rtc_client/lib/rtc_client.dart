@@ -18,9 +18,11 @@ part 'src/signaling/signalhandler.dart';
 part 'src/signaling/basesignalhandler.dart';
 part 'src/signaling/channelsignalhandler.dart';
 part 'src/signaling/simplesignalhandler.dart';
+part 'src/signaling/wheelsignalhandler.dart';
+part 'src/signaling/queuesignalhandler.dart';
 
 part 'src/datasource/datasource.dart';
-part 'src/datasource/websocketdatasource.dart';
+part 'src/event/websocketdatasource.dart';
 
 part 'src/exception/notimplementedexception.dart';
 

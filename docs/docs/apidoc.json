@@ -266,7 +266,7 @@
         "id": "SupportedBrowser"
       }
     ],
-    "id": "file:///C:/edge/dart/dart-sdk/lib/html/html_common/metadata.dart"
+    "id": "file:///C:/dart/dart-sdk/lib/html/html_common/metadata.dart"
   },
   {
     "kind": "library",
@@ -406,6 +406,112 @@
         "kind": "property",
         "name": "CLOSE_NORMAL",
         "id": "CLOSE_NORMAL"
+      },
+      {
+        "interfaces": [
+          {
+            "name": "Exception",
+            "refId": "Exception"
+          }
+        ],
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "name": "NotImplementedException",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "NotImplementedException",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "isOptional": true,
+                "kind": "param",
+                "name": "msg",
+                "id": "msg"
+              },
+              {
+                "ref": {
+                  "name": "Exception",
+                  "refId": "Exception"
+                },
+                "isOptional": true,
+                "kind": "param",
+                "name": "original",
+                "id": "original"
+              }
+            ],
+            "id": "NotImplementedException2()"
+          },
+          {
+            "returnType": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "method",
+            "name": "toString",
+            "id": "toString0()"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "msg",
+            "id": "msg"
+          },
+          {
+            "ref": {
+              "name": "Exception",
+              "refId": "Exception"
+            },
+            "kind": "property",
+            "name": "original",
+            "id": "original"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "NotImplementedException",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "isOptional": true,
+                "kind": "param",
+                "name": "msg",
+                "id": "msg"
+              },
+              {
+                "ref": {
+                  "name": "Exception",
+                  "refId": "Exception"
+                },
+                "isOptional": true,
+                "kind": "param",
+                "name": "original",
+                "id": "original"
+              }
+            ],
+            "id": "NotImplementedException2()"
+          }
+        ],
+        "id": "NotImplementedException"
       },
       {
         "interfaces": [
@@ -1839,7 +1945,7 @@
           "refId": "PeerEventListener"
         },
         "kind": "class",
-        "comment": "\r\nInterface PeerDataEventListener Extends PeerEventListener\nDataChannel related stuff\n",
+        "comment": "\r\nInterface for DataChannel related stuff\n",
         "name": "PeerDataEventListener",
         "children": [
           {
@@ -1874,8 +1980,8 @@
             "children": [
               {
                 "ref": {
-                  "name": "PeerWrapper",
-                  "refId": "PeerWrapper"
+                  "name": "DataPeerWrapper",
+                  "refId": "DataPeerWrapper"
                 },
                 "kind": "param",
                 "name": "p",
@@ -1892,6 +1998,36 @@
               }
             ],
             "id": "onChannelStateChanged2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nPacket arrived trough data channel\n",
+            "name": "onPacket",
+            "children": [
+              {
+                "ref": {
+                  "name": "DataPeerWrapper",
+                  "refId": "DataPeerWrapper"
+                },
+                "kind": "param",
+                "name": "pw",
+                "id": "pw"
+              },
+              {
+                "ref": {
+                  "name": "Packet",
+                  "refId": "Packet"
+                },
+                "kind": "param",
+                "name": "p",
+                "id": "p"
+              }
+            ],
+            "id": "onPacket2()"
           }
         ],
         "id": "PeerDataEventListener"
@@ -1902,7 +2038,7 @@
           "refId": "PeerEventListener"
         },
         "kind": "class",
-        "comment": "\r\nInterface PeerPacketEventListener Extends PeerEventListener\n",
+        "comment": "\r\nInterface for peer packet (datasource) related notifications \n",
         "name": "PeerPacketEventListener",
         "children": [
           {
@@ -1935,7 +2071,7 @@
           "refId": "PeerEventListener"
         },
         "kind": "class",
-        "comment": "\r\nInterface PeerMediaEventListener Extends PeerEventListener\n",
+        "comment": "\r\nInterface for peer media stream related notifications\n",
         "name": "PeerMediaEventListener",
         "children": [
           {
@@ -1958,12 +2094,12 @@
               },
               {
                 "ref": {
-                  "name": "String",
-                  "refId": "String"
+                  "name": "PeerWrapper",
+                  "refId": "PeerWrapper"
                 },
                 "kind": "param",
-                "name": "id",
-                "id": "id"
+                "name": "pw",
+                "id": "pw"
               },
               {
                 "ref": {
@@ -1976,9 +2112,102 @@
               }
             ],
             "id": "onRemoteMediaStreamAvailable3()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nMedia stream was removed\n",
+            "name": "onRemoteMediaStreamRemoved",
+            "children": [
+              {
+                "ref": {
+                  "name": "PeerWrapper",
+                  "refId": "PeerWrapper"
+                },
+                "kind": "param",
+                "name": "pw",
+                "id": "pw"
+              }
+            ],
+            "id": "onRemoteMediaStreamRemoved1()"
           }
         ],
         "id": "PeerMediaEventListener"
+      },
+      {
+        "superclass": {
+          "name": "PeerEventListener",
+          "refId": "PeerEventListener"
+        },
+        "kind": "class",
+        "comment": "\r\nInterface for peer connection related notifications\n",
+        "name": "PeerConnectionEventListener",
+        "children": [
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nNotifies listeners that peer state has changed\n",
+            "name": "onPeerStateChanged",
+            "children": [
+              {
+                "ref": {
+                  "name": "PeerWrapper",
+                  "refId": "PeerWrapper"
+                },
+                "kind": "param",
+                "name": "pw",
+                "id": "pw"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "state",
+                "id": "state"
+              }
+            ],
+            "id": "onPeerStateChanged2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nNotifies listeners about ice state changes\n",
+            "name": "onIceGatheringStateChanged",
+            "children": [
+              {
+                "ref": {
+                  "name": "PeerWrapper",
+                  "refId": "PeerWrapper"
+                },
+                "kind": "param",
+                "name": "pw",
+                "id": "pw"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "state",
+                "id": "state"
+              }
+            ],
+            "id": "onIceGatheringStateChanged2()"
+          }
+        ],
+        "id": "PeerConnectionEventListener"
       },
       {
         "superclass": {
@@ -1992,6 +2221,55 @@
       },
       {
         "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "name": "BinaryPacketHandler",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "BinaryPacketHandler",
+            "id": "BinaryPacketHandler0()"
+          },
+          {
+            "returnType": {
+              "name": "ArrayBufferView",
+              "refId": "ArrayBufferView"
+            },
+            "kind": "method",
+            "name": "createBufferView",
+            "children": [
+              {
+                "ref": {
+                  "name": "Packet",
+                  "refId": "Packet"
+                },
+                "kind": "param",
+                "name": "p",
+                "id": "p"
+              }
+            ],
+            "id": "createBufferView1()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "BinaryPacketHandler",
+            "id": "BinaryPacketHandler0()"
+          }
+        ],
+        "id": "BinaryPacketHandler"
+      },
+      {
+        "superclass": {
           "name": "PeerWrapper",
           "refId": "PeerWrapper"
         },
@@ -2000,12 +2278,34 @@
         "name": "DataPeerWrapper",
         "children": [
           {
+            "isSetter": true,
             "returnType": {
               "name": "dynamic",
               "refId": "dynamic"
             },
             "kind": "method",
-            "comment": "\r\nConstructor\nTODO: Ice gathering doesnt start for some reason\n",
+            "comment": "Set reliable ",
+            "name": "isReliable=",
+            "children": [
+              {
+                "ref": {
+                  "name": "bool",
+                  "refId": "bool"
+                },
+                "kind": "param",
+                "name": "r",
+                "id": "r"
+              }
+            ],
+            "id": "isReliable=1()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\r\nConstructor\n",
             "name": "DataPeerWrapper",
             "children": [
               {
@@ -2064,26 +2364,7 @@
               "refId": "void"
             },
             "kind": "method",
-            "name": "_onOpen",
-            "children": [
-              {
-                "ref": {
-                  "name": "Event",
-                  "refId": "Event"
-                },
-                "kind": "param",
-                "name": "e",
-                "id": "e"
-              }
-            ],
-            "id": "_onOpen1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
+            "comment": "\r\nCreated the data channel\nTODO: Whenever these reliable and unreliable are implemented by whomever. fix this.\n",
             "name": "initChannel",
             "id": "initChannel0()"
           },
@@ -2093,6 +2374,79 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nSends a packet trough the data channel\n",
+            "name": "send",
+            "children": [
+              {
+                "ref": {
+                  "name": "Packet",
+                  "refId": "Packet"
+                },
+                "kind": "param",
+                "name": "p",
+                "id": "p"
+              },
+              {
+                "ref": {
+                  "name": "bool",
+                  "refId": "bool"
+                },
+                "isOptional": true,
+                "kind": "param",
+                "name": "asArrayBuffer",
+                "id": "asArrayBuffer"
+              }
+            ],
+            "id": "send2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nSend blob\n",
+            "name": "sendBlob",
+            "children": [
+              {
+                "ref": {
+                  "name": "Blob",
+                  "refId": "Blob"
+                },
+                "kind": "param",
+                "name": "b",
+                "id": "b"
+              }
+            ],
+            "id": "sendBlob1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "sendData",
+            "children": [
+              {
+                "ref": {
+                  "name": "ArrayBufferView",
+                  "refId": "ArrayBufferView"
+                },
+                "kind": "param",
+                "name": "d",
+                "id": "d"
+              }
+            ],
+            "id": "sendData1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nCallback for when data channel created by the other party comes trough the peer\n",
             "name": "_onNewDataChannelOpen",
             "children": [
               {
@@ -2113,12 +2467,13 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nData channel is open and ready for data\n",
             "name": "onDataChannelOpen",
             "children": [
               {
                 "ref": {
-                  "name": "RtcDataChannelEvent",
-                  "refId": "RtcDataChannelEvent"
+                  "name": "Event",
+                  "refId": "Event"
                 },
                 "kind": "param",
                 "name": "e",
@@ -2133,12 +2488,13 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nUgh\n",
             "name": "onDataChannelClose",
             "children": [
               {
                 "ref": {
-                  "name": "RtcDataChannelEvent",
-                  "refId": "RtcDataChannelEvent"
+                  "name": "Event",
+                  "refId": "Event"
                 },
                 "kind": "param",
                 "name": "e",
@@ -2153,6 +2509,7 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nMessage, check if blob, otherwise assume string data\n",
             "name": "onDataChannelMessage",
             "children": [
               {
@@ -2173,6 +2530,7 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nError\n",
             "name": "onDataChannelError",
             "children": [
               {
@@ -2193,6 +2551,28 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nSignal listeners that packet has arrived\n",
+            "name": "_signalPacketArrived",
+            "children": [
+              {
+                "ref": {
+                  "name": "Packet",
+                  "refId": "Packet"
+                },
+                "kind": "param",
+                "name": "p",
+                "id": "p"
+              }
+            ],
+            "id": "_signalPacketArrived1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nsignal listeners that channel state has changed\n",
             "name": "_signalStateChanged",
             "id": "_signalStateChanged0()"
           },
@@ -2224,12 +2604,21 @@
             "id": "_channelState"
           },
           {
+            "ref": {
+              "name": "bool",
+              "refId": "bool"
+            },
+            "kind": "property",
+            "name": "_isReliable",
+            "id": "_isReliable"
+          },
+          {
             "returnType": {
               "name": "dynamic",
               "refId": "dynamic"
             },
             "kind": "constructor",
-            "comment": "\r\nConstructor\nTODO: Ice gathering doesnt start for some reason\n",
+            "comment": "\r\nConstructor\n",
             "name": "DataPeerWrapper",
             "children": [
               {
@@ -2557,7 +2946,7 @@
               "refId": "void"
             },
             "kind": "method",
-            "comment": "\r\nAds a MediaStream to the peer connection\n",
+            "comment": "\r\nAds a MediaStream to the peer connection\nTODO: Reintroduce constraints when these compile to javascript properly\n",
             "name": "addStream",
             "children": [
               {
@@ -2652,26 +3041,6 @@
               }
             ],
             "id": "_onIceChange1()"
-          },
-          {
-            "returnType": {
-              "name": "void",
-              "refId": "void"
-            },
-            "kind": "method",
-            "name": "_onRemoveStream",
-            "children": [
-              {
-                "ref": {
-                  "name": "Event",
-                  "refId": "Event"
-                },
-                "kind": "param",
-                "name": "e",
-                "id": "e"
-              }
-            ],
-            "id": "_onRemoveStream1()"
           },
           {
             "returnType": {
@@ -2827,15 +3196,6 @@
           },
           {
             "ref": {
-              "name": "RtcDataChannel",
-              "refId": "RtcDataChannel"
-            },
-            "kind": "property",
-            "name": "_dataChannel",
-            "id": "_dataChannel"
-          },
-          {
-            "ref": {
               "name": "RtcPeerConnection",
               "refId": "RtcPeerConnection"
             },
@@ -2876,8 +3236,8 @@
               "refId": "Logger"
             },
             "kind": "property",
-            "name": "log",
-            "id": "log"
+            "name": "_log",
+            "id": "_log"
           },
           {
             "ref": {
@@ -2951,6 +3311,39 @@
               "refId": "dynamic"
             },
             "kind": "method",
+            "comment": "\r\nSets the local media stream\n",
+            "name": "localMediaStream=",
+            "children": [
+              {
+                "ref": {
+                  "name": "LocalMediaStream",
+                  "refId": "LocalMediaStream"
+                },
+                "kind": "param",
+                "name": "lms",
+                "id": "lms"
+              }
+            ],
+            "id": "localMediaStream=1()"
+          },
+          {
+            "returnType": {
+              "name": "LocalMediaStream",
+              "refId": "LocalMediaStream"
+            },
+            "kind": "method",
+            "comment": "\r\nReturns the local media stream\n",
+            "name": "localMediaStream",
+            "id": "localMediaStream0()"
+          },
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\r\nSet data channels enabled or disabled for all peers created\n",
             "name": "dataChannelsEnabled=",
             "children": [
               {
@@ -2966,12 +3359,34 @@
             "id": "dataChannelsEnabled=1()"
           },
           {
+            "isSetter": true,
             "returnType": {
               "name": "dynamic",
               "refId": "dynamic"
             },
             "kind": "method",
-            "comment": "\r\nFactory constructor\n",
+            "comment": "\r\nSet data channels reliable = tcp or unreliable = udp\n",
+            "name": "reliableDataChannels=",
+            "children": [
+              {
+                "ref": {
+                  "name": "bool",
+                  "refId": "bool"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "reliableDataChannels=1()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\r\nsingleton constructor\n",
             "name": "PeerManager",
             "id": "PeerManager0()"
           },
@@ -2981,7 +3396,6 @@
               "refId": "dynamic"
             },
             "kind": "method",
-            "comment": "\r\nInternal constructor\n",
             "name": "PeerManager._internal",
             "id": "PeerManager._internal0()"
           },
@@ -2991,6 +3405,7 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nConvenience method\nSets the max bit rate to stream constraints\n",
             "name": "setMaxBitRate",
             "children": [
               {
@@ -3011,6 +3426,7 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nSets the local media stream from users webcam/microphone to all peers\n",
             "name": "setLocalStream",
             "children": [
               {
@@ -3031,6 +3447,7 @@
               "refId": "MediaStream"
             },
             "kind": "method",
+            "comment": "\r\nReturns the current local media stream\n",
             "name": "getLocalStream",
             "id": "getLocalStream0()"
           },
@@ -3092,6 +3509,28 @@
               "refId": "void"
             },
             "kind": "method",
+            "comment": "\r\nCallback for mediastream removed\nNotifies listeners that stream was removed from peer\n",
+            "name": "onRemoveStream",
+            "children": [
+              {
+                "ref": {
+                  "name": "MediaStreamEvent",
+                  "refId": "MediaStreamEvent"
+                },
+                "kind": "param",
+                "name": "e",
+                "id": "e"
+              }
+            ],
+            "id": "onRemoveStream1()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "comment": "\r\nCallback for when a media stream is added to peer\nNotifies listeners that a media stream was added\n",
             "name": "onAddStream",
             "children": [
               {
@@ -3164,7 +3603,7 @@
               "refId": "void"
             },
             "kind": "method",
-            "comment": "\r\nPeer state changed\n",
+            "comment": "\r\nPeer state changed\nNotifies listeners about the state change\nIf readystate changed to closed, remove the peer wrapper and containing peer\n",
             "name": "onStateChanged",
             "children": [
               {
@@ -3201,6 +3640,16 @@
           },
           {
             "ref": {
+              "name": "LocalMediaStream",
+              "refId": "LocalMediaStream"
+            },
+            "kind": "property",
+            "comment": "\r\nReturns the local media stream\n",
+            "name": "localMediaStream",
+            "id": "localMediaStream"
+          },
+          {
+            "ref": {
               "name": "PeerManager",
               "refId": "PeerManager"
             },
@@ -3211,30 +3660,12 @@
           },
           {
             "ref": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "property",
-            "name": "READYSTATE_CLOSED",
-            "id": "READYSTATE_CLOSED"
-          },
-          {
-            "ref": {
-              "name": "dynamic",
-              "refId": "dynamic"
-            },
-            "kind": "property",
-            "name": "READYSTATE_OPEN",
-            "id": "READYSTATE_OPEN"
-          },
-          {
-            "ref": {
               "name": "Logger",
               "refId": "Logger"
             },
             "kind": "property",
-            "name": "log",
-            "id": "log"
+            "name": "_log",
+            "id": "_log"
           },
           {
             "ref": {
@@ -3244,6 +3675,15 @@
             "kind": "property",
             "name": "_dataChannelsEnabled",
             "id": "_dataChannelsEnabled"
+          },
+          {
+            "ref": {
+              "name": "bool",
+              "refId": "bool"
+            },
+            "kind": "property",
+            "name": "_reliableDataChannels",
+            "id": "_reliableDataChannels"
           },
           {
             "ref": {
@@ -3279,12 +3719,30 @@
             "id": "_streamConstraints"
           },
           {
+            "ref": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "property",
+            "name": "READYSTATE_CLOSED",
+            "id": "READYSTATE_CLOSED"
+          },
+          {
+            "ref": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "property",
+            "name": "READYSTATE_OPEN",
+            "id": "READYSTATE_OPEN"
+          },
+          {
             "returnType": {
               "name": "dynamic",
               "refId": "dynamic"
             },
             "kind": "constructor",
-            "comment": "\r\nFactory constructor\n",
+            "comment": "\r\nsingleton constructor\n",
             "name": "PeerManager",
             "id": "PeerManager0()"
           },
@@ -3294,7 +3752,6 @@
               "refId": "dynamic"
             },
             "kind": "constructor",
-            "comment": "\r\nInternal constructor\n",
             "name": "PeerManager._internal",
             "id": "PeerManager._internal0()"
           }
@@ -3858,6 +4315,78 @@
           "refId": "Object"
         },
         "kind": "class",
+        "name": "FileSizeConverter",
+        "children": [
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "method",
+            "name": "convert",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "sizeInBytes",
+                "id": "sizeInBytes"
+              }
+            ],
+            "id": "convert1()"
+          },
+          {
+            "ref": {
+              "name": "double",
+              "refId": "double"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "SPACE_KB",
+            "id": "SPACE_KB"
+          },
+          {
+            "ref": {
+              "name": "double",
+              "refId": "double"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "SPACE_MB",
+            "id": "SPACE_MB"
+          },
+          {
+            "ref": {
+              "name": "double",
+              "refId": "double"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "SPACE_GB",
+            "id": "SPACE_GB"
+          },
+          {
+            "ref": {
+              "name": "double",
+              "refId": "double"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "SPACE_TB",
+            "id": "SPACE_TB"
+          }
+        ],
+        "id": "FileSizeConverter"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
         "comment": "\r\nUtility class\n",
         "name": "Util",
         "children": [
@@ -4394,6 +4923,183 @@
           }
         ],
         "id": "Logger"
+      },
+      {
+        "interfaces": [
+          {
+            "name": "Packet",
+            "refId": "Packet"
+          }
+        ],
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
+        "name": "FilePacket",
+        "children": [
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "FilePacket",
+            "id": "FilePacket0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "FilePacket.With",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "id",
+                "id": "id"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "fileName",
+                "id": "fileName"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "fileSize",
+                "id": "fileSize"
+              }
+            ],
+            "id": "FilePacket.With3()"
+          },
+          {
+            "returnType": {
+              "name": "Map",
+              "refId": "Map"
+            },
+            "kind": "method",
+            "name": "toJson",
+            "id": "toJson0()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "FilePacket",
+              "refId": "FilePacket"
+            },
+            "kind": "method",
+            "name": "fromMap",
+            "children": [
+              {
+                "ref": {
+                  "name": "Map",
+                  "refId": "Map"
+                },
+                "kind": "param",
+                "name": "m",
+                "id": "m"
+              }
+            ],
+            "id": "fromMap1()"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "packetType",
+            "id": "packetType"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "id",
+            "id": "id"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "fileName",
+            "id": "fileName"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "kind": "property",
+            "name": "fileSize",
+            "id": "fileSize"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "FilePacket",
+            "id": "FilePacket0()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "name": "FilePacket.With",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "id",
+                "id": "id"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "fileName",
+                "id": "fileName"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "fileSize",
+                "id": "fileSize"
+              }
+            ],
+            "id": "FilePacket.With3()"
+          }
+        ],
+        "id": "FilePacket"
       },
       {
         "interfaces": [
@@ -6772,6 +7478,16 @@
             "kind": "property",
             "name": "QUEUE",
             "id": "QUEUE"
+          },
+          {
+            "ref": {
+              "name": "String",
+              "refId": "String"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "FILE",
+            "id": "FILE"
           }
         ],
         "id": "PacketType"
@@ -11074,6 +11790,35 @@
               }
             ],
             "id": "handleIncomingPong2()"
+          },
+          {
+            "returnType": {
+              "name": "void",
+              "refId": "void"
+            },
+            "kind": "method",
+            "name": "handleIncomingFile",
+            "children": [
+              {
+                "ref": {
+                  "name": "FilePacket",
+                  "refId": "FilePacket"
+                },
+                "kind": "param",
+                "name": "p",
+                "id": "p"
+              },
+              {
+                "ref": {
+                  "name": "dynamic",
+                  "refId": "dynamic"
+                },
+                "kind": "param",
+                "name": "c",
+                "id": "c"
+              }
+            ],
+            "id": "handleIncomingFile2()"
           },
           {
             "ref": {

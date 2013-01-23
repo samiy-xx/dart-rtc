@@ -26,11 +26,13 @@
         
 <h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><ul class="icon">
 <li><a href="../rtc_client/BaseSignalHandler.html"><div class="icon-class"></div>BaseSignalHandler</a></li>
+<li><a href="../rtc_client/BinaryPacketHandler.html"><div class="icon-class"></div>BinaryPacketHandler</a></li>
 <li><a href="../rtc_client/ChannelSignalHandler.html"><div class="icon-class"></div>ChannelSignalHandler</a></li>
 <li><a href="../rtc_client/DataPeerWrapper.html"><div class="icon-class"></div>DataPeerWrapper</a></li>
 <li><a href="../rtc_client/DataSource.html"><div class="icon-class"></div>DataSource</a></li>
 <li><a href="../rtc_client/DataSourceConnectionEventListener.html"><div class="icon-class"></div>DataSourceConnectionEventListener</a></li>
 <li><a href="../rtc_client/DataSourceEventListener.html"><div class="icon-class"></div>DataSourceEventListener</a></li>
+<li><a href="../rtc_client/PeerConnectionEventListener.html"><div class="icon-class"></div>PeerConnectionEventListener</a></li>
 <li><a href="../rtc_client/PeerDataEventListener.html"><div class="icon-class"></div>PeerDataEventListener</a></li>
 <li><a href="../rtc_client/PeerEventListener.html"><div class="icon-class"></div>PeerEventListener</a></li>
 <li><a href="../rtc_client/PeerManager.html"><div class="icon-class"></div>PeerManager</a></li>
@@ -43,6 +45,7 @@
 <li><a href="../rtc_client/SignalingEventListener.html"><div class="icon-class"></div>SignalingEventListener</a></li>
 <li><a href="../rtc_client/SimpleSignalHandler.html"><div class="icon-class"></div>SimpleSignalHandler</a></li>
 <li><a href="../rtc_client/WebSocketDataSource.html"><div class="icon-class"></div>WebSocketDataSource</a></li>
+<li><a href="../rtc_client/NotImplementedException.html"><div class="icon-exception"></div>NotImplementedException</a></li>
 </ul>
 <h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2></div>
 <div class="content">
@@ -66,7 +69,6 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
  /** Session Description type answer */
  final String SDP_ANSWER = 'answer';
  
- RtcDataChannel _dataChannel;
  /* The connection !! */
  RtcPeerConnection _peer;
  
@@ -78,7 +80,7 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
  bool _isHost = false;
  
  /* Wee. logger */
- final Logger log = new Logger();
+ final Logger _log = new Logger();
  
  String _id;
  String _channelId;
@@ -103,15 +105,14 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
  PeerWrapper(PeerManager pm, RtcPeerConnection p) {
    _peer = p;
    _manager = pm;
-   _peer.on.iceCandidate.add(_onIceCandidate);
-   _peer.on.iceChange.add(_onIceChange);
-   _peer.on.removeStream.add(_onRemoveStream);
-   _peer.on.negotiationNeeded.add(_onNegotiationNeeded);
-   _peer.on.open.add((Event e) =&gt; _isOpen = true);
+   _peer.onIceCandidate.listen(_onIceCandidate);
+   _peer.onIceChange.listen(_onIceChange);
+   _peer.onNegotiationNeeded.listen(_onNegotiationNeeded);
+   _peer.onOpen.listen((Event e) =&gt; _isOpen = true);
  }
  
  void setAsHost(bool value) {
-   log.Debug("(peerwrapper.dart) Setting as host");
+   _log.Debug("(peerwrapper.dart) Setting as host");
    _isHost = value;
  }
  
@@ -120,7 +121,7 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
   * after offer created or replied with answer
   */
  void setSessionDescription(RtcSessionDescription sdp) {
-   log.Debug("(peerwrapper.dart) Creating local description");
+   _log.Debug("(peerwrapper.dart) Creating local description");
    _peer.setLocalDescription(sdp, _onLocalDescriptionSuccess, _onRTCError);
  }
  
@@ -129,7 +130,7 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
   * if the type is offer, then a answer must be created
   */
  void setRemoteSessionDescription(RtcSessionDescription sdp) {
-     log.Debug("(peerwrapper.dart) Setting remote description ${sdp.type}");
+     _log.Debug("(peerwrapper.dart) Setting remote description ${sdp.type}");
      _peer.setRemoteDescription(sdp, _onRemoteDescriptionSuccess, _onRTCError);
      
      if (sdp.type == SDP_OFFER)
@@ -163,7 +164,7 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
   * and set is our local session description
   */
  void _onOfferSuccess(RtcSessionDescription sdp) {
-   log.Debug("(peerwrapper.dart) Offer created, sending");
+   _log.Debug("(peerwrapper.dart) Offer created, sending");
    setSessionDescription(sdp);
    _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'offer', _id, _channelId)));
    //_offerSent = true;
@@ -174,19 +175,20 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
   * and set it our local session description
   */
  void _onAnswerSuccess(RtcSessionDescription sdp) {
-   log.Debug("(peerwrapper.dart) Answer created, sending");
+   _log.Debug("(peerwrapper.dart) Answer created, sending");
    setSessionDescription(sdp);
    _manager._sendPacket(PacketFactory.get(new DescriptionPacket.With(sdp.sdp, 'answer', _id, _channelId)));
  }
  
  /**
   * Ads a MediaStream to the peer connection
+  * TODO: Reintroduce constraints when these compile to javascript properly
   */
  void addStream(MediaStream ms) {
    if (ms == null)
      throw new Exception("MediaStream was null");
-   log.Debug("(peerwrapper.dart) Adding stream to peer $id");
-   _peer.addStream(ms, _manager._streamConstraints.toMap());
+   _log.Debug("(peerwrapper.dart) Adding stream to peer $id");
+   _peer.addStream(ms);
  }
  
  /*
@@ -197,8 +199,8 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
   * means we're hosting and the other party must reply with answer
   */
  void _onNegotiationNeeded(Event e) {
-   log.Info("(peerwrapper.dart) onNegotiationNeeded");   
-   //initialize();
+   _log.Info("(peerwrapper.dart) onNegotiationNeeded");   
+   
    if (isHost)
      _sendOffer();
  }
@@ -212,7 +214,7 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
      throw new Exception("RtcIceCandidate was null");
    
    if (_peer.readyState != READYSTATE_CLOSED) {
-     log.Debug("(peerwrapper.dart) Receiving remote ICE Candidate ${candidate.candidate}");
+     _log.Debug("(peerwrapper.dart) Receiving remote ICE Candidate ${candidate.candidate}");
      _peer.addIceCandidate(candidate);
    }
  }
@@ -224,11 +226,11 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
  void _onIceCandidate(RtcIceCandidateEvent c) {
    
    if (c.candidate != null) {
-     log.Debug("(peerwrapper.dart) (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
+     _log.Debug("(peerwrapper.dart) (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
      IcePacket ice = new IcePacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id);
      _manager._sendPacket(PacketFactory.get(ice));
    } else {
-     log.Warning("(peerwrapper.dart) Local ICE Candidate was null  ${_peer.iceState}");
+     _log.Warning("(peerwrapper.dart) Local ICE Candidate was null  ${_peer.iceState}");
    }
  }
  
@@ -236,35 +238,28 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
   * Not sure
   */
  void _onIceChange(Event c) {
-   log.Debug("(peerwrapper.dart) ICE Change ${c} (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState})");
- }
- 
- 
- void _onRemoveStream(Event e) {
-   
+   _log.Debug("(peerwrapper.dart) ICE Change ${c} (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState})");
  }
  
  void _onLocalDescriptionSuccess() {
-   log.Debug("(peerwrapper.dart) Setting local description was success");
+   _log.Debug("(peerwrapper.dart) Setting local description was success");
  }
  
  void _onRemoteDescriptionSuccess() {
-   log.Debug("(peerwrapper.dart) Setting remote description was success");
+   _log.Debug("(peerwrapper.dart) Setting remote description was success");
  }
  
  void _onRTCError(String error) {
-   log.Error("(peerwrapper.dart) RTC ERROR : $error");
+   _log.Error("(peerwrapper.dart) RTC ERROR : $error");
  }
  
  /**
   * Close the peer connection if not closed already
   */
  void close() {
-   log.Error("(peerwrapper.dart) Closing peer");
-   if (_peer.readyState != READYSTATE_CLOSED) {
-     _peer.close();
-     log.Error("(peerwrapper.dart) Peer close called");
-   }
+   _log.Error("(peerwrapper.dart) Closing peer");
+   if (_peer.readyState != READYSTATE_CLOSED)
+     _peer.close();   
  }
  
  /**
@@ -273,7 +268,6 @@ class PeerWrapper extends GenericEventTarget&lt;PeerEventListener&gt;{
  void dispose() {
    if (_peer.readyState != READYSTATE_CLOSED)
      _peer.close();
-   _peer = null;
  }
 }
 </pre>
@@ -295,11 +289,10 @@ new <strong>PeerWrapper</strong>(<a href="../rtc_client/PeerManager.html">PeerMa
 PeerWrapper(PeerManager pm, RtcPeerConnection p) {
  _peer = p;
  _manager = pm;
- _peer.on.iceCandidate.add(_onIceCandidate);
- _peer.on.iceChange.add(_onIceChange);
- _peer.on.removeStream.add(_onRemoveStream);
- _peer.on.negotiationNeeded.add(_onNegotiationNeeded);
- _peer.on.open.add((Event e) =&gt; _isOpen = true);
+ _peer.onIceCandidate.listen(_onIceCandidate);
+ _peer.onIceChange.listen(_onIceChange);
+ _peer.onNegotiationNeeded.listen(_onNegotiationNeeded);
+ _peer.onOpen.listen((Event e) =&gt; _isOpen = true);
 }
 </pre>
 </div>
@@ -376,18 +369,6 @@ final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href=
 <p>Getter for listeners provided by GenericEventTarget </p>
 <pre class="source">
 List&lt;T&gt; get listeners =&gt; _listeners;
-</pre>
-</div>
-</div>
-<div class="field"><h4 id="log">
-<button class="show-code">Code</button>
-final <a href="../rtc_common/Logger.html">Logger</a>         <strong>log</strong> <a class="anchor-link"
-            href="#log"
-            title="Permalink to PeerWrapper.log">#</a>
-        </h4>
-        <div class="doc">
-<pre class="source">
-log = new Logger()
 </pre>
 </div>
 </div>
@@ -481,7 +462,7 @@ void addRemoteIceCandidate(RtcIceCandidate candidate) {
    throw new Exception("RtcIceCandidate was null");
  
  if (_peer.readyState != READYSTATE_CLOSED) {
-   log.Debug("(peerwrapper.dart) Receiving remote ICE Candidate ${candidate.candidate}");
+   _log.Debug("(peerwrapper.dart) Receiving remote ICE Candidate ${candidate.candidate}");
    _peer.addIceCandidate(candidate);
  }
 }
@@ -493,13 +474,14 @@ void addRemoteIceCandidate(RtcIceCandidate candidate) {
 void <strong>addStream</strong>(<a href="http://api.dartlang.org/dart_html/MediaStream.html">MediaStream</a> ms) <a class="anchor-link" href="#addStream"
               title="Permalink to PeerWrapper.addStream">#</a></h4>
 <div class="doc">
-<p>Ads a MediaStream to the peer connection</p>
+<p>Ads a MediaStream to the peer connection
+TODO: Reintroduce constraints when these compile to javascript properly</p>
 <pre class="source">
 void addStream(MediaStream ms) {
  if (ms == null)
    throw new Exception("MediaStream was null");
- log.Debug("(peerwrapper.dart) Adding stream to peer $id");
- _peer.addStream(ms, _manager._streamConstraints.toMap());
+ _log.Debug("(peerwrapper.dart) Adding stream to peer $id");
+ _peer.addStream(ms);
 }
 </pre>
 </div>
@@ -512,11 +494,9 @@ void <strong>close</strong>() <a class="anchor-link" href="#close"
 <p>Close the peer connection if not closed already</p>
 <pre class="source">
 void close() {
- log.Error("(peerwrapper.dart) Closing peer");
- if (_peer.readyState != READYSTATE_CLOSED) {
-   _peer.close();
-   log.Error("(peerwrapper.dart) Peer close called");
- }
+ _log.Error("(peerwrapper.dart) Closing peer");
+ if (_peer.readyState != READYSTATE_CLOSED)
+   _peer.close();   
 }
 </pre>
 </div>
@@ -531,7 +511,6 @@ void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
 void dispose() {
  if (_peer.readyState != READYSTATE_CLOSED)
    _peer.close();
- _peer = null;
 }
 </pre>
 </div>
@@ -570,7 +549,7 @@ void <strong>setAsHost</strong>(<a href="http://api.dartlang.org/dart_core/bool.
 <div class="doc">
 <pre class="source">
 void setAsHost(bool value) {
- log.Debug("(peerwrapper.dart) Setting as host");
+ _log.Debug("(peerwrapper.dart) Setting as host");
  _isHost = value;
 }
 </pre>
@@ -585,7 +564,7 @@ void <strong>setRemoteSessionDescription</strong>(<a href="http://api.dartlang.o
 if the type is offer, then a answer must be created</p>
 <pre class="source">
 void setRemoteSessionDescription(RtcSessionDescription sdp) {
-   log.Debug("(peerwrapper.dart) Setting remote description ${sdp.type}");
+   _log.Debug("(peerwrapper.dart) Setting remote description ${sdp.type}");
    _peer.setRemoteDescription(sdp, _onRemoteDescriptionSuccess, _onRTCError);
    
    if (sdp.type == SDP_OFFER)
@@ -603,7 +582,7 @@ void <strong>setSessionDescription</strong>(<a href="http://api.dartlang.org/dar
 after offer created or replied with answer</p>
 <pre class="source">
 void setSessionDescription(RtcSessionDescription sdp) {
- log.Debug("(peerwrapper.dart) Creating local description");
+ _log.Debug("(peerwrapper.dart) Creating local description");
  _peer.setLocalDescription(sdp, _onLocalDescriptionSuccess, _onRTCError);
 }
 </pre>
@@ -643,7 +622,7 @@ void unsubscribe(T listener) {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-18 18:51:14.478</div>
+          <div>This page was generated at 2013-01-23 17:09:59.216</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

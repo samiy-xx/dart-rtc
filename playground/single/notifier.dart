@@ -22,7 +22,7 @@ class Notifier {
   int _id;
   
   /* loop interval */ 
-  int _interval = 1000;
+  int _interval = 300;
   
   /* timeout after last message shown */
   int _timeout = 5000;

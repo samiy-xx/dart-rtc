@@ -1639,9 +1639,7 @@ $$.JSArray = {"": "Object;",
   },
   sort$1: function(receiver, compare) {
     $.checkMutable(receiver, "sort");
-    if (compare == null)
-      compare = $.Comparable_compare;
-    $._Sort__doSort(receiver, 0, receiver.length - 1, compare);
+    $.IterableMixinWorkaround_sortList(receiver, compare);
   },
   indexOf$2: function(receiver, element, start) {
     if (!(typeof start === "number" && Math.floor(start) === start))
@@ -4796,8 +4794,8 @@ $$.LinkEntry = {"": "Link;head>,tail>",
     t2 = $.isSubtype(t1[0], t2);
     if (!(typeof other === "object" && other !== null && !!other.is$Link && t2))
       return false;
-    myElements = this;
     other = other;
+    myElements = this;
     while (true) {
       t1 = $.getInterceptor$JSStringJSArray(myElements);
       if (!(t1.get$isEmpty(myElements) !== true && $.getInterceptor$JSStringJSArray(other).get$isEmpty(other) !== true))
@@ -5216,9 +5214,9 @@ $.Primitives_newFixedList = function(length$) {
 };
 
 $.Primitives__fromCharCodeApply = function(array) {
-  var end, t1, i, result, subarray, t2;
+  var end, t1, result, i, subarray, t2;
   end = array.length;
-  for (t1 = end <= 500, i = 0, result = ""; i < end; i += 500) {
+  for (t1 = end <= 500, result = "", i = 0; i < end; i += 500) {
     if (t1)
       subarray = array;
     else {
@@ -6985,7 +6983,7 @@ $.kindToString = function(kind) {
 };
 
 $.json = function() {
-  return [$.makeLiteralMap(["name", "metadata", "types", [$.makeLiteralMap(["name", "DocsEditable", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "DocsEditable"])]]), $.makeLiteralMap(["name", "DomName", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "DomName"]), $.makeLiteralMap(["kind", "field", "name", "name"])]]), $.makeLiteralMap(["name", "Experimental", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "Experimental"])]]), $.makeLiteralMap(["name", "SupportedBrowser", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "browserName"]), $.makeLiteralMap(["kind", "field", "name", "CHROME"]), $.makeLiteralMap(["kind", "field", "name", "FIREFOX"]), $.makeLiteralMap(["kind", "field", "name", "IE"]), $.makeLiteralMap(["kind", "field", "name", "minimumVersion"]), $.makeLiteralMap(["kind", "field", "name", "OPERA"]), $.makeLiteralMap(["kind", "field", "name", "SAFARI"]), $.makeLiteralMap(["kind", "constructor", "name", "SupportedBrowser"])]])]]), $.makeLiteralMap(["name", "rtc_client", "members", [$.makeLiteralMap(["kind", "field", "name", "ABNORMAL_CLOSE"]), $.makeLiteralMap(["kind", "field", "name", "CLOSE_GOING_AWAY"]), $.makeLiteralMap(["kind", "field", "name", "CLOSE_NORMAL"]), $.makeLiteralMap(["kind", "field", "name", "CLOSE_PROTOCOL_ERROR"]), $.makeLiteralMap(["kind", "field", "name", "CLOSE_UNSUPPORTED"]), $.makeLiteralMap(["kind", "field", "name", "DATA_NOT_CONSISTENT"]), $.makeLiteralMap(["kind", "field", "name", "DEBUG"]), $.makeLiteralMap(["kind", "field", "name", "HANDSHAKE_FAILURE"]), $.makeLiteralMap(["kind", "field", "name", "MESSAGE_TOO_LARGE"]), $.makeLiteralMap(["kind", "field", "name", "NEGOTIATIONS_FAILED"]), $.makeLiteralMap(["kind", "field", "name", "NO_STATUS"]), $.makeLiteralMap(["kind", "field", "name", "POLICY_VIOLATION"]), $.makeLiteralMap(["kind", "field", "name", "RESERVED"]), $.makeLiteralMap(["kind", "field", "name", "UNEXPECTED_CONDITION"]), $.makeLiteralMap(["kind", "field", "name", "WEBSOCKET_SERVER"])], "types", [$.makeLiteralMap(["name", "BaseSignalHandler", "kind", "class"]), $.makeLiteralMap(["name", "ChannelSignalHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "getter", "noparams", true, "name", "channelId"]), $.makeLiteralMap(["kind", "setter", "name", "channelId", "link_name", "channelId="]), $.makeLiteralMap(["kind", "constructor", "name", "ChannelSignalHandler"]), $.makeLiteralMap(["kind", "method", "name", "handleId"]), $.makeLiteralMap(["kind", "method", "name", "handleJoin"]), $.makeLiteralMap(["kind", "method", "name", "initialize"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"])]]), $.makeLiteralMap(["name", "DataPeerWrapper", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "DataPeerWrapper"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "initChannel"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "initialize"]), $.makeLiteralMap(["kind", "method", "name", "onDataChannelClose"]), $.makeLiteralMap(["kind", "method", "name", "onDataChannelError"]), $.makeLiteralMap(["kind", "method", "name", "onDataChannelMessage"]), $.makeLiteralMap(["kind", "method", "name", "onDataChannelOpen"]), $.makeLiteralMap(["kind", "method", "name", "setAsHost"])]]), $.makeLiteralMap(["name", "DataSource", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "close"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "init"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "readyState"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_CLOSE"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_OPEN"]), $.makeLiteralMap(["kind", "method", "name", "send"]), $.makeLiteralMap(["kind", "method", "name", "subscribe"])]]), $.makeLiteralMap(["name", "DataSourceConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "onError"]), $.makeLiteralMap(["kind", "method", "name", "onMessage"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"])]]), $.makeLiteralMap(["name", "DataSourceEventListener", "kind", "class"]), $.makeLiteralMap(["name", "PeerDataEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onChannelStateChanged"]), $.makeLiteralMap(["kind", "method", "name", "onDataReceived"])]]), $.makeLiteralMap(["name", "PeerEventListener", "kind", "class"]), $.makeLiteralMap(["name", "PeerManager", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "closeAll"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "createPeer"]), $.makeLiteralMap(["kind", "setter", "name", "dataChannelsEnabled", "link_name", "dataChannelsEnabled="]), $.makeLiteralMap(["kind", "method", "name", "findWrapper"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getLocalStream"]), $.makeLiteralMap(["kind", "method", "name", "getWrapperForPeer"]), $.makeLiteralMap(["kind", "field", "name", "log"]), $.makeLiteralMap(["kind", "method", "name", "onAddStream"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"]), $.makeLiteralMap(["kind", "method", "name", "onStateChanged"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PeerManager"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_CLOSED"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_OPEN"]), $.makeLiteralMap(["kind", "method", "name", "remove"]), $.makeLiteralMap(["kind", "method", "name", "setLocalStream"]), $.makeLiteralMap(["kind", "method", "name", "setMaxBitRate"])]]), $.makeLiteralMap(["name", "PeerMediaEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onRemoteMediaStreamAvailable"])]]), $.makeLiteralMap(["name", "PeerMediaEventListenerType", "kind", "typedef"]), $.makeLiteralMap(["name", "PeerPacketEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onPacketToSend"])]]), $.makeLiteralMap(["name", "PeerWrapper", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "addRemoteIceCandidate"]), $.makeLiteralMap(["kind", "method", "name", "addStream"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "channel"]), $.makeLiteralMap(["kind", "setter", "name", "channel", "link_name", "channel="]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "close"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "dispose"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "id"]), $.makeLiteralMap(["kind", "setter", "name", "id", "link_name", "id="]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "initialize"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "isHost"]), $.makeLiteralMap(["kind", "setter", "name", "isHost", "link_name", "isHost="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "isOpen"]), $.makeLiteralMap(["kind", "field", "name", "log"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "peer"]), $.makeLiteralMap(["kind", "constructor", "name", "PeerWrapper"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_CLOSED"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_OPEN"]), $.makeLiteralMap(["kind", "field", "name", "SDP_ANSWER"]), $.makeLiteralMap(["kind", "field", "name", "SDP_OFFER"]), $.makeLiteralMap(["kind", "method", "name", "setAsHost"]), $.makeLiteralMap(["kind", "method", "name", "setRemoteSessionDescription"]), $.makeLiteralMap(["kind", "method", "name", "setSessionDescription"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "state"])]]), $.makeLiteralMap(["name", "SignalHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "close"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "createPeerWrapper"]), $.makeLiteralMap(["kind", "setter", "name", "dataChannelsEnabled", "link_name", "dataChannelsEnabled="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "dataSource"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getPeerManager"]), $.makeLiteralMap(["kind", "method", "name", "handleBye"]), $.makeLiteralMap(["kind", "method", "name", "handleConnectionSuccess"]), $.makeLiteralMap(["kind", "method", "name", "handleDescription"]), $.makeLiteralMap(["kind", "method", "name", "handleIce"]), $.makeLiteralMap(["kind", "method", "name", "handleId"]), $.makeLiteralMap(["kind", "method", "name", "handleJoin"]), $.makeLiteralMap(["kind", "method", "name", "handlePing"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "id"]), $.makeLiteralMap(["kind", "method", "name", "initialize"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "onError"]), $.makeLiteralMap(["kind", "method", "name", "onMessage"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"]), $.makeLiteralMap(["kind", "method", "name", "onPacketToSend"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "peerManager"]), $.makeLiteralMap(["kind", "setter", "name", "peerManager", "link_name", "peerManager="]), $.makeLiteralMap(["kind", "method", "name", "send"]), $.makeLiteralMap(["kind", "method", "name", "setDataChannelsEnabled"]), $.makeLiteralMap(["kind", "method", "name", "setPeerManager"]), $.makeLiteralMap(["kind", "constructor", "name", "SignalHandler"]), $.makeLiteralMap(["kind", "method", "name", "subscribe"])]]), $.makeLiteralMap(["name", "SignalingConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "onClose"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "onError"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "onOpen"])]]), $.makeLiteralMap(["name", "SignalingEventListener", "kind", "class"]), $.makeLiteralMap(["name", "SimpleSignalHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "handleId"]), $.makeLiteralMap(["kind", "method", "name", "handleJoin"]), $.makeLiteralMap(["kind", "constructor", "name", "SimpleSignalHandler"])]]), $.makeLiteralMap(["name", "WebSocketDataSource", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "close"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getReadyState"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "init"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "onError"]), $.makeLiteralMap(["kind", "method", "name", "onMessage"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "readyState"]), $.makeLiteralMap(["kind", "method", "name", "send"]), $.makeLiteralMap(["kind", "constructor", "name", "WebSocketDataSource"])]])]]), $.makeLiteralMap(["name", "rtc_common", "types", [$.makeLiteralMap(["name", "ByePacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "ByePacket"]), $.makeLiteralMap(["kind", "constructor", "name", "ByePacket.With"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "ConnectionSuccessPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "ConnectionSuccessPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "ConnectionSuccessPacket.With"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "Constraints", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "toMap"])]]), $.makeLiteralMap(["name", "DescriptionPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "DescriptionPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "DescriptionPacket.With"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "field", "name", "sdp"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"]), $.makeLiteralMap(["kind", "field", "name", "type"])]]), $.makeLiteralMap(["name", "Disconnected", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "Disconnected"]), $.makeLiteralMap(["kind", "constructor", "name", "Disconnected.With"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "GenericEventTarget", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "GenericEventTarget"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getListeners"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "listeners"]), $.makeLiteralMap(["kind", "method", "name", "subscribe"]), $.makeLiteralMap(["kind", "method", "name", "unsubscribe"])], "args", "T"]), $.makeLiteralMap(["name", "HeloPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "HeloPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "HeloPacket.With"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "IcePacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "candidate"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "IcePacket"]), $.makeLiteralMap(["kind", "constructor", "name", "IcePacket.With"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "field", "name", "sdpMid"]), $.makeLiteralMap(["kind", "field", "name", "sdpMLineIndex"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "IdPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "IdPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "IdPacket.With"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "InvalidPacketException", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "InvalidPacketException"]), $.makeLiteralMap(["kind", "field", "name", "msg"]), $.makeLiteralMap(["kind", "field", "name", "original"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toString"])]]), $.makeLiteralMap(["name", "JoinPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "JoinPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "JoinPacket.With"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "Logger", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "Debug"]), $.makeLiteralMap(["kind", "method", "name", "Error"]), $.makeLiteralMap(["kind", "method", "name", "Info"]), $.makeLiteralMap(["kind", "field", "name", "instance"]), $.makeLiteralMap(["kind", "setter", "name", "level", "link_name", "level="]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "Logger"]), $.makeLiteralMap(["kind", "method", "name", "output"]), $.makeLiteralMap(["kind", "method", "name", "setLevel"]), $.makeLiteralMap(["kind", "method", "name", "Warning"])]]), $.makeLiteralMap(["name", "LogLevel", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "operator <", "link_name", "<"]), $.makeLiteralMap(["kind", "method", "name", "operator <=", "link_name", "<="]), $.makeLiteralMap(["kind", "field", "name", "DEBUG"]), $.makeLiteralMap(["kind", "field", "name", "ERROR"]), $.makeLiteralMap(["kind", "field", "name", "INFO"]), $.makeLiteralMap(["kind", "constructor", "name", "LogLevel"]), $.makeLiteralMap(["kind", "field", "name", "WARN"])]]), $.makeLiteralMap(["name", "Packet", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toString"])]]), $.makeLiteralMap(["name", "PacketFactory", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "get"]), $.makeLiteralMap(["kind", "method", "name", "getPacketFromMap"]), $.makeLiteralMap(["kind", "method", "name", "getPacketFromString"])]]), $.makeLiteralMap(["name", "PacketHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "clearHandlers"]), $.makeLiteralMap(["kind", "method", "name", "executeHandler"]), $.makeLiteralMap(["kind", "method", "name", "executeHandlerFor"]), $.makeLiteralMap(["kind", "method", "name", "getHandlers"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PacketHandler"]), $.makeLiteralMap(["kind", "method", "name", "registerHandler"])]]), $.makeLiteralMap(["name", "PacketType", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "ACK"]), $.makeLiteralMap(["kind", "field", "name", "BYE"]), $.makeLiteralMap(["kind", "field", "name", "CONNECTED"]), $.makeLiteralMap(["kind", "field", "name", "DESC"]), $.makeLiteralMap(["kind", "field", "name", "DISCONNECTED"]), $.makeLiteralMap(["kind", "field", "name", "HELO"]), $.makeLiteralMap(["kind", "field", "name", "ICE"]), $.makeLiteralMap(["kind", "field", "name", "ID"]), $.makeLiteralMap(["kind", "field", "name", "JOIN"]), $.makeLiteralMap(["kind", "field", "name", "PING"]), $.makeLiteralMap(["kind", "field", "name", "PONG"]), $.makeLiteralMap(["kind", "field", "name", "QUEUE"]), $.makeLiteralMap(["kind", "field", "name", "RANDOM"]), $.makeLiteralMap(["kind", "field", "name", "ROOM"]), $.makeLiteralMap(["kind", "field", "name", "ROUTE"]), $.makeLiteralMap(["kind", "field", "name", "USER"])]]), $.makeLiteralMap(["name", "PacketType2", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "ACK"]), $.makeLiteralMap(["kind", "field", "name", "BYE"]), $.makeLiteralMap(["kind", "field", "name", "DESC"]), $.makeLiteralMap(["kind", "field", "name", "HELO"]), $.makeLiteralMap(["kind", "field", "name", "ICE"]), $.makeLiteralMap(["kind", "field", "name", "ID"]), $.makeLiteralMap(["kind", "field", "name", "JOIN"]), $.makeLiteralMap(["kind", "constructor", "name", "PacketType2"]), $.makeLiteralMap(["kind", "field", "name", "PING"]), $.makeLiteralMap(["kind", "field", "name", "PONG"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toString"]), $.makeLiteralMap(["kind", "field", "name", "type"])]]), $.makeLiteralMap(["name", "PeerConstraints", "kind", "class", "members", [$.makeLiteralMap(["kind", "setter", "name", "dataChannelEnabled", "link_name", "dataChannelEnabled="]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PeerConstraints"]), $.makeLiteralMap(["kind", "method", "name", "setDataChannelEnabled"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toMap"])]]), $.makeLiteralMap(["name", "PeerCreatedPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PeerCreatedPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "PeerCreatedPacket.With"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "PingPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PingPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "PingPacket.With"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "PongPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PongPacket"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "QueuePacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "field", "name", "position"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "QueuePacket"]), $.makeLiteralMap(["kind", "constructor", "name", "QueuePacket.With"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "RandomUserPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "RandomUserPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "RandomUserPacket.With"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "StreamConstraints", "kind", "class", "members", [$.makeLiteralMap(["kind", "setter", "name", "bitRate", "link_name", "bitRate="]), $.makeLiteralMap(["kind", "method", "name", "setBitrate"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "StreamConstraints"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toMap"])]]), $.makeLiteralMap(["name", "UserMessage", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "message"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "UserMessage"]), $.makeLiteralMap(["kind", "constructor", "name", "UserMessage.With"])]]), $.makeLiteralMap(["name", "Util", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "aspectRatio"]), $.makeLiteralMap(["kind", "method", "name", "generateId"]), $.makeLiteralMap(["kind", "method", "name", "getHeight"]), $.makeLiteralMap(["kind", "method", "name", "getWidth"])]]), $.makeLiteralMap(["name", "VideoConstraints", "kind", "class", "members", [$.makeLiteralMap(["kind", "setter", "name", "frameRate", "link_name", "frameRate="]), $.makeLiteralMap(["kind", "setter", "name", "maxHeight", "link_name", "maxHeight="]), $.makeLiteralMap(["kind", "setter", "name", "maxWidth", "link_name", "maxWidth="]), $.makeLiteralMap(["kind", "setter", "name", "minHeight", "link_name", "minHeight="]), $.makeLiteralMap(["kind", "setter", "name", "minWidth", "link_name", "minWidth="]), $.makeLiteralMap(["kind", "method", "name", "setFrameRate"]), $.makeLiteralMap(["kind", "method", "name", "setMaxHeight"]), $.makeLiteralMap(["kind", "method", "name", "setMaxWidth"]), $.makeLiteralMap(["kind", "method", "name", "setMinHeight"]), $.makeLiteralMap(["kind", "method", "name", "setMinWidth"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toMap"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "VideoConstraints"])]])]]), $.makeLiteralMap(["name", "rtc_docs"]), $.makeLiteralMap(["name", "rtc_server", "members", [$.makeLiteralMap(["kind", "field", "name", "DEAD_SOCKET_CHECK"]), $.makeLiteralMap(["kind", "field", "name", "DEAD_SOCKET_KILL"]), $.makeLiteralMap(["kind", "field", "name", "RANDOM_ID_LENGTH"])], "types", [$.makeLiteralMap(["name", "BaseChannelContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "BaseChannelContainer"])]]), $.makeLiteralMap(["name", "BaseContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "add"]), $.makeLiteralMap(["kind", "constructor", "name", "BaseContainer"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "count"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getServer"]), $.makeLiteralMap(["kind", "method", "name", "remove"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "server"])], "args", "T"]), $.makeLiteralMap(["name", "BaseUser", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "operator >", "link_name", ">"]), $.makeLiteralMap(["kind", "method", "name", "operator >=", "link_name", ">="]), $.makeLiteralMap(["kind", "constructor", "name", "BaseUser"]), $.makeLiteralMap(["kind", "method", "name", "compareTo"]), $.makeLiteralMap(["kind", "method", "name", "hangup"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "id"]), $.makeLiteralMap(["kind", "setter", "name", "id", "link_name", "id="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "isTalking"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "lastActivity"]), $.makeLiteralMap(["kind", "setter", "name", "lastActivity", "link_name", "lastActivity="]), $.makeLiteralMap(["kind", "field", "name", "logger"]), $.makeLiteralMap(["kind", "method", "name", "needsKill"]), $.makeLiteralMap(["kind", "method", "name", "needsPing"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "talkers"]), $.makeLiteralMap(["kind", "method", "name", "talkTo"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "timeSinceLastConnection"]), $.makeLiteralMap(["kind", "setter", "name", "timeSinceLastConnection", "link_name", "timeSinceLastConnection="])]]), $.makeLiteralMap(["name", "BaseUserContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "BaseUserContainer"])]]), $.makeLiteralMap(["name", "Channel", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "operator ==", "link_name", "=="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "canJoin"]), $.makeLiteralMap(["kind", "constructor", "name", "Channel"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "channelLimit"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "id"]), $.makeLiteralMap(["kind", "method", "name", "join"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "killAll"]), $.makeLiteralMap(["kind", "method", "name", "leave"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "sendToAll"]), $.makeLiteralMap(["kind", "method", "name", "sendToAllExceptSender"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "userCount"])]]), $.makeLiteralMap(["name", "ChannelConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onEnterChannel"]), $.makeLiteralMap(["kind", "method", "name", "onLeaveChannel"])]]), $.makeLiteralMap(["name", "ChannelContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "ChannelContainer"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "channelCount"]), $.makeLiteralMap(["kind", "method", "name", "channelExists"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "createChannel"]), $.makeLiteralMap(["kind", "method", "name", "createChannelWithId"]), $.makeLiteralMap(["kind", "method", "name", "findChannel"]), $.makeLiteralMap(["kind", "field", "name", "logger"]), $.makeLiteralMap(["kind", "method", "name", "removeChannel"]), $.makeLiteralMap(["kind", "method", "name", "usersInChannel"])]]), $.makeLiteralMap(["name", "ChannelEventListener", "kind", "class"]), $.makeLiteralMap(["name", "ChannelQueueEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onEnterQueue"]), $.makeLiteralMap(["kind", "method", "name", "onLeaveQueue"]), $.makeLiteralMap(["kind", "method", "name", "onMoveInQueue"])]]), $.makeLiteralMap(["name", "ChannelServer", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "ChannelServer"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "displayStatus"]), $.makeLiteralMap(["kind", "method", "name", "handleBye"]), $.makeLiteralMap(["kind", "method", "name", "handleHelo"]), $.makeLiteralMap(["kind", "method", "name", "handlePeerCreated"]), $.makeLiteralMap(["kind", "method", "name", "handleUserMessage"]), $.makeLiteralMap(["kind", "method", "name", "onCountChanged"])]]), $.makeLiteralMap(["name", "ContainerContentsEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onCountChanged"])]]), $.makeLiteralMap(["name", "ContainerEventListener", "kind", "class"]), $.makeLiteralMap(["name", "ContainerQueueEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onEnterQueue"]), $.makeLiteralMap(["kind", "method", "name", "onLeaveQueue"]), $.makeLiteralMap(["kind", "method", "name", "onMoveInQueue"])]]), $.makeLiteralMap(["name", "QueueChannel", "kind", "class", "members", [$.makeLiteralMap(["kind", "getter", "noparams", true, "name", "canJoin"]), $.makeLiteralMap(["kind", "method", "name", "insertIntoQueue"]), $.makeLiteralMap(["kind", "method", "name", "join"]), $.makeLiteralMap(["kind", "method", "name", "leave"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "popFromQueue"]), $.makeLiteralMap(["kind", "constructor", "name", "QueueChannel"])]]), $.makeLiteralMap(["name", "QueueContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "createChannelWithId"]), $.makeLiteralMap(["kind", "method", "name", "onEnterQueue"]), $.makeLiteralMap(["kind", "method", "name", "onLeaveQueue"]), $.makeLiteralMap(["kind", "method", "name", "onMoveInQueue"]), $.makeLiteralMap(["kind", "constructor", "name", "QueueContainer"])]]), $.makeLiteralMap(["name", "QueueServer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "displayStatus"]), $.makeLiteralMap(["kind", "method", "name", "handleBye"]), $.makeLiteralMap(["kind", "method", "name", "handleHelo"]), $.makeLiteralMap(["kind", "method", "name", "handlePeerCreated"]), $.makeLiteralMap(["kind", "method", "name", "handleUserMessage"]), $.makeLiteralMap(["kind", "method", "name", "onCountChanged"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "QueueServer"])]]), $.makeLiteralMap(["name", "Server", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "listen"]), $.makeLiteralMap(["kind", "method", "name", "sendPacket"])]]), $.makeLiteralMap(["name", "User", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "operator ==", "link_name", "=="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "connection"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "terminate"]), $.makeLiteralMap(["kind", "constructor", "name", "User"])]]), $.makeLiteralMap(["name", "UserConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onClose"])]]), $.makeLiteralMap(["name", "UserContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "createChannelUser"]), $.makeLiteralMap(["kind", "method", "name", "createChannelUserFromId"]), $.makeLiteralMap(["kind", "method", "name", "createUser"]), $.makeLiteralMap(["kind", "method", "name", "createUserFromId"]), $.makeLiteralMap(["kind", "method", "name", "findLongestIdUser"]), $.makeLiteralMap(["kind", "method", "name", "findRandomUser"]), $.makeLiteralMap(["kind", "method", "name", "findRandomUser_old"]), $.makeLiteralMap(["kind", "method", "name", "findUserByConn"]), $.makeLiteralMap(["kind", "method", "name", "findUserById"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "genId"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getUsers"]), $.makeLiteralMap(["kind", "field", "name", "logger"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "removeUser"]), $.makeLiteralMap(["kind", "constructor", "name", "UserContainer"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "userCount"]), $.makeLiteralMap(["kind", "method", "name", "userExist"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "users"])]]), $.makeLiteralMap(["name", "UserEventListener", "kind", "class"]), $.makeLiteralMap(["name", "WebSocketServer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "displayStatus"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "doAliveChecks"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingDescription"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingIce"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingPong"]), $.makeLiteralMap(["kind", "method", "name", "listen"]), $.makeLiteralMap(["kind", "field", "name", "logger"]), $.makeLiteralMap(["kind", "method", "name", "onCountChanged"]), $.makeLiteralMap(["kind", "method", "name", "onTimerTick"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "run"]), $.makeLiteralMap(["kind", "method", "name", "sendPacket"]), $.makeLiteralMap(["kind", "method", "name", "sendToClient"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "stop"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "WebSocketServer"])]]), $.makeLiteralMap(["name", "WheelServer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "handleDisconnect"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingBye"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingHelo"]), $.makeLiteralMap(["kind", "method", "name", "handleRandomUserRequest"]), $.makeLiteralMap(["kind", "method", "name", "handleUserMessage"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "WheelServer"])]]), $.makeLiteralMap(["name", "WheelUser", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "WheelUser"])]])]])];
+  return [$.makeLiteralMap(["name", "metadata", "types", [$.makeLiteralMap(["name", "DocsEditable", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "DocsEditable"])]]), $.makeLiteralMap(["name", "DomName", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "DomName"]), $.makeLiteralMap(["kind", "field", "name", "name"])]]), $.makeLiteralMap(["name", "Experimental", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "Experimental"])]]), $.makeLiteralMap(["name", "SupportedBrowser", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "browserName"]), $.makeLiteralMap(["kind", "field", "name", "CHROME"]), $.makeLiteralMap(["kind", "field", "name", "FIREFOX"]), $.makeLiteralMap(["kind", "field", "name", "IE"]), $.makeLiteralMap(["kind", "field", "name", "minimumVersion"]), $.makeLiteralMap(["kind", "field", "name", "OPERA"]), $.makeLiteralMap(["kind", "field", "name", "SAFARI"]), $.makeLiteralMap(["kind", "constructor", "name", "SupportedBrowser"])]])]]), $.makeLiteralMap(["name", "rtc_client", "members", [$.makeLiteralMap(["kind", "field", "name", "ABNORMAL_CLOSE"]), $.makeLiteralMap(["kind", "field", "name", "CLOSE_GOING_AWAY"]), $.makeLiteralMap(["kind", "field", "name", "CLOSE_NORMAL"]), $.makeLiteralMap(["kind", "field", "name", "CLOSE_PROTOCOL_ERROR"]), $.makeLiteralMap(["kind", "field", "name", "CLOSE_UNSUPPORTED"]), $.makeLiteralMap(["kind", "field", "name", "DATA_NOT_CONSISTENT"]), $.makeLiteralMap(["kind", "field", "name", "DEBUG"]), $.makeLiteralMap(["kind", "field", "name", "HANDSHAKE_FAILURE"]), $.makeLiteralMap(["kind", "field", "name", "MESSAGE_TOO_LARGE"]), $.makeLiteralMap(["kind", "field", "name", "NEGOTIATIONS_FAILED"]), $.makeLiteralMap(["kind", "field", "name", "NO_STATUS"]), $.makeLiteralMap(["kind", "field", "name", "POLICY_VIOLATION"]), $.makeLiteralMap(["kind", "field", "name", "RESERVED"]), $.makeLiteralMap(["kind", "field", "name", "UNEXPECTED_CONDITION"]), $.makeLiteralMap(["kind", "field", "name", "WEBSOCKET_SERVER"])], "types", [$.makeLiteralMap(["name", "BaseSignalHandler", "kind", "class"]), $.makeLiteralMap(["name", "BinaryPacketHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "BinaryPacketHandler"]), $.makeLiteralMap(["kind", "method", "name", "createBufferView"])]]), $.makeLiteralMap(["name", "ChannelSignalHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "getter", "noparams", true, "name", "channelId"]), $.makeLiteralMap(["kind", "setter", "name", "channelId", "link_name", "channelId="]), $.makeLiteralMap(["kind", "constructor", "name", "ChannelSignalHandler"]), $.makeLiteralMap(["kind", "method", "name", "handleId"]), $.makeLiteralMap(["kind", "method", "name", "handleJoin"]), $.makeLiteralMap(["kind", "method", "name", "initialize"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"])]]), $.makeLiteralMap(["name", "DataPeerWrapper", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "DataPeerWrapper"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "initChannel"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "initialize"]), $.makeLiteralMap(["kind", "setter", "name", "isReliable", "link_name", "isReliable="]), $.makeLiteralMap(["kind", "method", "name", "onDataChannelClose"]), $.makeLiteralMap(["kind", "method", "name", "onDataChannelError"]), $.makeLiteralMap(["kind", "method", "name", "onDataChannelMessage"]), $.makeLiteralMap(["kind", "method", "name", "onDataChannelOpen"]), $.makeLiteralMap(["kind", "method", "name", "send"]), $.makeLiteralMap(["kind", "method", "name", "sendBlob"]), $.makeLiteralMap(["kind", "method", "name", "sendData"]), $.makeLiteralMap(["kind", "method", "name", "setAsHost"])]]), $.makeLiteralMap(["name", "DataSource", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "close"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "init"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "readyState"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_CLOSE"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_OPEN"]), $.makeLiteralMap(["kind", "method", "name", "send"]), $.makeLiteralMap(["kind", "method", "name", "subscribe"])]]), $.makeLiteralMap(["name", "DataSourceConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "onError"]), $.makeLiteralMap(["kind", "method", "name", "onMessage"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"])]]), $.makeLiteralMap(["name", "DataSourceEventListener", "kind", "class"]), $.makeLiteralMap(["name", "NotImplementedException", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "msg"]), $.makeLiteralMap(["kind", "constructor", "name", "NotImplementedException"]), $.makeLiteralMap(["kind", "field", "name", "original"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toString"])]]), $.makeLiteralMap(["name", "PeerConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onIceGatheringStateChanged"]), $.makeLiteralMap(["kind", "method", "name", "onPeerStateChanged"])]]), $.makeLiteralMap(["name", "PeerDataEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onChannelStateChanged"]), $.makeLiteralMap(["kind", "method", "name", "onDataReceived"]), $.makeLiteralMap(["kind", "method", "name", "onPacket"])]]), $.makeLiteralMap(["name", "PeerEventListener", "kind", "class"]), $.makeLiteralMap(["name", "PeerManager", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "closeAll"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "createPeer"]), $.makeLiteralMap(["kind", "setter", "name", "dataChannelsEnabled", "link_name", "dataChannelsEnabled="]), $.makeLiteralMap(["kind", "method", "name", "findWrapper"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getLocalStream"]), $.makeLiteralMap(["kind", "method", "name", "getWrapperForPeer"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "localMediaStream"]), $.makeLiteralMap(["kind", "setter", "name", "localMediaStream", "link_name", "localMediaStream="]), $.makeLiteralMap(["kind", "method", "name", "onAddStream"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"]), $.makeLiteralMap(["kind", "method", "name", "onRemoveStream"]), $.makeLiteralMap(["kind", "method", "name", "onStateChanged"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PeerManager"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_CLOSED"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_OPEN"]), $.makeLiteralMap(["kind", "setter", "name", "reliableDataChannels", "link_name", "reliableDataChannels="]), $.makeLiteralMap(["kind", "method", "name", "remove"]), $.makeLiteralMap(["kind", "method", "name", "setLocalStream"]), $.makeLiteralMap(["kind", "method", "name", "setMaxBitRate"])]]), $.makeLiteralMap(["name", "PeerMediaEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onRemoteMediaStreamAvailable"]), $.makeLiteralMap(["kind", "method", "name", "onRemoteMediaStreamRemoved"])]]), $.makeLiteralMap(["name", "PeerMediaEventListenerType", "kind", "typedef"]), $.makeLiteralMap(["name", "PeerPacketEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onPacketToSend"])]]), $.makeLiteralMap(["name", "PeerWrapper", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "addRemoteIceCandidate"]), $.makeLiteralMap(["kind", "method", "name", "addStream"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "channel"]), $.makeLiteralMap(["kind", "setter", "name", "channel", "link_name", "channel="]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "close"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "dispose"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "id"]), $.makeLiteralMap(["kind", "setter", "name", "id", "link_name", "id="]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "initialize"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "isHost"]), $.makeLiteralMap(["kind", "setter", "name", "isHost", "link_name", "isHost="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "isOpen"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "peer"]), $.makeLiteralMap(["kind", "constructor", "name", "PeerWrapper"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_CLOSED"]), $.makeLiteralMap(["kind", "field", "name", "READYSTATE_OPEN"]), $.makeLiteralMap(["kind", "field", "name", "SDP_ANSWER"]), $.makeLiteralMap(["kind", "field", "name", "SDP_OFFER"]), $.makeLiteralMap(["kind", "method", "name", "setAsHost"]), $.makeLiteralMap(["kind", "method", "name", "setRemoteSessionDescription"]), $.makeLiteralMap(["kind", "method", "name", "setSessionDescription"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "state"])]]), $.makeLiteralMap(["name", "SignalHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "close"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "createPeerWrapper"]), $.makeLiteralMap(["kind", "setter", "name", "dataChannelsEnabled", "link_name", "dataChannelsEnabled="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "dataSource"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getPeerManager"]), $.makeLiteralMap(["kind", "method", "name", "handleBye"]), $.makeLiteralMap(["kind", "method", "name", "handleConnectionSuccess"]), $.makeLiteralMap(["kind", "method", "name", "handleDescription"]), $.makeLiteralMap(["kind", "method", "name", "handleIce"]), $.makeLiteralMap(["kind", "method", "name", "handleId"]), $.makeLiteralMap(["kind", "method", "name", "handleJoin"]), $.makeLiteralMap(["kind", "method", "name", "handlePing"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "id"]), $.makeLiteralMap(["kind", "method", "name", "initialize"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "onError"]), $.makeLiteralMap(["kind", "method", "name", "onMessage"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"]), $.makeLiteralMap(["kind", "method", "name", "onPacketToSend"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "peerManager"]), $.makeLiteralMap(["kind", "setter", "name", "peerManager", "link_name", "peerManager="]), $.makeLiteralMap(["kind", "method", "name", "send"]), $.makeLiteralMap(["kind", "method", "name", "setDataChannelsEnabled"]), $.makeLiteralMap(["kind", "method", "name", "setPeerManager"]), $.makeLiteralMap(["kind", "constructor", "name", "SignalHandler"]), $.makeLiteralMap(["kind", "method", "name", "subscribe"])]]), $.makeLiteralMap(["name", "SignalingConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "onClose"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "onError"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "onOpen"])]]), $.makeLiteralMap(["name", "SignalingEventListener", "kind", "class"]), $.makeLiteralMap(["name", "SimpleSignalHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "handleId"]), $.makeLiteralMap(["kind", "method", "name", "handleJoin"]), $.makeLiteralMap(["kind", "constructor", "name", "SimpleSignalHandler"])]]), $.makeLiteralMap(["name", "WebSocketDataSource", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "close"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getReadyState"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "init"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "onError"]), $.makeLiteralMap(["kind", "method", "name", "onMessage"]), $.makeLiteralMap(["kind", "method", "name", "onOpen"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "readyState"]), $.makeLiteralMap(["kind", "method", "name", "send"]), $.makeLiteralMap(["kind", "constructor", "name", "WebSocketDataSource"])]])]]), $.makeLiteralMap(["name", "rtc_common", "types", [$.makeLiteralMap(["name", "ByePacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "ByePacket"]), $.makeLiteralMap(["kind", "constructor", "name", "ByePacket.With"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "ConnectionSuccessPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "ConnectionSuccessPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "ConnectionSuccessPacket.With"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "Constraints", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "toMap"])]]), $.makeLiteralMap(["name", "DescriptionPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "DescriptionPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "DescriptionPacket.With"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "field", "name", "sdp"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"]), $.makeLiteralMap(["kind", "field", "name", "type"])]]), $.makeLiteralMap(["name", "Disconnected", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "Disconnected"]), $.makeLiteralMap(["kind", "constructor", "name", "Disconnected.With"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "FilePacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "fileName"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "FilePacket"]), $.makeLiteralMap(["kind", "constructor", "name", "FilePacket.With"]), $.makeLiteralMap(["kind", "field", "name", "fileSize"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "FileSizeConverter", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "convert"]), $.makeLiteralMap(["kind", "field", "name", "SPACE_GB"]), $.makeLiteralMap(["kind", "field", "name", "SPACE_KB"]), $.makeLiteralMap(["kind", "field", "name", "SPACE_MB"]), $.makeLiteralMap(["kind", "field", "name", "SPACE_TB"])]]), $.makeLiteralMap(["name", "GenericEventTarget", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "GenericEventTarget"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getListeners"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "listeners"]), $.makeLiteralMap(["kind", "method", "name", "subscribe"]), $.makeLiteralMap(["kind", "method", "name", "unsubscribe"])], "args", "T"]), $.makeLiteralMap(["name", "HeloPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "HeloPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "HeloPacket.With"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "IcePacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "candidate"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "IcePacket"]), $.makeLiteralMap(["kind", "constructor", "name", "IcePacket.With"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "field", "name", "sdpMid"]), $.makeLiteralMap(["kind", "field", "name", "sdpMLineIndex"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "IdPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "IdPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "IdPacket.With"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "InvalidPacketException", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "InvalidPacketException"]), $.makeLiteralMap(["kind", "field", "name", "msg"]), $.makeLiteralMap(["kind", "field", "name", "original"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toString"])]]), $.makeLiteralMap(["name", "JoinPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "JoinPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "JoinPacket.With"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "Logger", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "Debug"]), $.makeLiteralMap(["kind", "method", "name", "Error"]), $.makeLiteralMap(["kind", "method", "name", "Info"]), $.makeLiteralMap(["kind", "field", "name", "instance"]), $.makeLiteralMap(["kind", "setter", "name", "level", "link_name", "level="]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "Logger"]), $.makeLiteralMap(["kind", "method", "name", "output"]), $.makeLiteralMap(["kind", "method", "name", "setLevel"]), $.makeLiteralMap(["kind", "method", "name", "Warning"])]]), $.makeLiteralMap(["name", "LogLevel", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "operator <", "link_name", "<"]), $.makeLiteralMap(["kind", "method", "name", "operator <=", "link_name", "<="]), $.makeLiteralMap(["kind", "field", "name", "DEBUG"]), $.makeLiteralMap(["kind", "field", "name", "ERROR"]), $.makeLiteralMap(["kind", "field", "name", "INFO"]), $.makeLiteralMap(["kind", "constructor", "name", "LogLevel"]), $.makeLiteralMap(["kind", "field", "name", "WARN"])]]), $.makeLiteralMap(["name", "Packet", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toString"])]]), $.makeLiteralMap(["name", "PacketFactory", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "get"]), $.makeLiteralMap(["kind", "method", "name", "getPacketFromMap"]), $.makeLiteralMap(["kind", "method", "name", "getPacketFromString"])]]), $.makeLiteralMap(["name", "PacketHandler", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "clearHandlers"]), $.makeLiteralMap(["kind", "method", "name", "executeHandler"]), $.makeLiteralMap(["kind", "method", "name", "executeHandlerFor"]), $.makeLiteralMap(["kind", "method", "name", "getHandlers"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PacketHandler"]), $.makeLiteralMap(["kind", "method", "name", "registerHandler"])]]), $.makeLiteralMap(["name", "PacketType", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "ACK"]), $.makeLiteralMap(["kind", "field", "name", "BYE"]), $.makeLiteralMap(["kind", "field", "name", "CONNECTED"]), $.makeLiteralMap(["kind", "field", "name", "DESC"]), $.makeLiteralMap(["kind", "field", "name", "DISCONNECTED"]), $.makeLiteralMap(["kind", "field", "name", "FILE"]), $.makeLiteralMap(["kind", "field", "name", "HELO"]), $.makeLiteralMap(["kind", "field", "name", "ICE"]), $.makeLiteralMap(["kind", "field", "name", "ID"]), $.makeLiteralMap(["kind", "field", "name", "JOIN"]), $.makeLiteralMap(["kind", "field", "name", "PING"]), $.makeLiteralMap(["kind", "field", "name", "PONG"]), $.makeLiteralMap(["kind", "field", "name", "QUEUE"]), $.makeLiteralMap(["kind", "field", "name", "RANDOM"]), $.makeLiteralMap(["kind", "field", "name", "ROOM"]), $.makeLiteralMap(["kind", "field", "name", "ROUTE"]), $.makeLiteralMap(["kind", "field", "name", "USER"])]]), $.makeLiteralMap(["name", "PacketType2", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "ACK"]), $.makeLiteralMap(["kind", "field", "name", "BYE"]), $.makeLiteralMap(["kind", "field", "name", "DESC"]), $.makeLiteralMap(["kind", "field", "name", "HELO"]), $.makeLiteralMap(["kind", "field", "name", "ICE"]), $.makeLiteralMap(["kind", "field", "name", "ID"]), $.makeLiteralMap(["kind", "field", "name", "JOIN"]), $.makeLiteralMap(["kind", "constructor", "name", "PacketType2"]), $.makeLiteralMap(["kind", "field", "name", "PING"]), $.makeLiteralMap(["kind", "field", "name", "PONG"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toString"]), $.makeLiteralMap(["kind", "field", "name", "type"])]]), $.makeLiteralMap(["name", "PeerConstraints", "kind", "class", "members", [$.makeLiteralMap(["kind", "setter", "name", "dataChannelEnabled", "link_name", "dataChannelEnabled="]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PeerConstraints"]), $.makeLiteralMap(["kind", "method", "name", "setDataChannelEnabled"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toMap"])]]), $.makeLiteralMap(["name", "PeerCreatedPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PeerCreatedPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "PeerCreatedPacket.With"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "PingPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PingPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "PingPacket.With"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "PongPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "PongPacket"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "QueuePacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "field", "name", "channelId"]), $.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "field", "name", "position"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "QueuePacket"]), $.makeLiteralMap(["kind", "constructor", "name", "QueuePacket.With"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "RandomUserPacket", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "RandomUserPacket"]), $.makeLiteralMap(["kind", "constructor", "name", "RandomUserPacket.With"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"])]]), $.makeLiteralMap(["name", "StreamConstraints", "kind", "class", "members", [$.makeLiteralMap(["kind", "setter", "name", "bitRate", "link_name", "bitRate="]), $.makeLiteralMap(["kind", "method", "name", "setBitrate"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "StreamConstraints"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toMap"])]]), $.makeLiteralMap(["name", "UserMessage", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "fromMap"]), $.makeLiteralMap(["kind", "field", "name", "id"]), $.makeLiteralMap(["kind", "field", "name", "message"]), $.makeLiteralMap(["kind", "field", "name", "packetType"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toJson"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "UserMessage"]), $.makeLiteralMap(["kind", "constructor", "name", "UserMessage.With"])]]), $.makeLiteralMap(["name", "Util", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "aspectRatio"]), $.makeLiteralMap(["kind", "method", "name", "generateId"]), $.makeLiteralMap(["kind", "method", "name", "getHeight"]), $.makeLiteralMap(["kind", "method", "name", "getWidth"])]]), $.makeLiteralMap(["name", "VideoConstraints", "kind", "class", "members", [$.makeLiteralMap(["kind", "setter", "name", "frameRate", "link_name", "frameRate="]), $.makeLiteralMap(["kind", "setter", "name", "maxHeight", "link_name", "maxHeight="]), $.makeLiteralMap(["kind", "setter", "name", "maxWidth", "link_name", "maxWidth="]), $.makeLiteralMap(["kind", "setter", "name", "minHeight", "link_name", "minHeight="]), $.makeLiteralMap(["kind", "setter", "name", "minWidth", "link_name", "minWidth="]), $.makeLiteralMap(["kind", "method", "name", "setFrameRate"]), $.makeLiteralMap(["kind", "method", "name", "setMaxHeight"]), $.makeLiteralMap(["kind", "method", "name", "setMaxWidth"]), $.makeLiteralMap(["kind", "method", "name", "setMinHeight"]), $.makeLiteralMap(["kind", "method", "name", "setMinWidth"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "toMap"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "VideoConstraints"])]])]]), $.makeLiteralMap(["name", "rtc_docs"]), $.makeLiteralMap(["name", "rtc_server", "members", [$.makeLiteralMap(["kind", "field", "name", "DEAD_SOCKET_CHECK"]), $.makeLiteralMap(["kind", "field", "name", "DEAD_SOCKET_KILL"]), $.makeLiteralMap(["kind", "field", "name", "RANDOM_ID_LENGTH"])], "types", [$.makeLiteralMap(["name", "BaseChannelContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "BaseChannelContainer"])]]), $.makeLiteralMap(["name", "BaseContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "add"]), $.makeLiteralMap(["kind", "constructor", "name", "BaseContainer"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "count"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getServer"]), $.makeLiteralMap(["kind", "method", "name", "remove"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "server"])], "args", "T"]), $.makeLiteralMap(["name", "BaseUser", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "operator >", "link_name", ">"]), $.makeLiteralMap(["kind", "method", "name", "operator >=", "link_name", ">="]), $.makeLiteralMap(["kind", "constructor", "name", "BaseUser"]), $.makeLiteralMap(["kind", "method", "name", "compareTo"]), $.makeLiteralMap(["kind", "method", "name", "hangup"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "id"]), $.makeLiteralMap(["kind", "setter", "name", "id", "link_name", "id="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "isTalking"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "lastActivity"]), $.makeLiteralMap(["kind", "setter", "name", "lastActivity", "link_name", "lastActivity="]), $.makeLiteralMap(["kind", "field", "name", "logger"]), $.makeLiteralMap(["kind", "method", "name", "needsKill"]), $.makeLiteralMap(["kind", "method", "name", "needsPing"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "talkers"]), $.makeLiteralMap(["kind", "method", "name", "talkTo"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "timeSinceLastConnection"]), $.makeLiteralMap(["kind", "setter", "name", "timeSinceLastConnection", "link_name", "timeSinceLastConnection="])]]), $.makeLiteralMap(["name", "BaseUserContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "BaseUserContainer"])]]), $.makeLiteralMap(["name", "Channel", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "operator ==", "link_name", "=="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "canJoin"]), $.makeLiteralMap(["kind", "constructor", "name", "Channel"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "channelLimit"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "id"]), $.makeLiteralMap(["kind", "method", "name", "join"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "killAll"]), $.makeLiteralMap(["kind", "method", "name", "leave"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "sendToAll"]), $.makeLiteralMap(["kind", "method", "name", "sendToAllExceptSender"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "userCount"])]]), $.makeLiteralMap(["name", "ChannelConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onEnterChannel"]), $.makeLiteralMap(["kind", "method", "name", "onLeaveChannel"])]]), $.makeLiteralMap(["name", "ChannelContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "ChannelContainer"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "channelCount"]), $.makeLiteralMap(["kind", "method", "name", "channelExists"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "createChannel"]), $.makeLiteralMap(["kind", "method", "name", "createChannelWithId"]), $.makeLiteralMap(["kind", "method", "name", "findChannel"]), $.makeLiteralMap(["kind", "field", "name", "logger"]), $.makeLiteralMap(["kind", "method", "name", "removeChannel"]), $.makeLiteralMap(["kind", "method", "name", "usersInChannel"])]]), $.makeLiteralMap(["name", "ChannelEventListener", "kind", "class"]), $.makeLiteralMap(["name", "ChannelQueueEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onEnterQueue"]), $.makeLiteralMap(["kind", "method", "name", "onLeaveQueue"]), $.makeLiteralMap(["kind", "method", "name", "onMoveInQueue"])]]), $.makeLiteralMap(["name", "ChannelServer", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "ChannelServer"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "displayStatus"]), $.makeLiteralMap(["kind", "method", "name", "handleBye"]), $.makeLiteralMap(["kind", "method", "name", "handleHelo"]), $.makeLiteralMap(["kind", "method", "name", "handlePeerCreated"]), $.makeLiteralMap(["kind", "method", "name", "handleUserMessage"]), $.makeLiteralMap(["kind", "method", "name", "onCountChanged"])]]), $.makeLiteralMap(["name", "ContainerContentsEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onCountChanged"])]]), $.makeLiteralMap(["name", "ContainerEventListener", "kind", "class"]), $.makeLiteralMap(["name", "ContainerQueueEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onEnterQueue"]), $.makeLiteralMap(["kind", "method", "name", "onLeaveQueue"]), $.makeLiteralMap(["kind", "method", "name", "onMoveInQueue"])]]), $.makeLiteralMap(["name", "QueueChannel", "kind", "class", "members", [$.makeLiteralMap(["kind", "getter", "noparams", true, "name", "canJoin"]), $.makeLiteralMap(["kind", "method", "name", "insertIntoQueue"]), $.makeLiteralMap(["kind", "method", "name", "join"]), $.makeLiteralMap(["kind", "method", "name", "leave"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "popFromQueue"]), $.makeLiteralMap(["kind", "constructor", "name", "QueueChannel"])]]), $.makeLiteralMap(["name", "QueueContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "createChannelWithId"]), $.makeLiteralMap(["kind", "method", "name", "onEnterQueue"]), $.makeLiteralMap(["kind", "method", "name", "onLeaveQueue"]), $.makeLiteralMap(["kind", "method", "name", "onMoveInQueue"]), $.makeLiteralMap(["kind", "constructor", "name", "QueueContainer"])]]), $.makeLiteralMap(["name", "QueueServer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "displayStatus"]), $.makeLiteralMap(["kind", "method", "name", "handleBye"]), $.makeLiteralMap(["kind", "method", "name", "handleHelo"]), $.makeLiteralMap(["kind", "method", "name", "handlePeerCreated"]), $.makeLiteralMap(["kind", "method", "name", "handleUserMessage"]), $.makeLiteralMap(["kind", "method", "name", "onCountChanged"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "QueueServer"])]]), $.makeLiteralMap(["name", "Server", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "listen"]), $.makeLiteralMap(["kind", "method", "name", "sendPacket"])]]), $.makeLiteralMap(["name", "User", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "operator ==", "link_name", "=="]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "connection"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "terminate"]), $.makeLiteralMap(["kind", "constructor", "name", "User"])]]), $.makeLiteralMap(["name", "UserConnectionEventListener", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "onClose"])]]), $.makeLiteralMap(["name", "UserContainer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "createChannelUser"]), $.makeLiteralMap(["kind", "method", "name", "createChannelUserFromId"]), $.makeLiteralMap(["kind", "method", "name", "createUser"]), $.makeLiteralMap(["kind", "method", "name", "createUserFromId"]), $.makeLiteralMap(["kind", "method", "name", "findLongestIdUser"]), $.makeLiteralMap(["kind", "method", "name", "findRandomUser"]), $.makeLiteralMap(["kind", "method", "name", "findRandomUser_old"]), $.makeLiteralMap(["kind", "method", "name", "findUserByConn"]), $.makeLiteralMap(["kind", "method", "name", "findUserById"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "genId"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "getUsers"]), $.makeLiteralMap(["kind", "field", "name", "logger"]), $.makeLiteralMap(["kind", "method", "name", "onClose"]), $.makeLiteralMap(["kind", "method", "name", "removeUser"]), $.makeLiteralMap(["kind", "constructor", "name", "UserContainer"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "userCount"]), $.makeLiteralMap(["kind", "method", "name", "userExist"]), $.makeLiteralMap(["kind", "getter", "noparams", true, "name", "users"])]]), $.makeLiteralMap(["name", "UserEventListener", "kind", "class"]), $.makeLiteralMap(["name", "WebSocketServer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "noparams", true, "name", "displayStatus"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "doAliveChecks"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingDescription"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingFile"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingIce"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingPong"]), $.makeLiteralMap(["kind", "method", "name", "listen"]), $.makeLiteralMap(["kind", "field", "name", "logger"]), $.makeLiteralMap(["kind", "method", "name", "onCountChanged"]), $.makeLiteralMap(["kind", "method", "name", "onTimerTick"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "run"]), $.makeLiteralMap(["kind", "method", "name", "sendPacket"]), $.makeLiteralMap(["kind", "method", "name", "sendToClient"]), $.makeLiteralMap(["kind", "method", "noparams", true, "name", "stop"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "WebSocketServer"])]]), $.makeLiteralMap(["name", "WheelServer", "kind", "class", "members", [$.makeLiteralMap(["kind", "method", "name", "handleDisconnect"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingBye"]), $.makeLiteralMap(["kind", "method", "name", "handleIncomingHelo"]), $.makeLiteralMap(["kind", "method", "name", "handleRandomUserRequest"]), $.makeLiteralMap(["kind", "method", "name", "handleUserMessage"]), $.makeLiteralMap(["kind", "constructor", "noparams", true, "name", "WheelServer"])]]), $.makeLiteralMap(["name", "WheelUser", "kind", "class", "members", [$.makeLiteralMap(["kind", "constructor", "name", "WheelUser"])]])]])];
 };
 
 $.Arrays_indexOf = function(a, element, startIndex, endIndex) {
@@ -7068,6 +7066,12 @@ $.IterableMixinWorkaround_joinList$bailout = function(state0, list, separator) {
   return $.getInterceptor(buffer).toString$0(buffer);
 };
 
+$.IterableMixinWorkaround_sortList = function(l, compare) {
+  if (compare == null)
+    compare = $.Comparable_compare;
+  $._Sort__doSort(l, 0, l.length - 1, compare);
+};
+
 $.Collections_collectionToString = function(c) {
   var result = $.StringBuffer_StringBuffer("");
   $.Collections__emitCollection(c, result, $.List_List(0));
@@ -7137,184 +7141,6 @@ $.Maps__emitMap = function(m, result, visiting) {
   $.getInterceptor$JSArray(m).forEach$1(m, t1);
   t3.add$1(result, "}");
   t2.removeLast$0(visiting);
-};
-
-$.WhereIterable$ = function(_iterable, _f) {
-  return new $.WhereIterable(_iterable, _f);
-};
-
-$.WhereIterator$ = function(_iterator, _f) {
-  return new $.WhereIterator(_iterator, _f);
-};
-
-$.Comparable_compare = function(a, b) {
-  return $.getInterceptor$JSStringJSNumber(a).compareTo$1(a, b);
-};
-
-$.Error_safeToString = function(object) {
-  var t1;
-  if (typeof object === "number" && Math.floor(object) === object || typeof object === "number" || typeof object === "boolean" || null == object)
-    return $.getInterceptor(object).toString$0(object);
-  if (typeof object === "string") {
-    t1 = $.CONSTANT1.replaceAll$2(object, "\\", "\\\\");
-    t1 = $.getInterceptor$JSString(t1).replaceAll$2(t1, "\n", "\\n");
-    t1 = $.getInterceptor$JSString(t1).replaceAll$2(t1, "\r", "\\r");
-    return "\"" + $.S($.getInterceptor$JSString(t1).replaceAll$2(t1, "\"", "\\\"")) + "\"";
-  }
-  return "Instance of '" + $.S($.Primitives_objectTypeName(object)) + "'";
-};
-
-$.ArgumentError$ = function(message) {
-  return new $.ArgumentError(message);
-};
-
-$.RangeError$value = function(value) {
-  return new $.RangeError("value " + $.S(value));
-};
-
-$.NoSuchMethodError$ = function(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames) {
-  return new $.NoSuchMethodError(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames);
-};
-
-$.UnsupportedError$ = function(message) {
-  return new $.UnsupportedError(message);
-};
-
-$.StateError$ = function(message) {
-  return new $.StateError(message);
-};
-
-$.StackOverflowError$ = function() {
-  return new $.StackOverflowError();
-};
-
-$.RuntimeError$ = function(message) {
-  return new $.RuntimeError(message);
-};
-
-$.Exception_Exception = function(message) {
-  return $._ExceptionImplementation$(message);
-};
-
-$._ExceptionImplementation$ = function(message) {
-  return new $._ExceptionImplementation(message);
-};
-
-$.IllegalJSRegExpException$ = function(_pattern, _errmsg) {
-  return new $.IllegalJSRegExpException(_pattern, _errmsg);
-};
-
-$.List_List = function(length$) {
-  if (!(typeof length$ === "number" && Math.floor(length$) === length$) || length$ < 0)
-    throw $.$$throw($.ArgumentError$("Length must be a positive integer: " + $.S(length$) + "."));
-  return new Array(length$);
-};
-
-$.List_List$fixedLength = function(length$, fill) {
-  var result, t1, i;
-  if (!(typeof length$ === "number" && Math.floor(length$) === length$) || length$ < 0)
-    throw $.$$throw($.ArgumentError$("Length must be a positive integer: " + $.S(length$) + "."));
-  result = $.Primitives_newFixedList(length$);
-  if (typeof result !== "object" || result === null || (result.constructor !== Array || !!result.immutable$list) && !result.is$JavaScriptIndexingBehavior())
-    return $.List_List$fixedLength$bailout(1, length$, fill, result);
-  if (!$.eqB(length$, 0) && !(fill == null))
-    for (t1 = result.length, i = 0; i < t1; ++i)
-      result[i] = fill;
-  return result;
-};
-
-$.List_List$fixedLength$bailout = function(state0, length$, fill, result) {
-  var i;
-  if (!$.eqB(length$, 0) && !(fill == null))
-    for (i = 0; i < result.length; ++i)
-      $.CONSTANT0.operator$indexSet$2(result, i, fill);
-  return result;
-};
-
-$.List_List$from = function(other) {
-  var list, t1;
-  list = $.List_List(0);
-  for (t1 = $.getInterceptor$JSArray(other).get$iterator(other); t1.moveNext$0() === true;)
-    list.push(t1.get$current());
-  return list;
-};
-
-$.HashMap_HashMap = function() {
-  return $._HashMapImpl$();
-};
-
-$.LinkedHashMap_LinkedHashMap = function() {
-  return $._LinkedHashMapImpl$();
-};
-
-$._HashMapImpl$ = function() {
-  var t1 = new $._HashMapImpl(null, null, null, null, null);
-  t1._HashMapImpl$0();
-  return t1;
-};
-
-$._HashMapImpl__computeLoadLimit = function(capacity) {
-  return $.CONSTANT2.operator$tdiv$1(capacity * 3, 4);
-};
-
-$._HashMapImpl__nextProbe = function(currentProbe, numberOfProbes, length$) {
-  var t1, t2;
-  t1 = $.getInterceptor$JSNumber(currentProbe).operator$add$1(currentProbe, numberOfProbes);
-  t2 = $.getInterceptor$JSNumber(length$).operator$sub$1(length$, 1);
-  return $.getInterceptor$JSNumber(t1).operator$and$1(t1, t2);
-};
-
-$._HashMapImplIndexIterator$ = function(map) {
-  return new $._HashMapImplIndexIterator(map, -1, null);
-};
-
-$._KeyValuePair$ = function(key, value) {
-  return new $._KeyValuePair(key, value);
-};
-
-$._LinkedHashMapImpl$ = function() {
-  var t1 = new $._LinkedHashMapImpl(null, null);
-  t1._LinkedHashMapImpl$0();
-  return t1;
-};
-
-$.DoubleLinkedQueueEntry$ = function(e) {
-  var t1 = new $.DoubleLinkedQueueEntry(null, null, null);
-  t1.DoubleLinkedQueueEntry$1(e);
-  return t1;
-};
-
-$._DoubleLinkedQueueEntrySentinel$ = function() {
-  var t1 = new $._DoubleLinkedQueueEntrySentinel(null, null, null);
-  t1.DoubleLinkedQueueEntry$1(null);
-  t1._DoubleLinkedQueueEntrySentinel$0();
-  return t1;
-};
-
-$.DoubleLinkedQueue$ = function() {
-  var t1 = new $.DoubleLinkedQueue(null);
-  t1.DoubleLinkedQueue$0();
-  return t1;
-};
-
-$._DoubleLinkedQueueIterator$ = function(sentinel) {
-  return new $._DoubleLinkedQueueIterator(sentinel, sentinel, null);
-};
-
-$.RegExp_RegExp = function(pattern, caseSensitive, multiLine) {
-  return $.JSSyntaxRegExp$(pattern, caseSensitive, multiLine);
-};
-
-$.Set_Set = function() {
-  return $.HashSet$();
-};
-
-$.HashSet$ = function() {
-  return new $.HashSet($._HashMapImpl$());
-};
-
-$._HashSetIterator$ = function(set) {
-  return new $._HashSetIterator($.CONSTANT0.get$iterator(set._backingMap._keys));
 };
 
 $._Sort__doSort = function(a, left, right, compare) {
@@ -7669,8 +7495,8 @@ $._Sort__dualPivotQuicksort = function(a, left, right, compare) {
             if (great >= a.length)
               throw $.ioore(great);
             t1 = $.ltB(compare.call$2(a[great], el2), 0);
-            great0 = great - 1;
             t2 = a.length;
+            great0 = great - 1;
             if (t1) {
               if (less >= t2)
                 throw $.ioore(less);
@@ -7939,8 +7765,8 @@ $._Sort__dualPivotQuicksort$bailout = function(state0, a, left, right, compare) 
             if (great >= a.length)
               throw $.ioore(great);
             t1 = $.ltB(compare.call$2(a[great], el2), 0);
-            great0 = great - 1;
             t2 = a.length;
+            great0 = great - 1;
             if (t1) {
               if (less >= t2)
                 throw $.ioore(less);
@@ -7966,6 +7792,184 @@ $._Sort__dualPivotQuicksort$bailout = function(state0, a, left, right, compare) 
     $._Sort__doSort(a, less, great, compare);
   } else
     $._Sort__doSort(a, less, great, compare);
+};
+
+$.WhereIterable$ = function(_iterable, _f) {
+  return new $.WhereIterable(_iterable, _f);
+};
+
+$.WhereIterator$ = function(_iterator, _f) {
+  return new $.WhereIterator(_iterator, _f);
+};
+
+$.Comparable_compare = function(a, b) {
+  return $.getInterceptor$JSStringJSNumber(a).compareTo$1(a, b);
+};
+
+$.Error_safeToString = function(object) {
+  var t1;
+  if (typeof object === "number" && Math.floor(object) === object || typeof object === "number" || typeof object === "boolean" || null == object)
+    return $.getInterceptor(object).toString$0(object);
+  if (typeof object === "string") {
+    t1 = $.CONSTANT1.replaceAll$2(object, "\\", "\\\\");
+    t1 = $.getInterceptor$JSString(t1).replaceAll$2(t1, "\n", "\\n");
+    t1 = $.getInterceptor$JSString(t1).replaceAll$2(t1, "\r", "\\r");
+    return "\"" + $.S($.getInterceptor$JSString(t1).replaceAll$2(t1, "\"", "\\\"")) + "\"";
+  }
+  return "Instance of '" + $.S($.Primitives_objectTypeName(object)) + "'";
+};
+
+$.ArgumentError$ = function(message) {
+  return new $.ArgumentError(message);
+};
+
+$.RangeError$value = function(value) {
+  return new $.RangeError("value " + $.S(value));
+};
+
+$.NoSuchMethodError$ = function(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames) {
+  return new $.NoSuchMethodError(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames);
+};
+
+$.UnsupportedError$ = function(message) {
+  return new $.UnsupportedError(message);
+};
+
+$.StateError$ = function(message) {
+  return new $.StateError(message);
+};
+
+$.StackOverflowError$ = function() {
+  return new $.StackOverflowError();
+};
+
+$.RuntimeError$ = function(message) {
+  return new $.RuntimeError(message);
+};
+
+$.Exception_Exception = function(message) {
+  return $._ExceptionImplementation$(message);
+};
+
+$._ExceptionImplementation$ = function(message) {
+  return new $._ExceptionImplementation(message);
+};
+
+$.IllegalJSRegExpException$ = function(_pattern, _errmsg) {
+  return new $.IllegalJSRegExpException(_pattern, _errmsg);
+};
+
+$.List_List = function(length$) {
+  if (!(typeof length$ === "number" && Math.floor(length$) === length$) || length$ < 0)
+    throw $.$$throw($.ArgumentError$("Length must be a positive integer: " + $.S(length$) + "."));
+  return new Array(length$);
+};
+
+$.List_List$fixedLength = function(length$, fill) {
+  var result, t1, i;
+  if (!(typeof length$ === "number" && Math.floor(length$) === length$) || length$ < 0)
+    throw $.$$throw($.ArgumentError$("Length must be a positive integer: " + $.S(length$) + "."));
+  result = $.Primitives_newFixedList(length$);
+  if (typeof result !== "object" || result === null || (result.constructor !== Array || !!result.immutable$list) && !result.is$JavaScriptIndexingBehavior())
+    return $.List_List$fixedLength$bailout(1, length$, fill, result);
+  if (!$.eqB(length$, 0) && !(fill == null))
+    for (t1 = result.length, i = 0; i < t1; ++i)
+      result[i] = fill;
+  return result;
+};
+
+$.List_List$fixedLength$bailout = function(state0, length$, fill, result) {
+  var i;
+  if (!$.eqB(length$, 0) && !(fill == null))
+    for (i = 0; i < result.length; ++i)
+      $.CONSTANT0.operator$indexSet$2(result, i, fill);
+  return result;
+};
+
+$.List_List$from = function(other) {
+  var list, t1;
+  list = $.List_List(0);
+  for (t1 = $.getInterceptor$JSArray(other).get$iterator(other); t1.moveNext$0() === true;)
+    list.push(t1.get$current());
+  return list;
+};
+
+$.HashMap_HashMap = function() {
+  return $._HashMapImpl$();
+};
+
+$.LinkedHashMap_LinkedHashMap = function() {
+  return $._LinkedHashMapImpl$();
+};
+
+$._HashMapImpl$ = function() {
+  var t1 = new $._HashMapImpl(null, null, null, null, null);
+  t1._HashMapImpl$0();
+  return t1;
+};
+
+$._HashMapImpl__computeLoadLimit = function(capacity) {
+  return $.CONSTANT2.operator$tdiv$1(capacity * 3, 4);
+};
+
+$._HashMapImpl__nextProbe = function(currentProbe, numberOfProbes, length$) {
+  var t1, t2;
+  t1 = $.getInterceptor$JSNumber(currentProbe).operator$add$1(currentProbe, numberOfProbes);
+  t2 = $.getInterceptor$JSNumber(length$).operator$sub$1(length$, 1);
+  return $.getInterceptor$JSNumber(t1).operator$and$1(t1, t2);
+};
+
+$._HashMapImplIndexIterator$ = function(map) {
+  return new $._HashMapImplIndexIterator(map, -1, null);
+};
+
+$._KeyValuePair$ = function(key, value) {
+  return new $._KeyValuePair(key, value);
+};
+
+$._LinkedHashMapImpl$ = function() {
+  var t1 = new $._LinkedHashMapImpl(null, null);
+  t1._LinkedHashMapImpl$0();
+  return t1;
+};
+
+$.DoubleLinkedQueueEntry$ = function(e) {
+  var t1 = new $.DoubleLinkedQueueEntry(null, null, null);
+  t1.DoubleLinkedQueueEntry$1(e);
+  return t1;
+};
+
+$._DoubleLinkedQueueEntrySentinel$ = function() {
+  var t1 = new $._DoubleLinkedQueueEntrySentinel(null, null, null);
+  t1.DoubleLinkedQueueEntry$1(null);
+  t1._DoubleLinkedQueueEntrySentinel$0();
+  return t1;
+};
+
+$.DoubleLinkedQueue$ = function() {
+  var t1 = new $.DoubleLinkedQueue(null);
+  t1.DoubleLinkedQueue$0();
+  return t1;
+};
+
+$._DoubleLinkedQueueIterator$ = function(sentinel) {
+  return new $._DoubleLinkedQueueIterator(sentinel, sentinel, null);
+};
+
+$.RegExp_RegExp = function(pattern, caseSensitive, multiLine) {
+  return $.JSSyntaxRegExp$(pattern, caseSensitive, multiLine);
+};
+
+$.Set_Set = function() {
+  return $.HashSet$();
+};
+
+$.HashSet$ = function() {
+  return new $.HashSet($._HashMapImpl$());
+};
+
+$._HashSetIterator$ = function(set) {
+  return new $._HashSetIterator($.CONSTANT0.get$iterator(set._backingMap._keys));
 };
 
 $.String_String$fromCharCodes = function(charCodes) {
@@ -8213,42 +8217,42 @@ $._AttributeClassSet$ = function(_element) {
   return new $._AttributeClassSet(_element);
 };
 
+$.DartError_toStringWrapper.call$0 = $.DartError_toStringWrapper;
+$.DartError_toStringWrapper.$name = "DartError_toStringWrapper";
+$.handleUpDown.call$1 = $.handleUpDown;
+$.handleUpDown.$name = "handleUpDown";
+$.invokeClosure.call$5 = $.invokeClosure;
+$.invokeClosure.$name = "invokeClosure";
+$.shortcutHandler.call$1 = $.shortcutHandler;
+$.shortcutHandler.$name = "shortcutHandler";
+$.typeNameInChrome.call$1 = $.typeNameInChrome;
+$.typeNameInChrome.$name = "typeNameInChrome";
+$.typeNameInSafari.call$1 = $.typeNameInSafari;
+$.typeNameInSafari.$name = "typeNameInSafari";
+$.updateDropDown.call$1 = $.updateDropDown;
+$.updateDropDown.$name = "updateDropDown";
 $.typeNameInOpera.call$1 = $.typeNameInOpera;
 $.typeNameInOpera.$name = "typeNameInOpera";
+$.typeNameInFirefox.call$1 = $.typeNameInFirefox;
+$.typeNameInFirefox.$name = "typeNameInFirefox";
+$.typeNameInIE.call$1 = $.typeNameInIE;
+$.typeNameInIE.$name = "typeNameInIE";
 $.constructorNameFallback.call$1 = $.constructorNameFallback;
 $.constructorNameFallback.$name = "constructorNameFallback";
 $.resultComparator.call$2 = $.resultComparator;
 $.resultComparator.$name = "resultComparator";
-$.DartError_toStringWrapper.call$0 = $.DartError_toStringWrapper;
-$.DartError_toStringWrapper.$name = "DartError_toStringWrapper";
 $.Comparable_compare.call$2 = $.Comparable_compare;
 $.Comparable_compare.$name = "Comparable_compare";
 $.$$throw.call$1 = $.$$throw;
 $.$$throw.$name = "$$throw";
 $.dynamicBind.call$4 = $.dynamicBind;
 $.dynamicBind.$name = "dynamicBind";
-$.handleUpDown.call$1 = $.handleUpDown;
-$.handleUpDown.$name = "handleUpDown";
-$.invokeClosure.call$5 = $.invokeClosure;
-$.invokeClosure.$name = "invokeClosure";
-$.typeNameInChrome.call$1 = $.typeNameInChrome;
-$.typeNameInChrome.$name = "typeNameInChrome";
-$.shortcutHandler.call$1 = $.shortcutHandler;
-$.shortcutHandler.$name = "shortcutHandler";
-$.typeNameInSafari.call$1 = $.typeNameInSafari;
-$.typeNameInSafari.$name = "typeNameInSafari";
-$.updateDropDown.call$1 = $.updateDropDown;
-$.updateDropDown.$name = "updateDropDown";
-$.typeNameInFirefox.call$1 = $.typeNameInFirefox;
-$.typeNameInFirefox.$name = "typeNameInFirefox";
-$.typeNameInIE.call$1 = $.typeNameInIE;
-$.typeNameInIE.$name = "typeNameInIE";
 Isolate.$finishClasses($$);
 $$ = {};
 $.Node = {builtin$cls: 'Node'};
 $.String = {builtin$cls: 'String'};
-$.$int = {builtin$cls: '$int'};
 $.Match = {builtin$cls: 'Match'};
+$.$int = {builtin$cls: '$int'};
 $.Element = {builtin$cls: 'Element'};
 $.CONSTANT80 = new Isolate.$isolateProperties.StringWrapper("||");
 $.CONSTANT43 = new Isolate.$isolateProperties.PrecedenceInfo(Isolate.$isolateProperties.CONSTANT80, 4, 146);
@@ -8463,51 +8467,142 @@ $.CONSTANT205 = new Isolate.$isolateProperties.Keyword("as", false, true, Isolat
 $.CONSTANT206 = new Isolate.$isolateProperties.Keyword("set", false, true, Isolate.$isolateProperties.CONSTANT87);
 $.CONSTANT77 = Isolate.makeConstantList([Isolate.$isolateProperties.CONSTANT180, Isolate.$isolateProperties.CONSTANT166, Isolate.$isolateProperties.CONSTANT153, Isolate.$isolateProperties.CONSTANT190, Isolate.$isolateProperties.CONSTANT195, Isolate.$isolateProperties.CONSTANT203, Isolate.$isolateProperties.CONSTANT150, Isolate.$isolateProperties.CONSTANT145, Isolate.$isolateProperties.CONSTANT196, Isolate.$isolateProperties.CONSTANT193, Isolate.$isolateProperties.CONSTANT120, Isolate.$isolateProperties.CONSTANT181, Isolate.$isolateProperties.CONSTANT188, Isolate.$isolateProperties.CONSTANT200, Isolate.$isolateProperties.CONSTANT194, Isolate.$isolateProperties.CONSTANT187, Isolate.$isolateProperties.CONSTANT100, Isolate.$isolateProperties.CONSTANT141, Isolate.$isolateProperties.CONSTANT182, Isolate.$isolateProperties.CONSTANT129, Isolate.$isolateProperties.CONSTANT113, Isolate.$isolateProperties.CONSTANT162, Isolate.$isolateProperties.CONSTANT192, Isolate.$isolateProperties.CONSTANT115, Isolate.$isolateProperties.CONSTANT102, Isolate.$isolateProperties.CONSTANT199, Isolate.$isolateProperties.CONSTANT154, Isolate.$isolateProperties.CONSTANT184, Isolate.$isolateProperties.CONSTANT177, Isolate.$isolateProperties.CONSTANT204, Isolate.$isolateProperties.CONSTANT197, Isolate.$isolateProperties.CONSTANT189, Isolate.$isolateProperties.CONSTANT205, Isolate.$isolateProperties.CONSTANT185, Isolate.$isolateProperties.CONSTANT178, Isolate.$isolateProperties.CONSTANT202, Isolate.$isolateProperties.CONSTANT179, Isolate.$isolateProperties.CONSTANT101, Isolate.$isolateProperties.CONSTANT151, Isolate.$isolateProperties.CONSTANT93, Isolate.$isolateProperties.CONSTANT191, Isolate.$isolateProperties.CONSTANT148, Isolate.$isolateProperties.CONSTANT126, Isolate.$isolateProperties.CONSTANT119, Isolate.$isolateProperties.CONSTANT206, Isolate.$isolateProperties.CONSTANT88, Isolate.$isolateProperties.CONSTANT201, Isolate.$isolateProperties.CONSTANT186, Isolate.$isolateProperties.CONSTANT198, Isolate.$isolateProperties.CONSTANT121, Isolate.$isolateProperties.CONSTANT160, Isolate.$isolateProperties.CONSTANT128, Isolate.$isolateProperties.CONSTANT172]);
 $.CONSTANT64 = new Isolate.$isolateProperties.PrecedenceInfo(Isolate.$isolateProperties.CONSTANT146, 0, 130);
+$.$$COLON = 58;
+$.BAD_INPUT_TOKEN = 88;
+$.$$SEMICOLON = 59;
+$.DOUBLE_TOKEN = 100;
+$.$$LT = 60;
+$.INT_TOKEN = 105;
+$.searchInput = null;
+$.HEXADECIMAL_TOKEN = 120;
+$.$$GT = 62;
+$.STRING_TOKEN = 39;
+$.$$QUESTION = 63;
+$.AMPERSAND_TOKEN = 38;
+$.$$EQ = 61;
+$.BACKPING_TOKEN = 96;
+$.$$A = 65;
+$.BACKSLASH_TOKEN = 92;
+$.BANG_TOKEN = 33;
+$.BAR_TOKEN = 124;
+$.COLON_TOKEN = 58;
+$.$$E = 69;
+$.COMMA_TOKEN = 44;
+$.$$F = 70;
+$.EQ_TOKEN = 61;
+$.$$D = 68;
+$.GT_TOKEN = 62;
+$.HASH_TOKEN = 35;
+$.OPEN_CURLY_BRACKET_TOKEN = 123;
+$.OPEN_SQUARE_BRACKET_TOKEN = 91;
+$.OPEN_PAREN_TOKEN = 40;
+$.LT_TOKEN = 60;
+$.MINUS_TOKEN = 45;
+$.$$AT = 64;
+$.PERIOD_TOKEN = 46;
+$.PLUS_TOKEN = 43;
+$.dropdown = null;
+$.QUESTION_TOKEN = 63;
+$.AT_TOKEN = 64;
+$.KeyCode_ENTER = 13;
+$.CLOSE_CURLY_BRACKET_TOKEN = 125;
+$.LIBRARY = "library";
+$.CLOSE_SQUARE_BRACKET_TOKEN = 93;
+$.CLASS = "class";
+$.CLOSE_PAREN_TOKEN = 41;
+$.SEMICOLON_TOKEN = 59;
+$.TYPEDEF = "typedef";
+$.SLASH_TOKEN = 47;
+$.MEMBERS = "members";
+$.TILDE_TOKEN = 126;
+$.$$X = 88;
+$.STAR_TOKEN = 42;
+$.PERCENT_TOKEN = 37;
+$.$$Z = 90;
+$.CARET_TOKEN = 94;
+$.$$OPEN_SQUARE_BRACKET = 91;
+$.STRING_INTERPOLATION_TOKEN = 128;
+$.$$BACKSLASH = 92;
+$.LT_EQ_TOKEN = 129;
+$.$$CLOSE_SQUARE_BRACKET = 93;
+$.FUNCTION_TOKEN = 130;
+$.$$CARET = 94;
+$.SLASH_EQ_TOKEN = 131;
+$.$$_ = 95;
+$.PERIOD_PERIOD_PERIOD_TOKEN = 132;
+$.$$BACKPING = 96;
+$.PERIOD_PERIOD_TOKEN = 133;
+$.$$a = 97;
+$.EQ_EQ_EQ_TOKEN = 134;
+$.NO_PARAMS = "noparams";
+$.EQ_EQ_TOKEN = 135;
+$.$$c = 99;
+$.LT_LT_EQ_TOKEN = 136;
+$.currentLibrary = null;
+$.$$d = 100;
+$.currentType = null;
+$.GT_EQ_TOKEN = 138;
+$.prefix = "";
+$.GT_GT_EQ_TOKEN = 139;
+$.ARGS = "args";
+$.LT_LT_TOKEN = 137;
+$.INDEX_TOKEN = 141;
+$.$$i = 105;
+$.BANG_EQ_EQ_TOKEN = 142;
+$.KeyCode_THREE = 51;
+$.BANG_EQ_TOKEN = 143;
+$.AMPERSAND_AMPERSAND_TOKEN = 144;
+$.INDEX_EQ_TOKEN = 140;
+$.AMPERSAND_EQ_TOKEN = 145;
+$.BAR_BAR_TOKEN = 146;
+$.$$k = 107;
+$.BAR_EQ_TOKEN = 147;
+$.STAR_EQ_TOKEN = 148;
 $.$$m = 109;
 $.PLUS_PLUS_TOKEN = 149;
 $.$$n = 110;
 $.PLUS_EQ_TOKEN = 150;
-$.MINUS_MINUS_TOKEN = 151;
-$.KeywordState__KEYWORD_STATE = null;
-$.MINUS_EQ_TOKEN = 152;
-$.TILDE_SLASH_EQ_TOKEN = 153;
 $.$$r = 114;
+$.MINUS_MINUS_TOKEN = 151;
+$.MINUS_EQ_TOKEN = 152;
+$.$$f = 102;
+$.TILDE_SLASH_EQ_TOKEN = 153;
 $.TILDE_SLASH_TOKEN = 154;
+$.KeywordState__KEYWORD_STATE = null;
 $.PERCENT_EQ_TOKEN = 155;
+$.$$e = 101;
 $.GT_GT_TOKEN = 156;
 $.$$x = 120;
 $.CARET_EQ_TOKEN = 157;
 $.$$y = 121;
-$.Primitives_hashCodeSeed = 0;
 $.COMMENT_TOKEN = 158;
 $.$$z = 122;
+$.Primitives_hashCodeSeed = 0;
 $.$$OPEN_CURLY_BRACKET = 123;
 $.UNKNOWN_TOKEN = 1024;
 $.$$BAR = 124;
-$.Primitives_DOLLAR_CHAR_VALUE = 36;
 $.$$CLOSE_CURLY_BRACKET = 125;
-$.$$TILDE = 126;
-$.Keyword_DYNAMIC_DEPRECATED = Isolate.$isolateProperties.CONSTANT75;
-$.Keyword_values = Isolate.$isolateProperties.CONSTANT77;
 $.STRING_INTERPOLATION_IDENTIFIER_TOKEN = 159;
-$.$$NBSP = 160;
-$.NAME = "name";
-$.CLASS = "class";
-$.KIND = "kind";
-$.BACKPING_INFO = Isolate.$isolateProperties.CONSTANT15;
-$.Keyword__keywords = null;
-$.BACKSLASH_INFO = Isolate.$isolateProperties.CONSTANT7;
-$.KeyCode_S = 83;
-$.PERIOD_PERIOD_PERIOD_INFO = Isolate.$isolateProperties.CONSTANT19;
-$.CASCADE_PRECEDENCE = 2;
-$.PERIOD_PERIOD_INFO = Isolate.$isolateProperties.CONSTANT20;
+$.Primitives_DOLLAR_CHAR_VALUE = 36;
+$.$$TILDE = 126;
+$.Keyword_values = Isolate.$isolateProperties.CONSTANT77;
 $.currentSearchText = null;
+$.$$NBSP = 160;
+$.Keyword_DYNAMIC_DEPRECATED = Isolate.$isolateProperties.CONSTANT75;
+$.NAME = "name";
+$.currentResults = Isolate.$isolateProperties.CONSTANT81;
+$.BACKPING_INFO = Isolate.$isolateProperties.CONSTANT15;
+$.BACKSLASH_INFO = Isolate.$isolateProperties.CONSTANT7;
+$.PERIOD_PERIOD_PERIOD_INFO = Isolate.$isolateProperties.CONSTANT19;
+$.Keyword__keywords = null;
+$.CASCADE_PRECEDENCE = 2;
+$.KeyCode_S = 83;
+$.PERIOD_PERIOD_INFO = Isolate.$isolateProperties.CONSTANT20;
 $.BANG_INFO = Isolate.$isolateProperties.CONSTANT61;
-$._currentResult = null;
+$.libraryList = null;
 $.COLON_INFO = Isolate.$isolateProperties.CONSTANT11;
-$.FIELD = "field";
+$.INTERFACE = "interface";
 $.INDEX_INFO = Isolate.$isolateProperties.CONSTANT39;
-$.TYPEDEF = "typedef";
 $.MINUS_MINUS_INFO = Isolate.$isolateProperties.CONSTANT53;
 $.METHOD = "method";
 $.PLUS_PLUS_INFO = Isolate.$isolateProperties.CONSTANT56;
@@ -8515,9 +8610,11 @@ $.TYPES = "types";
 $.TILDE_INFO = Isolate.$isolateProperties.CONSTANT37;
 $.GETTER = "getter";
 $.FUNCTION_INFO = Isolate.$isolateProperties.CONSTANT64;
+$.SETTER = "setter";
 $.HASH_INFO = Isolate.$isolateProperties.CONSTANT34;
-$.LINK_NAME = "link_name";
+$.KIND = "kind";
 $.INDEX_EQ_INFO = Isolate.$isolateProperties.CONSTANT38;
+$.FIELD = "field";
 $.SEMICOLON_INFO = Isolate.$isolateProperties.CONSTANT12;
 $.CONSTRUCTOR = "constructor";
 $.COMMA_INFO = Isolate.$isolateProperties.CONSTANT10;
@@ -8525,23 +8622,25 @@ $.AT_INFO = Isolate.$isolateProperties.CONSTANT30;
 $._currentResultIndex = null;
 $.ASSIGNMENT_PRECEDENCE = 1;
 $.AMPERSAND_EQ_INFO = Isolate.$isolateProperties.CONSTANT47;
-$.SETTER = "setter";
+$.KeyCode_DOWN = 40;
 $.BAR_EQ_INFO = Isolate.$isolateProperties.CONSTANT44;
+$.LINK_NAME = "link_name";
 $.CARET_EQ_INFO = Isolate.$isolateProperties.CONSTANT41;
 $.EQ_INFO = Isolate.$isolateProperties.CONSTANT65;
 $.GT_GT_EQ_INFO = Isolate.$isolateProperties.CONSTANT67;
 $.LT_LT_EQ_INFO = Isolate.$isolateProperties.CONSTANT71;
 $.MINUS_EQ_INFO = Isolate.$isolateProperties.CONSTANT54;
+$.KeyCode_UP = 38;
 $.PERCENT_EQ_INFO = Isolate.$isolateProperties.CONSTANT49;
 $.PLUS_EQ_INFO = Isolate.$isolateProperties.CONSTANT57;
 $.SLASH_EQ_INFO = Isolate.$isolateProperties.CONSTANT31;
-$.KeyCode_ENTER = 13;
 $.STAR_EQ_INFO = Isolate.$isolateProperties.CONSTANT51;
 $.TILDE_SLASH_EQ_INFO = Isolate.$isolateProperties.CONSTANT35;
 $.QUESTION_INFO = Isolate.$isolateProperties.CONSTANT13;
+$.hideDropDownSuspend = false;
 $.BAR_BAR_INFO = Isolate.$isolateProperties.CONSTANT43;
-$.KeyCode_UP = 38;
 $.AMPERSAND_AMPERSAND_INFO = Isolate.$isolateProperties.CONSTANT46;
+$._currentResult = null;
 $.BAR_INFO = Isolate.$isolateProperties.CONSTANT45;
 $.CARET_INFO = Isolate.$isolateProperties.CONSTANT42;
 $.AMPERSAND_INFO = Isolate.$isolateProperties.CONSTANT48;
@@ -8549,17 +8648,17 @@ $.BANG_EQ_EQ_INFO = Isolate.$isolateProperties.CONSTANT59;
 $.BANG_EQ_INFO = Isolate.$isolateProperties.CONSTANT60;
 $.EQ_EQ_EQ_INFO = Isolate.$isolateProperties.CONSTANT62;
 $.EQ_EQ_INFO = Isolate.$isolateProperties.CONSTANT63;
+$._getTypeNameOf = null;
 $.GT_EQ_INFO = Isolate.$isolateProperties.CONSTANT66;
 $.GT_INFO = Isolate.$isolateProperties.CONSTANT69;
 $.IS_INFO = Isolate.$isolateProperties.CONSTANT183;
-$.KeyCode_DOWN = 40;
 $.AS_INFO = Isolate.$isolateProperties.CONSTANT91;
 $.LT_EQ_INFO = Isolate.$isolateProperties.CONSTANT70;
 $.LT_INFO = Isolate.$isolateProperties.CONSTANT73;
 $.GT_GT_INFO = Isolate.$isolateProperties.CONSTANT68;
-$.MINUS_INFO = Isolate.$isolateProperties.CONSTANT55;
 $.LT_LT_INFO = Isolate.$isolateProperties.CONSTANT72;
 $.PLUS_INFO = Isolate.$isolateProperties.CONSTANT58;
+$.MINUS_INFO = Isolate.$isolateProperties.CONSTANT55;
 $.PERCENT_INFO = Isolate.$isolateProperties.CONSTANT50;
 $.SLASH_INFO = Isolate.$isolateProperties.CONSTANT32;
 $.STAR_INFO = Isolate.$isolateProperties.CONSTANT52;
@@ -8627,107 +8726,12 @@ $.$$3 = 51;
 $.$$4 = 52;
 $.$$5 = 53;
 $.$$6 = 54;
-$._getTypeNameOf = null;
 $.$$7 = 55;
 $.EOF_TOKEN = 0;
 $.$$8 = 56;
 $.KEYWORD_TOKEN = 107;
 $.$$9 = 57;
 $.IDENTIFIER_TOKEN = 97;
-$.$$COLON = 58;
-$.BAD_INPUT_TOKEN = 88;
-$.$$SEMICOLON = 59;
-$.DOUBLE_TOKEN = 100;
-$.$$LT = 60;
-$.INT_TOKEN = 105;
-$.searchInput = null;
-$.HEXADECIMAL_TOKEN = 120;
-$.$$GT = 62;
-$.STRING_TOKEN = 39;
-$.$$QUESTION = 63;
-$.AMPERSAND_TOKEN = 38;
-$.$$EQ = 61;
-$.BACKPING_TOKEN = 96;
-$.BACKSLASH_TOKEN = 92;
-$.BANG_TOKEN = 33;
-$.$$AT = 64;
-$.BAR_TOKEN = 124;
-$.COLON_TOKEN = 58;
-$.$$E = 69;
-$.COMMA_TOKEN = 44;
-$.$$F = 70;
-$.EQ_TOKEN = 61;
-$.$$D = 68;
-$.GT_TOKEN = 62;
-$.HASH_TOKEN = 35;
-$.OPEN_CURLY_BRACKET_TOKEN = 123;
-$.OPEN_SQUARE_BRACKET_TOKEN = 91;
-$.OPEN_PAREN_TOKEN = 40;
-$.dropdown = null;
-$.LT_TOKEN = 60;
-$.currentResults = Isolate.$isolateProperties.CONSTANT81;
-$.MINUS_TOKEN = 45;
-$.libraryList = null;
-$.PERIOD_TOKEN = 46;
-$.$$A = 65;
-$.PLUS_TOKEN = 43;
-$.QUESTION_TOKEN = 63;
-$.hideDropDownSuspend = false;
-$.AT_TOKEN = 64;
-$.CLOSE_CURLY_BRACKET_TOKEN = 125;
-$.LIBRARY = "library";
-$.CLOSE_SQUARE_BRACKET_TOKEN = 93;
-$.CLOSE_PAREN_TOKEN = 41;
-$.INTERFACE = "interface";
-$.SEMICOLON_TOKEN = 59;
-$.SLASH_TOKEN = 47;
-$.MEMBERS = "members";
-$.TILDE_TOKEN = 126;
-$.$$X = 88;
-$.STAR_TOKEN = 42;
-$.ARGS = "args";
-$.PERCENT_TOKEN = 37;
-$.$$Z = 90;
-$.CARET_TOKEN = 94;
-$.$$OPEN_SQUARE_BRACKET = 91;
-$.STRING_INTERPOLATION_TOKEN = 128;
-$.$$BACKSLASH = 92;
-$.LT_EQ_TOKEN = 129;
-$.$$CLOSE_SQUARE_BRACKET = 93;
-$.FUNCTION_TOKEN = 130;
-$.$$CARET = 94;
-$.SLASH_EQ_TOKEN = 131;
-$.$$_ = 95;
-$.PERIOD_PERIOD_PERIOD_TOKEN = 132;
-$.$$BACKPING = 96;
-$.PERIOD_PERIOD_TOKEN = 133;
-$.$$a = 97;
-$.EQ_EQ_EQ_TOKEN = 134;
-$.NO_PARAMS = "noparams";
-$.EQ_EQ_TOKEN = 135;
-$.$$c = 99;
-$.LT_LT_EQ_TOKEN = 136;
-$.currentLibrary = null;
-$.$$d = 100;
-$.$$e = 101;
-$.currentType = null;
-$.$$f = 102;
-$.prefix = "";
-$.GT_EQ_TOKEN = 138;
-$.LT_LT_TOKEN = 137;
-$.GT_GT_EQ_TOKEN = 139;
-$.KeyCode_THREE = 51;
-$.INDEX_TOKEN = 141;
-$.$$i = 105;
-$.BANG_EQ_EQ_TOKEN = 142;
-$.AMPERSAND_AMPERSAND_TOKEN = 144;
-$.BANG_EQ_TOKEN = 143;
-$.INDEX_EQ_TOKEN = 140;
-$.AMPERSAND_EQ_TOKEN = 145;
-$.BAR_BAR_TOKEN = 146;
-$.$$k = 107;
-$.BAR_EQ_TOKEN = 147;
-$.STAR_EQ_TOKEN = 148;
 $.getInterceptor$JSStringJSArray = function(receiver) {
   if (typeof receiver == "string")
     return $.JSString.prototype;

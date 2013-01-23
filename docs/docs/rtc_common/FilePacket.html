@@ -2,19 +2,19 @@
         <html>
         <head>
                 <meta charset="utf-8">
-        <title>Packet abstract class / rtc_common Library / Dart Documentation</title>
+        <title>FilePacket class / rtc_common Library / Dart Documentation</title>
         <link rel="stylesheet" type="text/css"
             href="../styles.css">
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="../favicon.ico">
         
         </head>
-        <body data-library="rtc_common" data-type="Packet">
+        <body data-library="rtc_common" data-type="FilePacket">
         <div class="page">
         <div class="header">
           <a href="../index.html"><div class="logo"></div></a>
           <a href="../index.html">Dart Documentation</a>
-         &rsaquo; <a href="../rtc_common.html">rtc_common</a> &rsaquo; <a href="../rtc_common/Packet.html">Packet</a>        <div id="search-box">
+         &rsaquo; <a href="../rtc_common.html">rtc_common</a> &rsaquo; <a href="../rtc_common/FilePacket.html">FilePacket</a>        <div id="search-box">
           <input type="search" name="q" id="q" autocomplete="off"
               class="search-input" placeholder="Search API">
         </div>
@@ -30,7 +30,7 @@
 <li><a href="../rtc_common/Constraints.html"><div class="icon-class"></div>Constraints</a></li>
 <li><a href="../rtc_common/DescriptionPacket.html"><div class="icon-class"></div>DescriptionPacket</a></li>
 <li><a href="../rtc_common/Disconnected.html"><div class="icon-class"></div>Disconnected</a></li>
-<li><a href="../rtc_common/FilePacket.html"><div class="icon-class"></div>FilePacket</a></li>
+<li><div class="icon-class"></div><strong>FilePacket</strong></li>
 <li><a href="../rtc_common/FileSizeConverter.html"><div class="icon-class"></div>FileSizeConverter</a></li>
 <li><a href="../rtc_common/GenericEventTarget.html"><div class="icon-class"></div>GenericEventTarget&lt;T&gt;</a></li>
 <li><a href="../rtc_common/HeloPacket.html"><div class="icon-class"></div>HeloPacket</a></li>
@@ -39,7 +39,7 @@
 <li><a href="../rtc_common/JoinPacket.html"><div class="icon-class"></div>JoinPacket</a></li>
 <li><a href="../rtc_common/Logger.html"><div class="icon-class"></div>Logger</a></li>
 <li><a href="../rtc_common/LogLevel.html"><div class="icon-class"></div>LogLevel</a></li>
-<li><div class="icon-class"></div><strong>Packet</strong></li>
+<li><a href="../rtc_common/Packet.html"><div class="icon-class"></div>Packet</a></li>
 <li><a href="../rtc_common/PacketFactory.html"><div class="icon-class"></div>PacketFactory</a></li>
 <li><a href="../rtc_common/PacketHandler.html"><div class="icon-class"></div>PacketHandler</a></li>
 <li><a href="../rtc_common/PacketType.html"><div class="icon-class"></div>PacketType</a></li>
@@ -58,54 +58,113 @@
 </ul>
 <h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2></div>
 <div class="content">
-        <h2><strong>Packet</strong>
-          abstract class
+        <h2><strong>FilePacket</strong>
+          class
         </h2>
         
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
-<p>Base packet</p>
 <pre class="source">
-abstract class Packet {
- /**
-  * The type of the Packet
-  */
- String packetType;
+class FilePacket implements Packet {
+ FilePacket();
+ FilePacket.With(this.id, this.fileName, this.fileSize);
  
- /**
-  * The id of the sender
-  */
- String id;
+ String packetType = PacketType.FILE;
+ String id = "";
+ String fileName = "";
+ String fileSize = "0";
  
- /**
-  * Returns the object as Map.
-  * WebSocket sends only native objects and maps
-  */
- Map toJson();
+ Map toJson() {
+   return {
+     'packetType': packetType,
+     'id': id,
+     'fileName': fileName,
+     'fileSize': fileSize
+   };
+ }
  
- /**
-  * Calls JSON.stringify on Map returned by toJson
-  */
- String toString() {
-   return json.stringify(toJson());
+ static FilePacket fromMap(Map m) {
+   return new FilePacket.With(m['id'], m['fileName'], m['fileSize']);
  }
 }
 </pre>
 </div>
-<h3>Subclasses</h3>
+<h3>Implements</h3>
 <p>
-<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/ByePacket.html">ByePacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/ConnectionSuccessPacket.html">ConnectionSuccessPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/DescriptionPacket.html">DescriptionPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/Disconnected.html">Disconnected</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/FilePacket.html">FilePacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/HeloPacket.html">HeloPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/IcePacket.html">IcePacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/IdPacket.html">IdPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/JoinPacket.html">JoinPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/PeerCreatedPacket.html">PeerCreatedPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/PingPacket.html">PingPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/PongPacket.html">PongPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/QueuePacket.html">QueuePacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/RandomUserPacket.html">RandomUserPacket</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../rtc_common/UserMessage.html">UserMessage</a></span></p>
+<span class="type-box"><span class="icon-class"></span><a href="../rtc_common/Packet.html">Packet</a></span></p>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="fromMap">
+<button class="show-code">Code</button>
+<a href="../rtc_common/FilePacket.html">FilePacket</a> <strong>fromMap</strong>(<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> m) <a class="anchor-link" href="#fromMap"
+              title="Permalink to FilePacket.fromMap">#</a></h4>
+<div class="doc">
+<pre class="source">
+static FilePacket fromMap(Map m) {
+ return new FilePacket.With(m['id'], m['fileName'], m['fileSize']);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="FilePacket">
+<button class="show-code">Code</button>
+new <strong>FilePacket</strong>() <a class="anchor-link" href="#FilePacket"
+              title="Permalink to FilePacket.FilePacket">#</a></h4>
+<div class="doc">
+<pre class="source">
+FilePacket();
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="FilePacket.With">
+<button class="show-code">Code</button>
+new <strong>FilePacket.With</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> id, <a href="http://api.dartlang.org/dart_core/String.html">String</a> fileName, <a href="http://api.dartlang.org/dart_core/String.html">String</a> fileSize) <a class="anchor-link" href="#FilePacket.With"
+              title="Permalink to FilePacket.FilePacket.With">#</a></h4>
+<div class="doc">
+<pre class="source">
+FilePacket.With(this.id, this.fileName, this.fileSize);
+</pre>
+</div>
+</div>
+</div>
 <div>
 <h3>Properties</h3>
+<div class="field"><h4 id="fileName">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>fileName</strong> <a class="anchor-link"
+            href="#fileName"
+            title="Permalink to FilePacket.fileName">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+fileName = ""
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="fileSize">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>fileSize</strong> <a class="anchor-link"
+            href="#fileSize"
+            title="Permalink to FilePacket.fileSize">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+fileSize = "0"
+</pre>
+</div>
+</div>
 <div class="field"><h4 id="id">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>id</strong> <a class="anchor-link"
             href="#id"
-            title="Permalink to Packet.id">#</a>
+            title="Permalink to FilePacket.id">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-id
+id = ""
 </pre>
 </div>
 </div>
@@ -113,11 +172,11 @@ id
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>packetType</strong> <a class="anchor-link"
             href="#packetType"
-            title="Permalink to Packet.packetType">#</a>
+            title="Permalink to FilePacket.packetType">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-packetType
+packetType = PacketType.FILE
 </pre>
 </div>
 </div>
@@ -125,18 +184,31 @@ packetType
 <div>
 <h3>Methods</h3>
 <div class="method"><h4 id="toJson">
-abstract <a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
-              title="Permalink to Packet.toJson">#</a></h4>
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to FilePacket.toJson">#</a></h4>
 <div class="doc">
+<div class="inherited">
 <p>Returns the object as Map.
 WebSocket sends only native objects and maps</p>
+<div class="docs-inherited-from">docs inherited from <a href="../rtc_common/Packet.html">Packet</a> </div></div>
+<pre class="source">
+Map toJson() {
+ return {
+   'packetType': packetType,
+   'id': id,
+   'fileName': fileName,
+   'fileSize': fileSize
+ };
+}
+</pre>
 </div>
 </div>
-<div class="method"><h4 id="toString">
+<div class="method inherited"><h4 id="toString">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>toString</strong>() <a class="anchor-link" href="#toString"
-              title="Permalink to Packet.toString">#</a></h4>
-<div class="doc">
+              title="Permalink to FilePacket.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_common/Packet.html">Packet</a> </div><div class="doc">
 <p>Calls JSON.stringify on Map returned by toJson</p>
 <pre class="source">
 String toString() {
@@ -151,7 +223,7 @@ String toString() {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-23 17:10:00.077</div>
+          <div>This page was generated at 2013-01-23 17:09:59.578</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

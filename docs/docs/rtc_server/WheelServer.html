@@ -399,6 +399,36 @@ void handleIncomingDescription(DescriptionPacket p, WebSocketConnection c) {
 </pre>
 </div>
 </div>
+<div class="method inherited"><h4 id="handleIncomingFile">
+<button class="show-code">Code</button>
+void <strong>handleIncomingFile</strong>(<a href="../rtc_common/FilePacket.html">FilePacket</a> p, c) <a class="anchor-link" href="#handleIncomingFile"
+              title="Permalink to WheelServer.handleIncomingFile">#</a></h4>
+<div class="inherited-from">inherited from <a href="../rtc_server/WebSocketServer.html">WebSocketServer</a> </div><div class="doc">
+<pre class="source">
+void handleIncomingFile(FilePacket p, c) {
+ try {
+   logger.Debug("Handling File packet");
+   
+   User sender = _container.findUserByConn(c);
+   User receiver = _container.findUserById(p.id);
+   
+   if (sender == null || receiver == null) {
+     logger.Warning("Sender or Receiver not found");
+     return;
+   }
+   
+   sender.lastActivity = new Date.now().millisecondsSinceEpoch;
+   receiver.lastActivity = new Date.now().millisecondsSinceEpoch;
+   
+   p.id = sender.id;
+   sendPacket(receiver.connection, p);
+ } catch(e) {
+   logger.Error("handleIncomingPong: $e");
+ }
+}
+</pre>
+</div>
+</div>
 <div class="method"><h4 id="handleIncomingHelo">
 <button class="show-code">Code</button>
 void <strong>handleIncomingHelo</strong>(<a href="../rtc_common/HeloPacket.html">HeloPacket</a> p, <a href="http://api.dartlang.org/dart_io/WebSocketConnection.html">WebSocketConnection</a> c) <a class="anchor-link" href="#handleIncomingHelo"
@@ -720,7 +750,7 @@ void stop() {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-18 18:51:14.929</div>
+          <div>This page was generated at 2013-01-23 17:10:00.630</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

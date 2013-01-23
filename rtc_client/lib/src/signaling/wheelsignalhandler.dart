@@ -1,4 +1,4 @@
-part of demo_client;
+part of rtc_client;
 
 class WheelSignalHandler extends SignalHandler {
   String other = null;
@@ -8,14 +8,9 @@ class WheelSignalHandler extends SignalHandler {
   WheelSignalHandler(DataSource ds) : super(ds) {
     registerHandler("connected", onConnect);
     registerHandler("disconnected", onUserDisconnect);
-    
     registerHandler("id", onIdExistingChannelUser);
     registerHandler("usermessage", onUserMessage);
-    
-    //peerManager.subscribe(this);
   }
-  
-  
   
   void onIdExistingChannelUser(IdPacket p) {
     if (p.id != id)
@@ -32,7 +27,6 @@ class WheelSignalHandler extends SignalHandler {
       peer.close();
       getPeerManager().remove(peer);
     }
-    
   }
 
   void onUserMessage(UserMessage m) {
@@ -49,10 +43,11 @@ class WheelSignalHandler extends SignalHandler {
   
   void handleJoin(JoinPacket join) {
     super.handleJoin(join);
+    
     PeerWrapper pw = peerManager.findWrapper(join.id);
     MediaStream ms = peerManager.getLocalStream();
     pw.addStream(ms);
-    //pw.initialize();
+    
   }
   
   void handleId(IdPacket id) {
@@ -63,7 +58,6 @@ class WheelSignalHandler extends SignalHandler {
       MediaStream ms = peerManager.getLocalStream();
       pw.addStream(ms);
     }
-    //pw.initialize();
   }
   
   

@@ -26,11 +26,13 @@
         
 <h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../rtc_client.html">rtc_client</a></h2><ul class="icon">
 <li><a href="../rtc_client/BaseSignalHandler.html"><div class="icon-class"></div>BaseSignalHandler</a></li>
+<li><a href="../rtc_client/BinaryPacketHandler.html"><div class="icon-class"></div>BinaryPacketHandler</a></li>
 <li><a href="../rtc_client/ChannelSignalHandler.html"><div class="icon-class"></div>ChannelSignalHandler</a></li>
 <li><a href="../rtc_client/DataPeerWrapper.html"><div class="icon-class"></div>DataPeerWrapper</a></li>
 <li><a href="../rtc_client/DataSource.html"><div class="icon-class"></div>DataSource</a></li>
 <li><a href="../rtc_client/DataSourceConnectionEventListener.html"><div class="icon-class"></div>DataSourceConnectionEventListener</a></li>
 <li><a href="../rtc_client/DataSourceEventListener.html"><div class="icon-class"></div>DataSourceEventListener</a></li>
+<li><a href="../rtc_client/PeerConnectionEventListener.html"><div class="icon-class"></div>PeerConnectionEventListener</a></li>
 <li><a href="../rtc_client/PeerDataEventListener.html"><div class="icon-class"></div>PeerDataEventListener</a></li>
 <li><a href="../rtc_client/PeerEventListener.html"><div class="icon-class"></div>PeerEventListener</a></li>
 <li><div class="icon-class"></div><strong>PeerManager</strong></li>
@@ -43,6 +45,7 @@
 <li><a href="../rtc_client/SignalingEventListener.html"><div class="icon-class"></div>SignalingEventListener</a></li>
 <li><a href="../rtc_client/SimpleSignalHandler.html"><div class="icon-class"></div>SimpleSignalHandler</a></li>
 <li><a href="../rtc_client/WebSocketDataSource.html"><div class="icon-class"></div>WebSocketDataSource</a></li>
+<li><a href="../rtc_client/NotImplementedException.html"><div class="icon-exception"></div>NotImplementedException</a></li>
 </ul>
 <h2><div class="icon-library"></div><a href="../rtc_common.html">rtc_common</a></h2><h2><div class="icon-library"></div><a href="../rtc_docs.html">rtc_docs</a></h2><h2><div class="icon-library"></div><a href="../rtc_server.html">rtc_server</a></h2></div>
 <div class="content">
@@ -54,9 +57,28 @@
 <div class="doc">
 <p>PeerManager takes care of all peer connections</p>
 <pre class="source">
-class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
+class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt; {
  /* instance */
  static PeerManager _instance;
+ 
+ final Logger _log = new Logger();
+ 
+ /* Enable or disable datachannels */
+ bool _dataChannelsEnabled = false;
+ 
+ /* false = udp, true = tcp */
+ bool _reliableDataChannels = false;
+ 
+ // TODO: Is this the right place for this?
+ /* Local media stream from webcam/microphone */
+ LocalMediaStream _ms;
+ 
+ /* Created peerwrappers */
+ List&lt;PeerWrapper&gt; _peers;
+ 
+ // TODO: dartbug.com 7030
+ /* Constraints for the stream */
+ StreamConstraints _streamConstraints;
  
  /** Closed readystate */
  final READYSTATE_CLOSED = "closed";
@@ -64,17 +86,28 @@ class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
  /** Open readystate */
  final READYSTATE_OPEN = "open";
  
- final Logger log = new Logger();
- bool _dataChannelsEnabled = false;
- LocalMediaStream _ms;
- List&lt;PeerWrapper&gt; _peers;
+ /**
+  * Sets the local media stream
+  */
+ set localMediaStream(LocalMediaStream lms) =&gt; setLocalStream(lms);
  
- StreamConstraints _streamConstraints;
+ /**
+  * Returns the local media stream
+  */
+ LocalMediaStream get localMediaStream =&gt; getLocalStream();
  
+ /** 
+  * Set data channels enabled or disabled for all peers created
+  */
  set dataChannelsEnabled(bool value) =&gt; _dataChannelsEnabled = value;
  
  /**
-  * Factory constructor
+  * Set data channels reliable = tcp or unreliable = udp
+  */
+ set reliableDataChannels(bool value) =&gt; _reliableDataChannels = value;
+ 
+ /**
+  * singleton constructor
   */
  factory PeerManager() {
    if (_instance == null)
@@ -83,20 +116,25 @@ class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
    return _instance;
  }
  
- /**
+ /*
   * Internal constructor
   */
  PeerManager._internal() {
    _peers = new List&lt;PeerWrapper&gt;();
-   
    _streamConstraints = new StreamConstraints();
  }
  
- 
+ /**
+  * Convenience method
+  * Sets the max bit rate to stream constraints
+  */
  void setMaxBitRate(int b) {
    _streamConstraints.bitRate = b;
  }
  
+ /**
+  * Sets the local media stream from users webcam/microphone to all peers
+  */
  void setLocalStream(LocalMediaStream ms) {
    _ms = ms;
    _peers.forEach((PeerWrapper p) {
@@ -104,6 +142,9 @@ class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
    });
  }
  
+ /**
+  * Returns the current local media stream
+  */
  MediaStream getLocalStream() {
    return _ms;
  }
@@ -115,22 +156,23 @@ class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
    PeerConstraints con = new PeerConstraints();
    con.dataChannelEnabled = _dataChannelsEnabled;
    
-   print(con.toMap());
+   // TODO: after 7030 is fixed, look into using constraints.
+   // before that, too much trouble finding what to fix in generated js code
    RtcPeerConnection peer = new RtcPeerConnection({
      'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]});
    
    PeerWrapper wrapper;
    if (_dataChannelsEnabled) {
-     log.Debug("Creating peer with data channels");
      wrapper = new DataPeerWrapper(this, peer);
+     (wrapper as DataPeerWrapper).isReliable = _reliableDataChannels;
    } else {
-     log.Debug("Creating peer without data channels");
      wrapper = new PeerWrapper(this, peer);
    }
    
-   peer.on.addStream.add(onAddStream);
-   peer.on.open.add(onOpen);
-   peer.on.stateChange.add(onStateChanged);
+   peer.onAddStream.listen(onAddStream);
+   peer.onRemoveStream.listen(onRemoveStream);
+   peer.onOpen.listen(onOpen);
+   peer.onStateChange.listen(onStateChanged);
    
    _peers.add(wrapper);
    return wrapper;
@@ -160,12 +202,27 @@ class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
    return null;
  }
  
- void onAddStream(MediaStreamEvent e) {
-   log.Debug("PM: Adding peer");
+ /**
+  * Callback for mediastream removed
+  * Notifies listeners that stream was removed from peer
+  */
+ void onRemoveStream(MediaStreamEvent e) {
    PeerWrapper wrapper = getWrapperForPeer(e.target);
+   
    listeners.where((l) =&gt; l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
-     log.Debug("PM: notify class stream available");
-     l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
+     l.onRemoteMediaStreamRemoved(wrapper);
+   });
+ }
+ 
+ /**
+  * Callback for when a media stream is added to peer
+  * Notifies listeners that a media stream was added
+  */
+ void onAddStream(MediaStreamEvent e) {
+   PeerWrapper wrapper = getWrapperForPeer(e.target);
+   
+   listeners.where((l) =&gt; l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
+     l.onRemoteMediaStreamAvailable(e.stream, wrapper, true);
    });
  }
  
@@ -202,20 +259,28 @@ class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
  
  /**
   * Peer state changed
+  * Notifies listeners about the state change
+  * If readystate changed to closed, remove the peer wrapper and containing peer
   */
  void onStateChanged(Event e) {
    PeerWrapper wrapper = getWrapperForPeer(e.target);
-   log.Debug("(peermanager.dart) onStateChanged: ${wrapper.peer.readyState}");
+   _log.Debug("(peermanager.dart) onStateChanged: ${wrapper.peer.readyState}");
+   
+   listeners.where((l) =&gt; l is PeerConnectionEventListener).forEach((PeerConnectionEventListener l) {
+     l.onPeerStateChanged(wrapper, wrapper.peer.readyState);
+   });
    
    if (wrapper.peer.readyState == READYSTATE_CLOSED) {
      wrapper.dispose();
-     _peers.removeAt(_peers.indexOf(wrapper));
-     log.Debug("Peer removed");
+     
+     int index = _peers.indexOf(wrapper);
+     if (index &gt;= 0)
+       _peers.removeAt(index);
    }
  }
  
  void onOpen(Event e) {
-   log.Debug("Peer connection is open");
+   _log.Debug("Peer connection is open");
  }
  
  
@@ -232,7 +297,7 @@ class PeerManager extends GenericEventTarget&lt;PeerEventListener&gt;{
 factory <strong>PeerManager</strong>() <a class="anchor-link" href="#PeerManager"
               title="Permalink to PeerManager.PeerManager">#</a></h4>
 <div class="doc">
-<p>Factory constructor</p>
+<p>singleton constructor</p>
 <pre class="source">
 factory PeerManager() {
  if (_instance == null)
@@ -251,6 +316,7 @@ factory PeerManager() {
 <strong>set dataChannelsEnabled</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> value) <a class="anchor-link" href="#dataChannelsEnabled="
               title="Permalink to PeerManager.set dataChannelsEnabled">#</a></h4>
 <div class="doc">
+<p>Set data channels enabled or disabled for all peers created</p>
 <pre class="source">
 set dataChannelsEnabled(bool value) =&gt; _dataChannelsEnabled = value;
 </pre>
@@ -269,15 +335,25 @@ List&lt;T&gt; get listeners =&gt; _listeners;
 </pre>
 </div>
 </div>
-<div class="field"><h4 id="log">
+<div class="method"><h4 id="localMediaStream">
 <button class="show-code">Code</button>
-final <a href="../rtc_common/Logger.html">Logger</a>         <strong>log</strong> <a class="anchor-link"
-            href="#log"
-            title="Permalink to PeerManager.log">#</a>
-        </h4>
-        <div class="doc">
+<a href="http://api.dartlang.org/dart_html/LocalMediaStream.html">LocalMediaStream</a> <strong>get localMediaStream</strong> <a class="anchor-link" href="#localMediaStream"
+              title="Permalink to PeerManager.get localMediaStream">#</a></h4>
+<div class="doc">
+<p>Returns the local media stream</p>
 <pre class="source">
-log = new Logger()
+LocalMediaStream get localMediaStream =&gt; getLocalStream();
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="localMediaStream=">
+<button class="show-code">Code</button>
+<strong>set localMediaStream</strong>(<a href="http://api.dartlang.org/dart_html/LocalMediaStream.html">LocalMediaStream</a> lms) <a class="anchor-link" href="#localMediaStream="
+              title="Permalink to PeerManager.set localMediaStream">#</a></h4>
+<div class="doc">
+<p>Sets the local media stream</p>
+<pre class="source">
+set localMediaStream(LocalMediaStream lms) =&gt; setLocalStream(lms);
 </pre>
 </div>
 </div>
@@ -302,6 +378,17 @@ final         <strong>READYSTATE_OPEN</strong> <a class="anchor-link"
         <div class="doc">
 <pre class="source">
 READYSTATE_OPEN = "open"
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="reliableDataChannels=">
+<button class="show-code">Code</button>
+<strong>set reliableDataChannels</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> value) <a class="anchor-link" href="#reliableDataChannels="
+              title="Permalink to PeerManager.set reliableDataChannels">#</a></h4>
+<div class="doc">
+<p>Set data channels reliable = tcp or unreliable = udp</p>
+<pre class="source">
+set reliableDataChannels(bool value) =&gt; _reliableDataChannels = value;
 </pre>
 </div>
 </div>
@@ -339,22 +426,23 @@ PeerWrapper createPeer() {
  PeerConstraints con = new PeerConstraints();
  con.dataChannelEnabled = _dataChannelsEnabled;
  
- print(con.toMap());
+ // TODO: after 7030 is fixed, look into using constraints.
+ // before that, too much trouble finding what to fix in generated js code
  RtcPeerConnection peer = new RtcPeerConnection({
    'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]});
  
  PeerWrapper wrapper;
  if (_dataChannelsEnabled) {
-   log.Debug("Creating peer with data channels");
    wrapper = new DataPeerWrapper(this, peer);
+   (wrapper as DataPeerWrapper).isReliable = _reliableDataChannels;
  } else {
-   log.Debug("Creating peer without data channels");
    wrapper = new PeerWrapper(this, peer);
  }
  
- peer.on.addStream.add(onAddStream);
- peer.on.open.add(onOpen);
- peer.on.stateChange.add(onStateChanged);
+ peer.onAddStream.listen(onAddStream);
+ peer.onRemoveStream.listen(onRemoveStream);
+ peer.onOpen.listen(onOpen);
+ peer.onStateChange.listen(onStateChanged);
  
  _peers.add(wrapper);
  return wrapper;
@@ -398,6 +486,7 @@ List&lt;T&gt; getListeners() {
 <a href="http://api.dartlang.org/dart_html/MediaStream.html">MediaStream</a> <strong>getLocalStream</strong>() <a class="anchor-link" href="#getLocalStream"
               title="Permalink to PeerManager.getLocalStream">#</a></h4>
 <div class="doc">
+<p>Returns the current local media stream</p>
 <pre class="source">
 MediaStream getLocalStream() {
  return _ms;
@@ -428,13 +517,14 @@ PeerWrapper getWrapperForPeer(RtcPeerConnection p) {
 void <strong>onAddStream</strong>(<a href="http://api.dartlang.org/dart_html/MediaStreamEvent.html">MediaStreamEvent</a> e) <a class="anchor-link" href="#onAddStream"
               title="Permalink to PeerManager.onAddStream">#</a></h4>
 <div class="doc">
+<p>Callback for when a media stream is added to peer
+Notifies listeners that a media stream was added</p>
 <pre class="source">
 void onAddStream(MediaStreamEvent e) {
- log.Debug("PM: Adding peer");
  PeerWrapper wrapper = getWrapperForPeer(e.target);
+ 
  listeners.where((l) =&gt; l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
-   log.Debug("PM: notify class stream available");
-   l.onRemoteMediaStreamAvailable(e.stream, wrapper.id, true);
+   l.onRemoteMediaStreamAvailable(e.stream, wrapper, true);
  });
 }
 </pre>
@@ -447,7 +537,25 @@ void <strong>onOpen</strong>(<a href="http://api.dartlang.org/dart_html/Event.ht
 <div class="doc">
 <pre class="source">
 void onOpen(Event e) {
- log.Debug("Peer connection is open");
+ _log.Debug("Peer connection is open");
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="onRemoveStream">
+<button class="show-code">Code</button>
+void <strong>onRemoveStream</strong>(<a href="http://api.dartlang.org/dart_html/MediaStreamEvent.html">MediaStreamEvent</a> e) <a class="anchor-link" href="#onRemoveStream"
+              title="Permalink to PeerManager.onRemoveStream">#</a></h4>
+<div class="doc">
+<p>Callback for mediastream removed
+Notifies listeners that stream was removed from peer</p>
+<pre class="source">
+void onRemoveStream(MediaStreamEvent e) {
+ PeerWrapper wrapper = getWrapperForPeer(e.target);
+ 
+ listeners.where((l) =&gt; l is PeerMediaEventListener).forEach((PeerMediaEventListener l) {
+   l.onRemoteMediaStreamRemoved(wrapper);
+ });
 }
 </pre>
 </div>
@@ -457,16 +565,24 @@ void onOpen(Event e) {
 void <strong>onStateChanged</strong>(<a href="http://api.dartlang.org/dart_html/Event.html">Event</a> e) <a class="anchor-link" href="#onStateChanged"
               title="Permalink to PeerManager.onStateChanged">#</a></h4>
 <div class="doc">
-<p>Peer state changed</p>
+<p>Peer state changed
+Notifies listeners about the state change
+If readystate changed to closed, remove the peer wrapper and containing peer</p>
 <pre class="source">
 void onStateChanged(Event e) {
  PeerWrapper wrapper = getWrapperForPeer(e.target);
- log.Debug("(peermanager.dart) onStateChanged: ${wrapper.peer.readyState}");
+ _log.Debug("(peermanager.dart) onStateChanged: ${wrapper.peer.readyState}");
+ 
+ listeners.where((l) =&gt; l is PeerConnectionEventListener).forEach((PeerConnectionEventListener l) {
+   l.onPeerStateChanged(wrapper, wrapper.peer.readyState);
+ });
  
  if (wrapper.peer.readyState == READYSTATE_CLOSED) {
    wrapper.dispose();
-   _peers.removeAt(_peers.indexOf(wrapper));
-   log.Debug("Peer removed");
+   
+   int index = _peers.indexOf(wrapper);
+   if (index &gt;= 0)
+     _peers.removeAt(index);
  }
 }
 </pre>
@@ -491,6 +607,7 @@ void remove(PeerWrapper p) {
 void <strong>setLocalStream</strong>(<a href="http://api.dartlang.org/dart_html/LocalMediaStream.html">LocalMediaStream</a> ms) <a class="anchor-link" href="#setLocalStream"
               title="Permalink to PeerManager.setLocalStream">#</a></h4>
 <div class="doc">
+<p>Sets the local media stream from users webcam/microphone to all peers</p>
 <pre class="source">
 void setLocalStream(LocalMediaStream ms) {
  _ms = ms;
@@ -506,6 +623,8 @@ void setLocalStream(LocalMediaStream ms) {
 void <strong>setMaxBitRate</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> b) <a class="anchor-link" href="#setMaxBitRate"
               title="Permalink to PeerManager.setMaxBitRate">#</a></h4>
 <div class="doc">
+<p>Convenience method
+Sets the max bit rate to stream constraints</p>
 <pre class="source">
 void setMaxBitRate(int b) {
  _streamConstraints.bitRate = b;
@@ -547,7 +666,7 @@ void unsubscribe(T listener) {
         </div>
         
         <div class="footer">
-          <div>This page was generated at 2013-01-18 18:51:14.495</div>
+          <div>This page was generated at 2013-01-23 17:09:59.242</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>
