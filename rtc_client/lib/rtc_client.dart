@@ -22,7 +22,7 @@ part 'src/signaling/wheelsignalhandler.dart';
 part 'src/signaling/queuesignalhandler.dart';
 
 part 'src/datasource/datasource.dart';
-part 'src/event/websocketdatasource.dart';
+part 'src/datasource/websocketdatasource.dart';
 
 part 'src/exception/notimplementedexception.dart';
 
