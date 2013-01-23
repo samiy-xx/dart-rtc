@@ -1,4 +1,6 @@
 packages/
 *.idea
 *.dart.js
+*.dart.js.map
+*.dart.js.deps
 *.lock
