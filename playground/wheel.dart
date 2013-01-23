@@ -205,15 +205,17 @@ void main() {
   new Logger().Debug("Requesting access to camerA");
   Constraints constraints = new VideoConstraints();
   
-  window.navigator.webkitGetUserMedia(constraints.toMap(), (LocalMediaStream stream) {
-    q.initialize();
-    q.setMainVideo(stream);
-    new PeerManager().setLocalStream(stream); 
-  }, (e) {
+  if (MediaStream.supported) {
+    window.navigator.getUserMedia(audio: true, video: true).then((LocalMediaStream stream) {
+      q.initialize();
+      q.setMainVideo(stream);
+      new PeerManager().setLocalStream(stream);
+    });
+  } else {
     Logger log = new Logger();
-    log.Error("failed to get userMedia: $e");
-    new Notifier().display("Error: Failed to access camera: $e");
-  });
+    log.Error("failed to get userMedia");
+    new Notifier().display("Error: Failed to access camera");
+  }
   
   
 }

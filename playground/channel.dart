@@ -15,7 +15,20 @@ void main() {
   WebVideoContainer vc = vm.addVideoContainer("main_user", "main");
  
   new Notifier().display("Allow access to web camera!");
-  window.navigator.webkitGetUserMedia(constraints.toMap(), (LocalMediaStream stream) {
+  if (MediaStream.supported) {
+    window.navigator.getUserMedia(audio: true, video: true).then((LocalMediaStream stream) {
+      new Notifier().display("Got access to web camera!");
+      vm.setLocalStream(stream);
+      vc.setStream(stream);
+      new PeerManager().setLocalStream(stream);
+      handler.initialize();
+    });
+  } else {
+    Logger log = new Logger();
+    log.Error("getUserMedia not supported");
+    new Notifier().display("Error: getUserMedia not supported");
+  }
+  /*window.navigator.getUserMedia(constraints.toMap(), (LocalMediaStream stream) {
     //q.initialize();
     //q.setMainVideo(stream);
     //new PeerManager().setLocalStream(stream);
@@ -28,7 +41,7 @@ void main() {
     Logger log = new Logger();
     log.Error("failed to get userMedia: $e");
     new Notifier().display("Error: Failed to access camera: $e");
-  });
+  });*/
   
 }
 
