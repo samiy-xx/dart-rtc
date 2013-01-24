@@ -55,7 +55,7 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
     if (u != null) 
       return u;
     
-    u = new User(this, id, c);
+    u = new User.With(this, id, c);
     u.subscribe(this);
     //_list.add(u);
     add(u);
@@ -68,7 +68,7 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
     if (u != null) 
       return u;
     
-    u = new User(this, id, c);
+    u = new User.With(this, id, c);
     u.subscribe(this);
     add(u);
     //_list.add(u);

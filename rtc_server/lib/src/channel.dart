@@ -13,6 +13,9 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   // TODO: needed?
   bool _hasBeenJoined = false;
   
+  /* Owner of the channel */
+  User _owner;
+  
   /* users */
   List<User> _users;
   
@@ -36,14 +39,12 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    */
   String get id => _id;
   
-  /**
-   * Default constructor
-   */
-  Channel(ChannelContainer rc, String id, int limit) {
+  Channel(String id, int limit) : this.With(null, id, limit);
+  Channel.With(ChannelContainer rc, String id, int limit) {
     _id = id;
     _limit = limit;
-    _container = rc;
     _users = new List<User>();
+    _container = rc;
   }
   
   /**
@@ -57,34 +58,44 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   /**
    * Joins the room
    */
-  void join(User newUser) {
-    //newUser.channel = this;
-    _users.add(newUser);
-    newUser.subscribe(this);
-    new Logger().Debug("User ${newUser.id} joins channel $_id");
-    listeners.where((l) => l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
-      l.onEnterChannel(this, newUser);
-    });
+  void join(User u) {
+    if (_addUser(u)) {
+      
+      if (_users.length == 0)
+        _owner = u;
+      
+      u.subscribe(this);
+      new Logger().Debug("User ${u.id} joins channel $_id");
+      
+      _notifyUserJoined(u);
+      
+      _sendJoinPackets(u);
+    }
+  }
+  
+  void _sendJoinPackets(User user) {
+    if (_container == null)
+      return;
+    
     // Get the server
     Server server = _container.getServer();
     
     // Create a join packet to notify existing users in room
-    //String jp = JSON.stringify(new JoinPacket.With(_id, newUser.id));
-    Packet jp = new JoinPacket.With(_id, newUser.id);
+    Packet jp = new JoinPacket.With(_id, user.id);
+    
     // Iterate trough all the users in this room
     _users.forEach((User u) {
       // If the newUser is not the current user in container 
-      if (u != newUser) {
-        // Create a Id packet sent to the newUser telling it all existing users in room
+      if (u != user) {
+        
+        // Create a Id packet for newUser notifying all existing users in channel
         Packet ip = new IdPacket.With(u.id, _id);
         
-        // Send to client handles errors
         server.sendPacket(u.connection, jp);
-        server.sendPacket(newUser.connection, ip);
+        server.sendPacket(user.connection, ip);
       }
     });
   }
-  
   /**
    * Remove user from channel
    * Notify everyone else in channel
@@ -93,21 +104,22 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   void leave(User u) {
     new Logger().Debug("(channel.dart) User ${u.id} leaving channel $id");
     
-    //u.channel = null;
-    if (_users.contains(u))
-      _users.removeAt(_users.indexOf(u));
+    _removeUser(u);
+    _notifyUserLeft(u);
     
     sendToAll(new ByePacket.With(u.id));
-    listeners.where((l) => l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
-      l.onLeaveChannel(this, u);
-    });
     
-    if (userCount <= 0) {
-      print("Usercount ${userCount} removing channel");
-      _container.removeChannel(this);
+    if (_container != null) {
+      if (userCount <= 0) {
+        print("Usercount ${userCount} removing channel");
+        _container.removeChannel(this);
+      }
     }
   }
   
+  /**
+   * Force all users to leave the channel
+   */
   void killAll() {
     for (int i = 0; i < _users.length; i++) {
       User u = _users[i];
@@ -115,10 +127,53 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     }
   }
   
+  /*
+   * Adds a user to channel if user does not exist already
+   */
+  bool _addUser(User u) {
+    if (!_users.contains(u)) {
+      _users.add(u);
+      return true;
+    }
+    return false;
+  }
+  
+  /*
+   * Removes user from channel
+   */
+  User _removeUser(User u) {
+    int index = _users.indexOf(u);
+    if (index >= 0) {
+      return _users.removeAt(index);
+    }
+    return null;
+  }
+  
+  /*
+   * Notify listeners about the user leaving
+   */
+  void _notifyUserLeft(User u) {
+    listeners.where((l) => l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
+      l.onLeaveChannel(this, u);
+    });
+  }
+  
+  /*
+   * Notify listeners about the user joining
+   */
+  void _notifyUserJoined(User u) {
+    listeners.where((l) => l is ChannelConnectionEventListener).forEach((ChannelConnectionEventListener l) {
+      l.onEnterChannel(this, u);
+    }); 
+  }
+  
   /**
    * Send packet to everyone in channel
    */
   void sendToAll(Packet p) {
+    if (_container == null)
+      return;
+    
     _users.forEach((User u) {
         _container.getServer().sendPacket(u.connection, p);
     });
@@ -128,6 +183,9 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    * Send packet to everyone in channel except the sender
    */
   void sendToAllExceptSender(User sender, Packet p) {
+    if (_container == null)
+      return;
+    
     _users.forEach((User u) {
       if (sender != u) {
         _container.getServer().sendPacket(u.connection, p);

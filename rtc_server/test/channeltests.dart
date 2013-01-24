@@ -3,24 +3,21 @@ part of rtc_server_tests;
 class ChannelTests {
   run() {
     group('ChannelTests', () {
+      TestableWebSocketConnection ws;
       Channel c;
-      ChannelContainer co;
-      TestableServer s;
-      
+  
       String channelId;
       int channelLimit;
       
       setUp(() {
         channelId = "abc";
         channelLimit = 5;
-        s = new TestableServer();
-        co = new ChannelContainer(s);
-        c = new Channel(co, channelId, channelLimit);
+        ws  = new TestableWebSocketConnection();
+        c = new Channel(channelId, channelLimit);
       });
       
       tearDown(() {
         c = null;
-        co = null;
       });
       
       test("Channel, When created, is not null", () {
@@ -33,6 +30,18 @@ class ChannelTests {
         expect(c.userCount, equals(0));
       });
       
+      test("Channel, User List, Can add users", () {
+        String userId = Util.generateId(4);
+        User u = TestFactory.getTestUser(userId, ws);
+ 
+        c.join(u);
+        
+        expect(c.userCount, equals(1));
+      });
+      
+      test("Channel, User List, Can remove users", () {
+        
+      });
     });
   }
 }

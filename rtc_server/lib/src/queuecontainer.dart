@@ -30,7 +30,7 @@ class QueueContainer extends ChannelContainer implements ChannelQueueEventListen
     if (channelExists(id))
       return findChannel(id);
     
-    Channel c = new QueueChannel(this, id);
+    Channel c = new QueueChannel.With(this, id);
     c.subscribe(this);
     add(c);
     return c;

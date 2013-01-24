@@ -1,23 +1,20 @@
 part of rtc_server_tests;
 
 class UserTests {
-  TestableServer s;
-  UserContainer uc;
-  BaseUser u;
+  TestableWebSocketConnection ws;
+  User u;
   String defaultId = "abc";
   
   run() {
     group('UserTests', () {
       setUp(() {
-        s = new TestableServer();
-        uc = new UserContainer(s);
-        u = new BaseUser(uc, defaultId);
+        ws = new TestableWebSocketConnection();
+        u = new User(defaultId, ws);
       });
       
       tearDown(() {
         u = null;
-        uc = null;
-        s = null;
+        ws = null;
       });
       
       test("User, When created, is not null", () {
@@ -29,7 +26,7 @@ class UserTests {
       });
       
       test("User, talkTo, sets User", () {
-        BaseUser target = getTestUser("a");
+        User target = TestFactory.getTestUser("a", ws);
         u.talkTo(target);
         
         expect(u.talkers.contains(target), equals(true));
@@ -38,8 +35,9 @@ class UserTests {
     });
   }
   
-  BaseUser getTestUser(String id) {
-    return new BaseUser(uc, id);
-  }
+  
+  
 }
+
+
 

@@ -73,7 +73,7 @@ class ChannelContainer extends BaseChannelContainer {
     if (channelExists(id))
       return findChannel(id);
     
-    Channel r = new Channel(this, id, _channelLimit);
+    Channel r = new Channel.With(this, id, _channelLimit);
     add(r);
     //_list.add(r);
     

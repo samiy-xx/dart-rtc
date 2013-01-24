@@ -1,8 +1,8 @@
 part of rtc_server;
 
-class BaseUser extends GenericEventTarget<UserEventListener> implements Comparable {
+class _User extends GenericEventTarget<UserEventListener> implements Comparable {
   /* talking to */
-  List<BaseUser> _talkingTo;
+  List<User> _talkingTo;
   
   /* name (id) of the user */
   String _id;
@@ -23,7 +23,7 @@ class BaseUser extends GenericEventTarget<UserEventListener> implements Comparab
   bool get isTalking => _talkingTo.length > 0;
   
   /** Users this user it talking with */
-  List<BaseUser> get talkers => _talkingTo;
+  List<User> get talkers => _talkingTo;
   
   /** Getter for user id */
   String get id => _id;
@@ -42,8 +42,9 @@ class BaseUser extends GenericEventTarget<UserEventListener> implements Comparab
   
   UserContainer _container;
   
-  BaseUser(this._container, this._id) {
-    _talkingTo = new List<BaseUser>();
+  _User(String id) : this.With(null, id);
+  _User.With(this._container, this._id) {
+    _talkingTo = new List<User>();
     _lastActivity = new Date.now().millisecondsSinceEpoch;
     _timeSinceLastConnection = new Date.now().millisecondsSinceEpoch;
   }
@@ -64,7 +65,7 @@ class BaseUser extends GenericEventTarget<UserEventListener> implements Comparab
   /**
    * Hangup with other users
    */
-  void hangup(BaseUser u) {
+  void hangup(User u) {
     if (_talkingTo.contains(u))
       _talkingTo.removeAt(_talkingTo.indexOf(u));
   }
@@ -72,7 +73,7 @@ class BaseUser extends GenericEventTarget<UserEventListener> implements Comparab
   /**
    * Talk to other user
    */
-  void talkTo(BaseUser u) {
+  void talkTo(User u) {
     if (!_talkingTo.contains(u)) {
       _talkingTo.add(u);
     }
@@ -97,7 +98,7 @@ class BaseUser extends GenericEventTarget<UserEventListener> implements Comparab
    * Implements Comparable
    */
   int compareTo(Comparable other) {
-    if (!(other is BaseUser))
+    if (!(other is User))
       throw new ArgumentError("Cannot compare to anything else but User");
     
     int toReturn;
@@ -112,31 +113,27 @@ class BaseUser extends GenericEventTarget<UserEventListener> implements Comparab
     return toReturn;
   }
   
-  operator >(BaseUser other) {
+  operator >(User other) {
     return _timeSinceLastConnection > other.timeSinceLastConnection;
   }
   
-  operator >=(BaseUser other) {
+  operator >=(User other) {
     return _timeSinceLastConnection >= other.timeSinceLastConnection;
   }
-  
-  
 }
 
 /**
  * User class
  */
-class User extends BaseUser {
+class User extends _User{
   /* WebSocketConnection */
   WebSocketConnection _conn;
   
   /** Getter for the connection */
   WebSocketConnection get connection => _conn;
   
-  /**
-   * Constructor
-   */
-  User(UserContainer container, String id, this._conn) : super(container, id){
+  User(String id, WebSocketConnection c) : this.With(null, id, c);
+  User.With(UserContainer container, String id, this._conn) : super.With(container, id){
     _conn.onClosed = _onClose;
   }
  

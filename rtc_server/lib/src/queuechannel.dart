@@ -10,7 +10,7 @@ class QueueChannel extends Channel implements UserConnectionEventListener {
   /**
    * Set the channel limit to 2
    */
-  QueueChannel(ChannelContainer rc, String id) : super(rc, id, 2){
+  QueueChannel.With(ChannelContainer rc, String id) : super.With(rc, id, 2){
     _queue = new List<User>();
   }
   

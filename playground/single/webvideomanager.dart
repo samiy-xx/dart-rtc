@@ -88,6 +88,9 @@ class WebVideoManager extends VideoManager {
   
   void removeRemoteStream(String id) {
     VideoContainer vc = getVideoContainer(id);
+    if (vc == null)
+      throw new Exception("VideoContainer with id $id was not found");
+    
     removeVideoContainer(vc);
   }
   
