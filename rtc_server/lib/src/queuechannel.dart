@@ -4,6 +4,11 @@ class QueueChannel extends Channel implements UserConnectionEventListener {
   /* Queue users here */
   List<User> _queue;
   
+  /**
+   * Queue
+   */
+  List<User> get queue => _queue;
+  
   /** Override canJoin from Channel */
   bool get canJoin => true;
   
@@ -21,33 +26,34 @@ class QueueChannel extends Channel implements UserConnectionEventListener {
     leave(user);
   }
   
-  void join(User u) {
+  bool join(User u) {
     if (super.canJoin) {
-      super.join(u);
+      return super.join(u);
     } else {
-      insertIntoQueue(u);
+      _insertIntoQueue(u);
       u.subscribe(this);
     }
+    return false;
   }
   
   void leave(User u) {
     super.leave(u);
     
-    User n = popFromQueue();
+    User n = _popFromQueue();
     if (n != null) {
       super.join(n);
       n.unsubscribe(this);
     }
   }
   
-  void insertIntoQueue(User u) {
+  void _insertIntoQueue(User u) {
     _queue.addLast(u);
     listeners.where((l) => l is ChannelQueueEventListener).forEach((ChannelQueueEventListener l) {
       l.onEnterQueue(this, u, _queue.length, _queue.indexOf(u));
     });
   }
   
-  User popFromQueue() {
+  User _popFromQueue() {
     if (_queue.length == 0)
       return null;
     

@@ -10,14 +10,16 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   /* max amount of users in room */
   int _limit;
   
-  // TODO: needed?
-  bool _hasBeenJoined = false;
-  
   /* Owner of the channel */
   User _owner;
   
   /* users */
   List<User> _users;
+  
+  /**
+   * Returns users in channel
+   */
+  List<User> get users => _users;
   
   /**
    * Returns true if users length is less than limit
@@ -28,7 +30,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    * Limit of users in channel
    */
   int get channelLimit => _limit;
-  
+  set channelLimit(int i) => _limit = i;
   /**
    * Current usercount
    */
@@ -58,19 +60,19 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   /**
    * Joins the room
    */
-  void join(User u) {
-    if (_addUser(u)) {
+  bool join(User u) {
+    if (!_addUser(u))
+      return false;
       
-      if (_users.length == 0)
-        _owner = u;
-      
-      u.subscribe(this);
-      new Logger().Debug("User ${u.id} joins channel $_id");
-      
-      _notifyUserJoined(u);
-      
-      _sendJoinPackets(u);
-    }
+    if (_users.length == 0)
+      _owner = u;
+    
+    u.subscribe(this);
+    _notifyUserJoined(u);
+    _sendJoinPackets(u);
+    
+    new Logger().Debug("User ${u.id} joins channel $_id");
+    return true;
   }
   
   void _sendJoinPackets(User user) {
@@ -108,13 +110,6 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     _notifyUserLeft(u);
     
     sendToAll(new ByePacket.With(u.id));
-    
-    if (_container != null) {
-      if (userCount <= 0) {
-        print("Usercount ${userCount} removing channel");
-        _container.removeChannel(this);
-      }
-    }
   }
   
   /**
@@ -131,7 +126,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    * Adds a user to channel if user does not exist already
    */
   bool _addUser(User u) {
-    if (!_users.contains(u)) {
+    if (!_users.contains(u) && canJoin) {
       _users.add(u);
       return true;
     }

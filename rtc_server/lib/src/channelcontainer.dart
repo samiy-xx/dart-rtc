@@ -1,6 +1,6 @@
 part of rtc_server;
 
-class ChannelContainer extends BaseChannelContainer {
+class ChannelContainer extends BaseChannelContainer implements ChannelConnectionEventListener{
   /* logger singleton instance */
   Logger logger = new Logger();
   
@@ -18,6 +18,17 @@ class ChannelContainer extends BaseChannelContainer {
    
   }
   
+  
+  void onEnterChannel(Channel c, User u) {
+    
+  }
+  
+  void onLeaveChannel(Channel c, User u) {
+    if (c.userCount == 0) {
+      removeChannel(c);
+    }
+  }
+  
   /**
    * Returns all users in channel
    */
@@ -29,12 +40,13 @@ class ChannelContainer extends BaseChannelContainer {
    * Remove channel and kill users if any
    */
   bool removeChannel(Channel c) {
+    logger.Debug("Removing Channel ${c.id}");
+    
     if (_list.contains(c)) {
       if (c.userCount > 0)
         c.killAll();
       
       remove(c);
-      //_list.removeAt(_list.indexOf(c));
     }
   }
   
