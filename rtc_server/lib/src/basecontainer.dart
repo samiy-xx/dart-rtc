@@ -27,6 +27,12 @@ class BaseContainer<T> extends GenericEventTarget<ContainerEventListener> {
   }
   
   /**
+   * return true if list contains T
+   */
+  bool contains(T o) {
+    return _list.contains(o);
+  }
+  /**
    * Gets the Server
    */
   Server getServer() {
@@ -38,10 +44,12 @@ class BaseContainer<T> extends GenericEventTarget<ContainerEventListener> {
    * Notifiers listeners that collection count has changed
    */
   void add(T e) {
-    _list.add(e);
-    listeners.where((l) => l is ContainerContentsEventListener).forEach((ContainerContentsEventListener l) {
-      l.onCountChanged(this);
-    });
+    if (!_list.contains(e)) {
+      _list.add(e);
+      listeners.where((l) => l is ContainerContentsEventListener).forEach((ContainerContentsEventListener l) {
+        l.onCountChanged(this);
+      });
+    }
   }
   
   /**
@@ -49,12 +57,13 @@ class BaseContainer<T> extends GenericEventTarget<ContainerEventListener> {
    * Notifiers listeners that collection count has changed
    */
   void remove(T e) {
-    if (_list.contains(e))
-      _list.removeAt(_list.indexOf(e));
-    
-    listeners.where((l) => l is ContainerContentsEventListener).forEach((ContainerContentsEventListener l) {
-      l.onCountChanged(this);
-    });
+    if (_list.contains(e)) {
+      if (_list.removeAt(_list.indexOf(e))  != null) {
+        listeners.where((l) => l is ContainerContentsEventListener).forEach((ContainerContentsEventListener l) {
+          l.onCountChanged(this);
+        });
+      }
+    }
   }
   
   
