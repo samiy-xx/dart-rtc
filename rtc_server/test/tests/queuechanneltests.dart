@@ -78,6 +78,7 @@ class QueueChannelTests {
       test("QueueChannel, user enters/leaves queue, event is fired", () {
         MockChannelEventListener l = new MockChannelEventListener();
         User toBeQueued = TestFactory.getTestUser(TestFactory.getRandomId(), ws);
+        User toBeMovedInQueue = TestFactory.getTestUser(TestFactory.getRandomId(), ws);
         c.subscribe(l);
         
         bool enteredQueue = false;
@@ -85,18 +86,19 @@ class QueueChannelTests {
         bool movedInQueue = false;
         int queueCount = 0;
         int queuePosition = 0;
+        int joinedQueueCount = 0;
         
         l.enterQueueCallback = (Channel channel, User user, int count, int position) {
           expect(channel, equals(c));
-          expect(user, equals(toBeQueued));
           queueCount = count;
           queuePosition = position;
           enteredQueue = true;
+          joinedQueueCount++;
         };
         
         l.moveInQueueCallback = (Channel channel, User user, int count, int position) {
           expect(channel, equals(c));
-          expect(user, equals(toBeQueued));
+          expect(user, equals(toBeMovedInQueue));
           queueCount = count;
           queuePosition = position;
           movedInQueue = true;
@@ -112,13 +114,14 @@ class QueueChannelTests {
           c.join(TestFactory.getTestUser(TestFactory.getRandomId(), ws));
         }
         c.join(toBeQueued);
+        c.join(toBeMovedInQueue);
         c.leave(c.users[0]);
         
         Timer t = new Timer(100, (_) {
           expect(enteredQueue, equals(true));
-          expect(leftQueue, equals(true));
-          // TODO: Fix, should move
-          //expect(movedInQueue, equals(true));
+          expect(leftQueue, equals(true)); 
+          expect(movedInQueue, equals(true));
+          expect(joinedQueueCount, equals(2));
         });
       });
     });

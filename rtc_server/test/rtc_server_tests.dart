@@ -20,6 +20,7 @@ part "tests/usertests.dart";
 part "tests/queuechanneltests.dart";
 
 void main() {
+  new Logger().setLevel(LogLevel.ERROR);
   useVMConfiguration();
   new ChannelTests().run();
   new QueueChannelTests().run();
