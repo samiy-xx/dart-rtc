@@ -13,6 +13,7 @@ import "../../rtc_common/lib/rtc_common.dart";
 part "mocks/testableserver.dart";
 part "mocks/testablewebsocketconnection.dart";
 part "mocks/mockchanneleventlistener.dart";
+part "mocks/mockusereventlistener.dart";
 
 part "testfactory.dart";
 part "tests/channeltests.dart";

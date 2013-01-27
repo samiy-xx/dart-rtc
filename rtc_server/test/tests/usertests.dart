@@ -86,8 +86,30 @@ class UserTests {
         expect(u.needsKill(t), equals(false));
       });
       
-      test("User, terminate, closes websocket", () {
+      test("User, terminate, calls close on websocket", () {
+        bool wasClosed = false;
+        ws.onClosed = (int status, String reason) {
+          wasClosed = true;
+          expect(status, equals(1000));
+          expect(reason, equals("Leaving"));
+        };
         
+        u.terminate();
+        expect(wasClosed, equals(true));
+      });
+      
+      test("User, connection closed, fires event", () {
+        MockUserEventListener l = new MockUserEventListener();
+        u.subscribe(l);
+        
+        bool wasClosed = false;
+        l.onConnectionClose = (User user, int status, String reason) {
+          expect(user, equals(u));
+          expect(status, equals(1000));
+          wasClosed = true;
+        };
+        u.terminate();
+        expect(wasClosed, equals(true));
       });
     });
   }

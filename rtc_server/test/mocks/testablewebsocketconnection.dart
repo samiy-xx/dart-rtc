@@ -1,11 +1,14 @@
 part of rtc_server_tests;
 
+typedef void onWebsocketMessageType(String m);
+typedef void onWebsocketCloseType(int status, String reason);
+
 class TestableWebSocketConnection implements WebSocketConnection {
-  Function _onMessage;
-  Function _onClosed;
+  onWebsocketMessageType _onMessage;
+  onWebsocketCloseType _onClosed;
   
-  set onMessage(m) => _onMessage = m;
-  set onClosed(m) => _onClosed = m;
+  set onMessage(onWebsocketMessageType m) => _onMessage = m;
+  set onClosed(onWebsocketCloseType m) => _onClosed = m;
   
   dynamic close([int status, String reason]) {
     _onClosed(status, reason);
