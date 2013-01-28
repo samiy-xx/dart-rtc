@@ -61,7 +61,7 @@ class DataPeerWrapper extends PeerWrapper {
     String packet = PacketFactory.get(p);
     if (?asArrayBuffer) {
       // No clue about this atm. does any browser implement this atm?
-      ArrayBufferView buf = new Uint8Array.fromList(packet.charCodes);
+      ArrayBuffer buf = BinaryData.createBuffer(p);
       sendData(buf);
     } else {
       _dataChannel.send(packet);
@@ -75,8 +75,9 @@ class DataPeerWrapper extends PeerWrapper {
     _dataChannel.send(b);
   }
   
-  void sendData(ArrayBufferView d) {
-    _dataChannel.send(json.stringify(d));
+  void sendData(ArrayBuffer d) {
+    ArrayBufferView view = new Uint16Array.fromBuffer(d);
+    _dataChannel.send(view);
   }
   /**
    * Callback for when data channel created by the other party comes trough the peer
@@ -114,6 +115,7 @@ class DataPeerWrapper extends PeerWrapper {
       throw new NotImplementedException("Blob is not implemented");
     } else if (e.data is ArrayBuffer || e.data is ArrayBufferView) {
       _log.Debug("Received ArrayBuffer ${e.data.runtimeType.toString()}");
+      
       throw new NotImplementedException("ArrayBuffer is not implemented");
     } else {
       _log.Debug("Received Text");

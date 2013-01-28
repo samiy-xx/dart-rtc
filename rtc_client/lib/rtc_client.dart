@@ -8,7 +8,7 @@ import '../../rtc_common/lib/rtc_common.dart';
 part 'src/peer/peermanager.dart';
 part 'src/peer/peerwrapper.dart';
 part 'src/peer/datapeerwrapper.dart';
-part 'src/peer/binarypackethandler.dart';
+part 'src/peer/binarydata.dart';
 
 part 'src/event/peereventlistener.dart';
 part 'src/event/signalingeventlistener.dart';
