@@ -1,45 +1,52 @@
 part of rtc_client;
 
-class BinaryData {
+/**
+ * Binary reader/writer for Datachannel
+ */
+class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
+  
   static final int NULL_BYTE = 0x00;
   static final int FULL_BYTE = 0xFF;
-  static final int READ_CHUNK_SIZE = 6;
-  static final int WRITE_CHUNK_SIZE = 6;
   
-  static String state = "init";
-  static int toRead = 0;
-  static List<int> buffer = new List<int>();
+  /* Create Array buffer slices att his size for sending */
+  int _writeChunkSize = 16;
   
+  /* Left to read on current packet */
+  int _leftToRead = 0;
+  
+  /* Buffered data which is not complete */
+  List<int> _buffer;
+  
+  /* Current read state */
+  BinaryReadState _currentReadState = BinaryReadState.INIT_READ;
+  
+  /** Get the chunk size for writing */
+  int get writeChunkSize => _writeChunkSize;
+  
+  /** Currently buffered data length */
+  int get buffered => _buffer.length;
+  
+  /** Sets the chunk size for writing */
+  set writeChunkSize(int i) => _writeChunkSize = i;
+  
+  /**
+   * Da Constructor
+   */
   BinaryData() {
-    buffer = new List<int>();
+    _buffer = new List<int>();
   }
   
-  static void read(ArrayBuffer buf) {
-    // ACTUALLY: READ ALL YOU CAN
-    DataView v = new DataView(buf);
-    for (int i = 0; i < v.byteLength; i++) {
-      int value = v.getUint8(i);
-      
-      if (value == 0xFF && state == "init") {
-        state = "length";
-      }
-      if (value == 0x00 && state == "content") {
-        print ("final");
-        state = "init";
-        print(new String.fromCharCodes(buffer));
-      }
-      if (state == "length") {
-        toRead = value;
-        state = "content";
-      }
-      
-      if (state == "content") {
-        buffer.add(value);
-      }
-    }
+  
+  
+  ArrayBuffer writeBufferFromBuffer(ArrayBuffer) {
+    
   }
   
-  static ArrayBuffer write(Packet p) {
+  void sendPacket(RtcDataChannel dc, Packet p) {
+    dc.send(writeBufferFromPacket(p));
+  }
+  
+  ArrayBuffer writeBufferFromPacket(Packet p) {
     String packet = PacketFactory.get(p);
     
     ArrayBuffer buffer = new ArrayBuffer(getSize(packet) * 2);
@@ -48,22 +55,25 @@ class BinaryData {
     int i = 0;
     int j = 0;
     
+    // Set 0xFF at start
     data.setUint8(i++, FULL_BYTE);
+    // Is packet
+    data.setUint8(i++, FULL_BYTE);
+    // Write content length
     data.setUint8(i++, packet.length);
-    
+    // Write content
     while (j < packet.length) {
       data.setUint8(i, packet.charCodeAt(j));
       i++;
       j++;
     }
-    
+    // write 0x00 to the end
     data.setUint8(i++, NULL_BYTE);
-    
-    
     return buffer;
   }
   
-  static void send(Packet p) {
+ /* void send(Packet p) {
+    int WRITE_CHUNK_SIZE = 5;
     int sentBytes = 0;
     ArrayBuffer b = write(p);
     
@@ -73,7 +83,28 @@ class BinaryData {
       sentBytes += WRITE_CHUNK_SIZE;
     }
     
+  }*/
+  
+  Packet _readAndClearBuffer() {
+    if (_buffer.length <= 0)
+      throw new Exception("Buffer empty");
+    
+    String d = new String.fromCharCodes(_buffer.toList());
+    return PacketFactory.getPacketFromString(d);
   }
+  
+  void _signalReadChunk(int chunkLength) {
+    listeners.where((l) => l is BinaryDataReceivedEventListener).forEach((BinaryDataReceivedEventListener l) {
+      l.onReadChunk(chunkLength);
+    });
+  }
+  
+  void _signalReadPacket(Packet p) {
+    listeners.where((l) => l is BinaryDataReceivedEventListener).forEach((BinaryDataReceivedEventListener l) {
+      l.onPacket(p);
+    });
+  }
+  
   static int getSize(String p) {
     return p.length + 2 + 2 + 1;
   }

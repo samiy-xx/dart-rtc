@@ -9,10 +9,15 @@ part 'src/peer/peermanager.dart';
 part 'src/peer/peerwrapper.dart';
 part 'src/peer/datapeerwrapper.dart';
 part 'src/peer/binarydata.dart';
+part 'src/peer/binaryreadstate.dart';
+part 'src/peer/binarydatatype.dart';
+part 'src/peer/binarydatareader.dart';
+part 'src/peer/binarydatawriter.dart';
 
 part 'src/event/peereventlistener.dart';
 part 'src/event/signalingeventlistener.dart';
 part 'src/event/datasourceeventlistener.dart';
+part 'src/event/binarydataeventlistener.dart';
 
 part 'src/signaling/signalhandler.dart';
 part 'src/signaling/basesignalhandler.dart';
