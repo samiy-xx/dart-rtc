@@ -17,5 +17,7 @@ class BinaryReadState {
     BinaryReadState brs = o as BinaryReadState;
     return brs._state == _state; 
   }
+  
+  String toString() => _state.toString();
 }
 

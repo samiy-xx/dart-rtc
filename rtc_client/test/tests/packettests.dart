@@ -34,7 +34,7 @@ class PacketTests {
         Packet p = PacketFactory.getPacketFromString(s);
         expect(s.length, equals(PacketFactory.get(defaultPacket).length));
       });
-      
+      /*
       test("BinaryData, test, test", () {
         ArrayBuffer buffer = BinaryData.write(defaultPacket);
         DataView dv = new DataView(buffer);
@@ -65,7 +65,7 @@ class PacketTests {
         //ArrayBuffer tmp = buffer.slice(4, view[2]);
         //expect(new String.fromCharCodes(new Uint16Array.fromBuffer(tmp).toList()), equals("a"));
         //expect(tmp.byteLength, equals(PacketFactory.get(defaultPacket).length * 2));
-      });
+      });*/
     });
   }
 }

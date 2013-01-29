@@ -11,9 +11,10 @@ class PacketFactory {
    */
   static Packet getPacketFromString(String input) {
     try {
+      new Logger().Error(input);
       return getPacketFromMap(json.parse(input));
-    } catch(e) {
-      throw new InvalidPacketException("Invalid packet", e);
+    } on InvalidPacketException catch(e) {
+      throw e;
     }
   }
   
@@ -21,7 +22,7 @@ class PacketFactory {
    * Returns a packet from map
    */
   static Packet getPacketFromMap(Map m) {
-
+    
     try {
       String pt = m['packetType'];
       Packet p;
@@ -75,7 +76,8 @@ class PacketFactory {
       }
       return p;
     } catch(e) {
-      throw new InvalidPacketException("Packet was malformed", e);
+      new Logger().Error(m.toString());
+      throw new InvalidPacketException("Packet was malformed (${m.toString()})", e);
     }
   }
   
