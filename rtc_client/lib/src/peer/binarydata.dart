@@ -14,6 +14,16 @@ class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
   BinaryData() {
   }
   
+  static ArrayBuffer bufferFromString(String s) {
+    ArrayBuffer buffer = new ArrayBuffer(s.length);
+    DataView view = new DataView(buffer);
+    
+    for (int i = 0; i < s.length; i++) {
+      view.setUint8(0, s.charCodeAt(i));
+    }
+    
+    return buffer;
+  }
   
   
   /**
@@ -22,7 +32,7 @@ class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
   static ArrayBuffer createBuffer(Packet p) {
     String packet = PacketFactory.get(p);
     ArrayBuffer buffer = new ArrayBuffer(packet.length * 2);
-    Uint16Array view = new Uint16Array.fromBuffer(buffer);
+    Uint8Array view = new Uint8Array.fromBuffer(buffer);
     for (int i = 0; i < packet.length; i++) {
       view[i] = packet.charCodeAt(i);
     }
@@ -40,7 +50,7 @@ class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
    * Converts ArrayBuffer to string
    */
   static String stringFromBuffer(ArrayBuffer buffer) {
-    Uint16Array view = new Uint16Array.fromBuffer(buffer);
+    Uint8Array view = new Uint8Array.fromBuffer(buffer);
     return new String.fromCharCodes(view.toList());
   }
   

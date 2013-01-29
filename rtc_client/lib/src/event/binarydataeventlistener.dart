@@ -22,3 +22,8 @@ abstract class BinaryDataReceivedEventListener extends BinaryDataEventListener {
 abstract class BinaryDataSentEventListener extends BinaryDataEventListener {
   void onWriteChunk(int wrote);
 }
+
+abstract class BinaryBlobReadEventListener extends BinaryDataEventListener {
+  void onProgress();
+  void onLoadDone(ArrayBuffer b);
+}

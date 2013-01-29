@@ -158,6 +158,25 @@ class BinaryDataReader extends BinaryData {
     }
   }
   
+  void bufferFromBlob(Blob b) {
+    FileReader r = new FileReader();
+    r.readAsArrayBuffer(b);
+    
+    r.onLoadEnd.listen((ProgressEvent e) {
+      listeners.where((l) => l is BinaryBlobReadEventListener).forEach((BinaryBlobReadEventListener l) {
+        l.onLoadDone(r.result);
+      });
+    });
+    
+    r.onProgress.listen((ProgressEvent e) {
+      listeners.where((l) => l is BinaryBlobReadEventListener).forEach((BinaryBlobReadEventListener l) {
+        l.onProgress();
+      });
+    });
+    
+    
+    
+  }
   /*
    * Signal listeners that a chunk has been read
    */
