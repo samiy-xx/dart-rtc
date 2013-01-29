@@ -4,6 +4,8 @@ class BinaryDataReader extends BinaryData {
   /* data type for currently processed object */
   BinaryDataType _type;
   
+  ArrayBuffer _latest;
+  
   /* Length of data for currently processed object */
   int _length;
   
@@ -13,16 +15,23 @@ class BinaryDataReader extends BinaryData {
   /* Buffer for unfinsihed data */
   List<int> _buffer;
   
+  bool _bufferData = true;
+  
   /* Logger */
   Logger _log = new Logger();
   
   /** Currently buffered unfinished data */
   int get buffered => _buffer.length;
   
+  /* Current read state */
+  BinaryReadState _currentReadState = BinaryReadState.INIT_READ;
+  
   /** Current read state */
   BinaryReadState get currentReadState => _currentReadState;
   
   int get leftToRead => _leftToRead;
+  
+  set bufferData(bool b) => _bufferData = b;
   /**
    * da mighty constructor
    */
@@ -67,9 +76,13 @@ class BinaryDataReader extends BinaryData {
       }
       
     }
+    _latest = buf;
     _signalReadChunk(chunkLength);
   }
   
+  ArrayBuffer getLatestChunk() {
+    return _latest;
+  }
   /*
    * Read the 0xFF byte and switch state
    */
@@ -110,7 +123,8 @@ class BinaryDataReader extends BinaryData {
    * Push data to buffer
    */
   void _process_content(int b) {
-    _buffer.add(b);
+    if (_bufferData)
+      _buffer.add(b);
     _leftToRead -= 1;
   }
   
@@ -134,9 +148,39 @@ class BinaryDataReader extends BinaryData {
       } on InvalidPacketException catch(e, s) {
         new Logger().Error(e.msg);
       }
+    } else if (_type == BinaryDataType.STRING) {
+      try {
+        String s = BinaryData.stringFromList(_buffer);
+        _signalReadString(s);
+      } catch (e) {
+        new Logger().Error(e);
+      }
     }
   }
   
+  /*
+   * Signal listeners that a chunk has been read
+   */
+  void _signalReadChunk(int chunkLength) {
+    listeners.where((l) => l is BinaryDataReceivedEventListener).forEach((BinaryDataReceivedEventListener l) {
+      l.onReadChunk(chunkLength, _leftToRead);
+    });
+  }
+  
+  /*
+   * Packet has been read
+   */
+  void _signalReadPacket(Packet p) {
+    listeners.where((l) => l is BinaryDataReceivedEventListener).forEach((BinaryDataReceivedEventListener l) {
+      l.onPacket(p);
+    });
+  }
+  
+  void _signalReadString(String s) {
+    listeners.where((l) => l is BinaryDataReceivedEventListener).forEach((BinaryDataReceivedEventListener l) {
+      l.onString(s);
+    });
+  }
   /**
    * Resets the reader
    */

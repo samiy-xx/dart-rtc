@@ -8,9 +8,6 @@ class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
   static final int NULL_BYTE = 0x00;
   static final int FULL_BYTE = 0xFF;
   
-  /* Current read state */
-  BinaryReadState _currentReadState = BinaryReadState.INIT_READ;
-  
   /**
    * Da Constructor
    */
@@ -18,17 +15,6 @@ class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
   }
   
   
-  void _signalReadChunk(int chunkLength) {
-    listeners.where((l) => l is BinaryDataReceivedEventListener).forEach((BinaryDataReceivedEventListener l) {
-      l.onReadChunk(chunkLength);
-    });
-  }
-  
-  void _signalReadPacket(Packet p) {
-    listeners.where((l) => l is BinaryDataReceivedEventListener).forEach((BinaryDataReceivedEventListener l) {
-      l.onPacket(p);
-    });
-  }
   
   /**
    * Creates ArrayBuffer from Packet

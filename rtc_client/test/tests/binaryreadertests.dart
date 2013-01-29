@@ -41,7 +41,7 @@ class BinaryReaderTests {
           gotPacket = true;
         };
         
-        l.chunkCallback = (int read) {
+        l.chunkCallback = (int read, int left) {
           gotChunk = true;
         };
         
@@ -60,7 +60,7 @@ class BinaryReaderTests {
         int chunks = 0;
         bool gotPacket = false;
         
-        l.chunkCallback = (int read) {
+        l.chunkCallback = (int read, int left) {
           chunks++;
         };
         
@@ -95,7 +95,7 @@ class BinaryReaderTests {
         int chunks = 0;
         bool gotPacket = false;
         
-        l.chunkCallback = (int read) {
+        l.chunkCallback = (int read, int left) {
           chunks++;
         };
         

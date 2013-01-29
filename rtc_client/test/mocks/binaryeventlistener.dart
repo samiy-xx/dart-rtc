@@ -1,7 +1,7 @@
 part of rtc_client_tests;
 
 typedef void onPacketCallback(Packet p);
-typedef void onReadChunkCallback(int read);
+typedef void onReadChunkCallback(int read, int leftToRead);
 
 class BinaryEventListener implements BinaryDataReceivedEventListener {
   onPacketCallback _packetCallback;
@@ -15,9 +15,9 @@ class BinaryEventListener implements BinaryDataReceivedEventListener {
       _packetCallback(p);
   }
   
-  void onReadChunk(int read) {
+  void onReadChunk(int read, int leftToRead) {
     if (_chunkCallback != null)
-      _chunkCallback(read);
+      _chunkCallback(read, leftToRead);
   }
 
 }

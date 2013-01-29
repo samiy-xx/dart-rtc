@@ -12,7 +12,8 @@ abstract class BinaryDataEventListener {
  */
 abstract class BinaryDataReceivedEventListener extends BinaryDataEventListener {
   void onPacket(Packet p);
-  void onReadChunk(int read);
+  void onString(String s);
+  void onReadChunk(int read, int leftToRead);
 }
 
 /**
