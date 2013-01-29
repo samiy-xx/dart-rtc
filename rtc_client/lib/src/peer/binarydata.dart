@@ -8,37 +8,13 @@ class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
   static final int NULL_BYTE = 0x00;
   static final int FULL_BYTE = 0xFF;
   
-  /* Create Array buffer slices att his size for sending */
-  int _writeChunkSize = 16;
-  
-  /* Left to read on current packet */
-  int _leftToRead = 0;
-  
   /* Current read state */
   BinaryReadState _currentReadState = BinaryReadState.INIT_READ;
-  
-  /** Get the chunk size for writing */
-  int get writeChunkSize => _writeChunkSize;
-  
-  
-  /** Sets the chunk size for writing */
-  set writeChunkSize(int i) => _writeChunkSize = i;
   
   /**
    * Da Constructor
    */
   BinaryData() {
-    
-  }
-  
-  
-  
-  ArrayBuffer writeBufferFromBuffer(ArrayBuffer) {
-    
-  }
-  
-  void sendPacket(RtcDataChannel dc, Packet p) {
-    //dc.send(writeBufferFromPacket(p));
   }
   
   
@@ -54,10 +30,6 @@ class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
     });
   }
   
-  static int getSize(String p) {
-    return p.length + 2 + 2 + 1;
-  }
-  
   /**
    * Creates ArrayBuffer from Packet
    */
@@ -69,6 +41,13 @@ class BinaryData extends GenericEventTarget<BinaryDataEventListener> {
       view[i] = packet.charCodeAt(i);
     }
     return buffer;
+  }
+  
+  /**
+   * Converts list of integers to string
+   */
+  static String stringFromList(List<int> l) {
+    return new String.fromCharCodes(l);
   }
   
   /**

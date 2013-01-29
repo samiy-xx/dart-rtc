@@ -7,6 +7,9 @@ class BinaryDataReader extends BinaryData {
   /* Length of data for currently processed object */
   int _length;
   
+  /* Left to read on current packet */
+  int _leftToRead = 0;
+  
   /* Buffer for unfinsihed data */
   List<int> _buffer;
   
@@ -19,6 +22,7 @@ class BinaryDataReader extends BinaryData {
   /** Current read state */
   BinaryReadState get currentReadState => _currentReadState;
   
+  int get leftToRead => _leftToRead;
   /**
    * da mighty constructor
    */
@@ -98,6 +102,7 @@ class BinaryDataReader extends BinaryData {
     else
       _length = -1;
     
+    _leftToRead = _length;
     _currentReadState = BinaryReadState.READ_CONTENT;
   }
   
@@ -106,6 +111,7 @@ class BinaryDataReader extends BinaryData {
    */
   void _process_content(int b) {
     _buffer.add(b);
+    _leftToRead -= 1;
   }
   
   /*
@@ -113,6 +119,7 @@ class BinaryDataReader extends BinaryData {
    */
   void _process_end() {
     _currentReadState = BinaryReadState.FINISH_READ;
+    _leftToRead = 0;
     _processBuffer();
   }
   
@@ -136,6 +143,7 @@ class BinaryDataReader extends BinaryData {
   void reset() {
     _buffer.clear();
     _currentReadState = BinaryReadState.INIT_READ;
+    _leftToRead = 0;
   }
   
 }

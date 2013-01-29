@@ -1,11 +1,24 @@
 part of rtc_client;
 
 class BinaryDataWriter extends BinaryData {
+  /* Create Array buffer slices att his size for sending */
+  int _writeChunkSize = 16;
+  
+  /** Get the chunk size for writing */
+  int get writeChunkSize => _writeChunkSize;
+  
+  
+  /** Sets the chunk size for writing */
+  set writeChunkSize(int i) => _writeChunkSize = i;
+  
+  
+  set writeChunkSize(int i) => _writeChunkSize = i;
+  
   BinaryDataWriter() : super() {
     
   }
   
-  ArrayBuffer writeBufferFromPacket(Packet p) {
+  /*ArrayBuffer writeBufferFromPacket(Packet p) {
     String packet = PacketFactory.get(p);
     
     ArrayBuffer buffer = new ArrayBuffer(getSize(packet) * 2);
@@ -30,7 +43,7 @@ class BinaryDataWriter extends BinaryData {
     data.setUint8(i++, NULL_BYTE);
     return buffer;
   }
-  
+  */
   ArrayBuffer createPacketBuffer(Packet p) {
     String packet = PacketFactory.get(p);
     
@@ -53,6 +66,10 @@ class BinaryDataWriter extends BinaryData {
     else if (t == BinaryDataType.FILE)
       out = 6;
     return out;
+  }
+  
+  int _calculateFooterSize() {
+    return 3;
   }
   
   ArrayBuffer createHeaderFor(BinaryDataType t, int length) {
