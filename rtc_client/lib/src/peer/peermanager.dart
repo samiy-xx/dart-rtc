@@ -153,6 +153,7 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
     p.onRemoveStream.listen(onRemoveStream);
     p.onOpen.listen(onOpen);
     p.onStateChange.listen(onStateChanged);
+    p.onIceCandidate.listen(onIceCandidate);
     return wrapper;
   }
   
@@ -192,6 +193,13 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
     });
   }
   
+  void onIceCandidate(RtcIceCandidateEvent e) {
+    if (e.candidate == null) {
+      listeners.where((l) => l is PeerConnectionEventListener).forEach((PeerConnectionEventListener l) {
+        l.onIceGatheringStateChanged(getWrapperForPeer(e.target), "finished");
+      });
+    }
+  }
   /**
    * Callback for when a media stream is added to peer
    * Notifies listeners that a media stream was added

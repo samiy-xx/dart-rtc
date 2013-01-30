@@ -172,11 +172,11 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
   void _onIceCandidate(RtcIceCandidateEvent c) {
     
     if (c.candidate != null) {
-      _log.Debug("(peerwrapper.dart) (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
+      //_log.Debug("(peerwrapper.dart) (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState}) Sending local ICE Candidate ${c.candidate.candidate} ");
       IcePacket ice = new IcePacket.With(c.candidate.candidate, c.candidate.sdpMid, c.candidate.sdpMLineIndex, id);
       _manager._sendPacket(PacketFactory.get(ice));
     } else {
-      _log.Warning("(peerwrapper.dart) Local ICE Candidate was null  ${_peer.iceState}");
+      //_log.Warning("(peerwrapper.dart) Null Ice Candidate, gathering complete");
     }
   }
   

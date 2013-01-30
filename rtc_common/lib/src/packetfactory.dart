@@ -11,7 +11,7 @@ class PacketFactory {
    */
   static Packet getPacketFromString(String input) {
     try {
-      new Logger().Error(input);
+      
       return getPacketFromMap(json.parse(input));
     } on InvalidPacketException catch(e) {
       throw e;

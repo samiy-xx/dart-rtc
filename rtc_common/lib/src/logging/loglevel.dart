@@ -9,6 +9,10 @@ part of rtc_common;
  * Enum like class to define logging levels
  */
 class LogLevel {
+  
+  /** Debug Log Level */
+  static final LogLevel DEBUG = const LogLevel(0, "Debug");
+  
   /** Info Log Level */
   static final LogLevel INFO = const LogLevel(1, "Info");
   
@@ -18,8 +22,7 @@ class LogLevel {
   /** Error Log level */
   static final LogLevel ERROR = const LogLevel(3, "Error");
   
-  /** Debug Log Level */
-  static final LogLevel DEBUG = const LogLevel(4, "Debug");
+  
   
   /* Private member level */
   final int _level;
@@ -44,5 +47,8 @@ class LogLevel {
    */
   operator <= (LogLevel o) {
     return _level <= o._level;
+  }
+  operator >= (LogLevel o) {
+    return _level >= o._level;
   }
 }

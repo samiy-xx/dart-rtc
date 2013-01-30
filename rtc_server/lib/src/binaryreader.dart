@@ -35,7 +35,7 @@ class BinaryReader {
   */
   void readChunk(Uint8List buf) {
     
-    ByteArray v = buf.asByteArray();
+    /*ByteArray v = buf.asByteArray();
     
     //DataView v = new DataView(buf);
     int chunkLength = buf.length;
@@ -65,7 +65,7 @@ class BinaryReader {
         }
       }
       
-    }
+    }*/
     
     //_signalReadChunk(chunkLength);
   }

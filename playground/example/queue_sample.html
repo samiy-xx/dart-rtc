@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>queue_sample</title>
+  </head>
+  <style>
+    body {
+      margin: 0px;
+      padding: 0px;
+      text-align: center;
+    }
+    #container {
+      text-align: left;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      width: 600px;
+      min-height: 300px;
+      border: 1px solid #000;
+    }
+  </style>
+  <body>   
+    <div id="container">
+      <video id="local_video" autoplay></video>
+      <video id="remote_video" autoplay></video>
+    </div>
+    <script type="application/dart" src="queue_sample.dart"></script>
+    <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->
+    <script src="packages/browser/dart.js"></script>
+  </body>
+</html>

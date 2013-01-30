@@ -81,7 +81,7 @@ class Logger {
    * @param message String message
    */
   void _log(LogLevel level, String message) {
-    if (level <= _logLevel) {
+    if (level >= _logLevel) {
       var now = new Date.now();
       output("[$now] [${level._type}] $message");
     }

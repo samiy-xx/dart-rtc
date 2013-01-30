@@ -21,6 +21,10 @@ class Resizer {
     _loopId = 1;
     setPosition(x, y);
     setSize(w, h);
+    _requestedX = x;
+    _requestedY = y;
+    _requestedWidth = w;
+    _requestedHeight = h;
     _loopId = null;
   }
   
@@ -56,6 +60,7 @@ class Resizer {
     
     _x = x;
     _y = y;
+    
     moveElement(x, y);
     return false;
   }
@@ -100,12 +105,10 @@ class Resizer {
   }
   
   void cancelLoop() {
-    print("done");
+    
     window.clearInterval(_loopId);
     _loopId = null;
     
-    requestNewPosition(new Random().nextInt(800), new Random().nextInt(600));
-    requestNewSize(new Random().nextInt(800), new Random().nextInt(600));
   }
   
   String cssUnit(int w) {
