@@ -163,11 +163,9 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     if (p.packetType == null || p.packetType.isEmpty)
       return;
     
-    if (executeHandler(p)) {
-      
-    } else {
+    if (!executeHandler(p)) 
       _log.Warning("Packet ${p.packetType} has no handlers set");
-    }
+    
   }
   
   /**

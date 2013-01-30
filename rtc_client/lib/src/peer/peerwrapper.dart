@@ -207,12 +207,4 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
     if (_peer.readyState != READYSTATE_CLOSED)
       _peer.close();   
   }
-  
-  /**
-   * Dispose
-   */
-  void dispose() {
-    if (_peer.readyState != READYSTATE_CLOSED)
-      _peer.close();
-  }
 }

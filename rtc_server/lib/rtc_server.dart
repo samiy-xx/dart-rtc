@@ -2,9 +2,12 @@ library rtc_server;
 
 import 'dart:io';
 import 'dart:json';
+import 'dart:utf';
 import 'dart:math';
 import 'dart:isolate';
 import 'dart:async';
+import 'dart:scalarlist';
+
 import '../../rtc_common/lib/rtc_common.dart';
 
 
@@ -26,6 +29,8 @@ part "src/channelserver.dart";
 part "src/wheelserver.dart";
 part "src/queueserver.dart";
 part "src/wheeluser.dart";
+
+part "src/binaryreader.dart";
 
 part "src/event/channeleventlistener.dart";
 part "src/event/usereventlistener.dart";

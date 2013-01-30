@@ -30,6 +30,8 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
   /* Timer */
   Timer _timer;
   
+  BinaryReader _reader;
+  
   WebSocketServer() : super(){
     // Create the HttpServer and web socket 
     _httpServer = new HttpServer();
@@ -38,9 +40,10 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
     _container = new UserContainer(this);
     _container.subscribe(this);
     _timer = new Timer.repeating(_timerTickInterval, onTimerTick);
-    
+    _reader = new BinaryReader();
     
     // Register handlers needed to handle on this low level
+    registerHandler("helo", handleIncomingHelo);
     registerHandler("pong", handleIncomingPong);
     registerHandler("desc", handleIncomingDescription);
     registerHandler("ice", handleIncomingIce);
@@ -86,26 +89,32 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
     run();
   }
   
+  Packet getPacket(Object m) {
+    Packet p = null;
+    String readFrom;
+    
+    if (m is String) {
+      readFrom = (m as String);
+    } else {
+      _reader.readChunk(m);
+      readFrom = _reader.getCompleted();
+    }
+    
+    if (readFrom != null)
+      p = PacketFactory.getPacketFromString(readFrom);
+    return p;
+  }
+  
   void run() {
     _wsHandler.onOpen = (WebSocketConnection conn) {
       try {
         conn.onMessage = (message) {
-          
-          Packet p = PacketFactory.getPacketFromString(message);
-          logger.Debug("Incoming packet (${p.packetType})");
+          Packet p = getPacket(message);
           if (p != null) {
-            if (p.packetType == "helo") {
-              User u = _container.findUserByConn(conn);
-              if (u != null) {
-                conn.close(1003, "Already HELO'd");
-                logger.Warning("User exists, disconnecting");
-              }
-            }
-            
+            logger.Debug("Incoming packet (${p.packetType})");
             if (!executeHandlerFor(conn, p))
               logger.Warning("No handler found for packet (${p.packetType})");
           }
-          
         };
         
       } on Exception catch(e) {
@@ -114,8 +123,6 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
         logger.Error("run: Error onMessage: $e");
       }
     };
-    
-   
   }
   
   void onCountChanged(BaseContainer bc) {
@@ -194,6 +201,13 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
     }
   }
   
+  void handleIncomingHelo(HeloPacket p, WebSocketConnection c) {
+    User u = _container.findUserByConn(c);
+    if (u != null) {
+      c.close(1003, "Already HELO'd");
+      logger.Warning("User exists, disconnecting");
+    }
+  }
   /**
    * Handle the incoming sdp description
    */

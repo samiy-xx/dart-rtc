@@ -1,6 +1,7 @@
 library demo_client;
 
 import 'dart:html';
+import 'dart:math';
 import '../../rtc_client/lib/rtc_client.dart';
 import '../../rtc_common/lib/rtc_common.dart';
 
@@ -15,3 +16,4 @@ part "weblogger.dart";
 part "filemanager.dart";
 part "dndmanager.dart";
 part "fileevent.dart";
+part "resizer.dart";

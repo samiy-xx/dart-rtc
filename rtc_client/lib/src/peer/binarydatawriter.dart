@@ -6,12 +6,8 @@ class BinaryDataWriter extends BinaryData {
   
   /** Get the chunk size for writing */
   int get writeChunkSize => _writeChunkSize;
-  
-  
+   
   /** Sets the chunk size for writing */
-  set writeChunkSize(int i) => _writeChunkSize = i;
-  
-  
   set writeChunkSize(int i) => _writeChunkSize = i;
   
   BinaryDataWriter() : super() {

@@ -1,37 +1,56 @@
 part of rtc_client;
 
 /**
- * PeerManager takes care of all peer connections
+ * PeerManager creates and removes peer connections and assigns media streams to them
  */
 class PeerManager extends GenericEventTarget<PeerEventListener> {
   /* instance */
   static PeerManager _instance;
   
+  /*
+   * Closed readystate
+   */
+  final READYSTATE_CLOSED = "closed";
+  
+  /* 
+   * Open readystate
+   */
+  final READYSTATE_OPEN = "open";
+  
   final Logger _log = new Logger();
   
-  /* Enable or disable datachannels */
+  /* 
+   * Add local stream to peer connections when created
+   */
+  bool _setLocalStreamAtStart = false;
+  
+  /* 
+   * Enable or disable datachannels
+   */
   bool _dataChannelsEnabled = false;
   
-  /* false = udp, true = tcp */
+  /* 
+   * false = udp, true = tcp
+  */
   bool _reliableDataChannels = false;
   
-  // TODO: Is this the right place for this?
-  /* Local media stream from webcam/microphone */
+  /* 
+   * Local media stream from webcam/microphone
+  */
   LocalMediaStream _ms;
   
-  /* Created peerwrappers */
+  /* 
+   * Created peerwrapper
+   */
   List<PeerWrapper> _peers;
   
   // TODO: dartbug.com 7030
   /* Constraints for the stream */
   StreamConstraints _streamConstraints;
   
-  /** Closed readystate */
-  final READYSTATE_CLOSED = "closed";
-  
-  /** Open readystate */
-  final READYSTATE_OPEN = "open";
-  
+  /** Add local stream to peer connections when created */
+  set setLocalStreamAtStart(bool v) => _setLocalStreamAtStart = v;
+
   /**
    * Sets the local media stream
    */
@@ -99,28 +118,41 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
    * Creates a new peer and wraps it in PeerWrapper
    */
   PeerWrapper createPeer() {
-    PeerConstraints con = new PeerConstraints();
-    con.dataChannelEnabled = _dataChannelsEnabled;
+    // FIX : after 7030
+    //PeerConstraints con = new PeerConstraints();
+    //con.dataChannelEnabled = _dataChannelsEnabled;
     
-    // TODO: after 7030 is fixed, look into using constraints.
-    // before that, too much trouble finding what to fix in generated js code
-    RtcPeerConnection peer = new RtcPeerConnection({
-      'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]});
+    PeerWrapper wrapper = _createWrapper(
+        new RtcPeerConnection(
+            {'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]},
+            {'optional': [{'RtpDataChannels': true}]}
+        )
+    );
     
+    _add(wrapper);
+    return wrapper;
+  }
+  
+  /*
+   * Creates a wrapper for peer connection
+   * if _dataChannelsEnabled then wrapper will be data wrapper
+   */
+  PeerWrapper _createWrapper(RtcPeerConnection p) {
     PeerWrapper wrapper;
     if (_dataChannelsEnabled) {
-      wrapper = new DataPeerWrapper(this, peer);
+      wrapper = new DataPeerWrapper(this, p);
       (wrapper as DataPeerWrapper).isReliable = _reliableDataChannels;
     } else {
-      wrapper = new PeerWrapper(this, peer);
+      wrapper = new PeerWrapper(this, p);
     }
     
-    peer.onAddStream.listen(onAddStream);
-    peer.onRemoveStream.listen(onRemoveStream);
-    peer.onOpen.listen(onOpen);
-    peer.onStateChange.listen(onStateChanged);
+    if (_setLocalStreamAtStart && _ms != null)
+      wrapper.addStream(_ms);
     
-    _peers.add(wrapper);
+    p.onAddStream.listen(onAddStream);
+    p.onRemoveStream.listen(onRemoveStream);
+    p.onOpen.listen(onOpen);
+    p.onStateChange.listen(onStateChanged);
     return wrapper;
   }
   
@@ -185,10 +217,6 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
    * Closes all peer connections
    */
   void closeAll() {
-    //_peers.forEach((p) => p.close());
-    // TODO: Closing the peer modifies the collection
-    // on state change where the peer gets removed from collection
-    // avoid foreach
     for (int i = 0; i < _peers.length; i++) {
       PeerWrapper p = _peers[i];
       p.close();
@@ -203,6 +231,10 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
     p.close();
   }
   
+  void _add(PeerWrapper p) {
+    if (!_peers.contains(p))
+      _peers.add(p);
+  }
   /**
    * Peer state changed
    * Notifies listeners about the state change
@@ -217,8 +249,6 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
     });
     
     if (wrapper.peer.readyState == READYSTATE_CLOSED) {
-      wrapper.dispose();
-      
       int index = _peers.indexOf(wrapper);
       if (index >= 0)
         _peers.removeAt(index);

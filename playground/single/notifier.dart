@@ -22,10 +22,10 @@ class Notifier {
   int _id;
   
   /* loop interval */ 
-  int _interval = 300;
+  int _interval = 100;
   
   /* timeout after last message shown */
-  int _timeout = 5000;
+  int _timeout = 3000;
   
   /* Is element visible */
   bool _visible = false;

@@ -25,6 +25,7 @@ part 'src/signaling/channelsignalhandler.dart';
 part 'src/signaling/simplesignalhandler.dart';
 part 'src/signaling/wheelsignalhandler.dart';
 part 'src/signaling/queuesignalhandler.dart';
+part 'src/signaling/streamingsignalhandler.dart';
 
 part 'src/datasource/datasource.dart';
 part 'src/datasource/websocketdatasource.dart';

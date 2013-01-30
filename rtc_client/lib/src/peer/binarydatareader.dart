@@ -173,10 +173,8 @@ class BinaryDataReader extends BinaryData {
         l.onProgress();
       });
     });
-    
-    
-    
   }
+  
   /*
    * Signal listeners that a chunk has been read
    */
