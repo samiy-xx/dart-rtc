@@ -14,15 +14,15 @@ abstract class SignalingConnectionEventListener extends SignalingEventListener {
   /**
    * Signaling has connected to server
    */
-  void onOpen();
+  void onOpenSignaling();
   
   /**
    * Connection to the server has been closed
    */
-  void onClose();
+  void onCloseSignaling();
   
   /**
    * Error =)
    */
-  void onError();
+  void onSignalingError();
 }

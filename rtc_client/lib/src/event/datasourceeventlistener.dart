@@ -14,22 +14,22 @@ abstract class DataSourceConnectionEventListener extends DataSourceEventListener
   /**
    * Datasource received message
    */
-  void onMessage(String m);
+  void onDataSourceMessage(String m);
   
   /**
    * Datasource is closing
    */
-  void onClose(String m);
+  void onCloseDataSource(String m);
   
   /**
    * Datasource connection opens
    */
-  void onOpen(String m);
+  void onOpenDataSource(String m);
   
   /**
    * Datasource error
    */
-  void onError(String e);
+  void onDataSourceError(String e);
 }
 
 

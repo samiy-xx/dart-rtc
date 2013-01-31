@@ -135,7 +135,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
   /**
    * Implements DataSourceConnectionEventListener onOpen
    */
-  void onOpen(String m) {
+  void onOpenDataSource(String m) {
     _log.Debug("Connection opened, sending HELO, ${_dataSource.readyState}");
     _dataSource.send(PacketFactory.get(new HeloPacket.With("", "")));
   }
@@ -143,21 +143,21 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
   /**
    * Implements DataSourceConnectionEventListener onClose
    */
-  void onClose(String m) {
+  void onCloseDataSource(String m) {
     _log.Debug("Connection closed ${m}");
   }
   
   /**
    * Implements DataSourceConnectionEventListener onError
    */
-  void onError(String e) {
+  void onDataSourceError(String e) {
     _log.Error("Error $e");
   }
   
   /**
    * Implements DataSourceConnectionEventListener onMessage
    */
-  void onMessage(String m) {
+  void onDataSourceMessage(String m) {
     // Get the packet via PacketFactory
     try {
       Packet p = PacketFactory.getPacketFromString(m);

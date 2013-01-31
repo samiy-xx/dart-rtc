@@ -2,7 +2,7 @@ library rtc_client;
 
 import 'dart:html';
 import 'dart:json' as json;
-
+import 'dart:async';
 import '../../rtc_common/lib/rtc_common.dart';
 
 part 'src/peer/peermanager.dart';

@@ -13,6 +13,12 @@ void main() {
   new Logger().Warning("Test");
   new Logger().Info("Test");
   new Logger().Debug("Test");
+  
+  QueueClient q = new QueueClient(new WebSocketDataSource("ws://127.0.0.1:8234/ws"));
+  q.onInitializedEvent.listen((String e) {
+    print(e);
+  });
+  q.initialize();
 }
 
 class LocalQueueManager implements PeerMediaEventListener {
