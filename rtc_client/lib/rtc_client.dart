@@ -32,6 +32,8 @@ part 'src/datasource/websocketdatasource.dart';
 
 part 'src/exception/notimplementedexception.dart';
 
+part 'src/queueclient.dart';
+
 const int CLOSE_NORMAL = 1000; 
 const int CLOSE_GOING_AWAY = 1001; 
 const int CLOSE_PROTOCOL_ERROR = 1002; 

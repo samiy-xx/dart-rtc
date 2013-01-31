@@ -3,12 +3,14 @@ part of rtc_client;
 class ChannelSignalHandler extends SignalHandler{
   /* id for the channel */
   String _channelId;
+  bool _isChannelOwner = false;
+  bool get isChannelOwner => _isChannelOwner;
   
   String get channelId => _channelId;
   set channelId(String value) => _channelId = value;
   
   ChannelSignalHandler(DataSource ds) : super(ds) {
-    
+    registerHandler("channel", handleChannelInfo);
   }
   
   void initialize([String host]) {
@@ -24,6 +26,11 @@ class ChannelSignalHandler extends SignalHandler{
   void onOpen(String e) {
     _log.Debug("(channelsignalhandler.dart) WebSocket connection opened, sending HELO, ${_dataSource.readyState}");
     _dataSource.send(PacketFactory.get(new HeloPacket.With(_channelId, "")));
+  }
+  
+  void handleChannelInfo(ChannelPacket p) {
+    _log.Info("(channelsignalhandler.dart) ChannelPacket owner=${p.owner}");
+    _isChannelOwner = p.owner;
   }
   
   void handleJoin(JoinPacket packet) {

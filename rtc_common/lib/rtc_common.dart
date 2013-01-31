@@ -28,6 +28,7 @@ part 'src/packet/random.dart';
 part 'src/packet/disconnected.dart';
 part 'src/packet/queue.dart';
 part "src/packet/filepacket.dart";
+part "src/packet/channelpacket.dart";
 
 part 'src/logging/logger.dart';
 part 'src/logging/loglevel.dart';

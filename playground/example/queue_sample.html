@@ -19,12 +19,59 @@
       min-height: 300px;
       border: 1px solid #000;
     }
+    #queue {
+      text-align: left;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      width: 600px;
+      min-height: 30px;
+      max-height: 300px;
+      overflow: auto;
+      border: 1px solid #000;
+      display: table;
+    }
+    
+    .queue_item {
+      width: 100%;
+      cursor: pointer;
+      font-size: 15px;
+      vertical-align: middle;
+      position: relative;
+      height: 28px;
+      line-height: 28px;
+      background: #ddd;
+      display: table-row; 
+    }
+    .queue_item span {
+      border-top: 1px solid #fff;
+      border-bottom: 1px solid #b2b2b2;
+      border-right: 1px solid #b2b2b2;
+      display: table-cell;
+      padding-left: 6px;
+    }
+    .queue_item_time {
+      width: 300px;
+    }
+    .queue_item_id {
+      width: 100px;
+    }
+    .queue_item_position {
+      width: 100px;
+    }
+    .queue_item_action {
+      width: 100px;
+    }
+   
   </style>
   <body>   
     <div id="container">
       <video id="local_video" autoplay></video>
       <video id="remote_video" autoplay></video>
     </div>
+    <div id="queue">
+      
+     </div>
     <script type="application/dart" src="queue_sample.dart"></script>
     <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->
     <script src="packages/browser/dart.js"></script>

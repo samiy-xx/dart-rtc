@@ -26,12 +26,14 @@ class LocalQueueManager implements PeerMediaEventListener {
   DataSource _ds;
   bool _inQueue = false;
   Notifier _notify;
+  QueueMonitor _monitor;
   
   LocalQueueManager(Element container, Element local, Element remote) {
     _local_video = local;
     _remote_video = remote;
     _container = container;
     _notify = new Notifier();
+    _monitor = new QueueMonitor(query("#queue"));
     _ds = new WebSocketDataSource("ws://127.0.0.1:8234/ws");
     _sh = new StreamingSignalHandler(_ds);
     _pm = new PeerManager();
@@ -54,17 +56,30 @@ class LocalQueueManager implements PeerMediaEventListener {
   }
   
   void handleQueue(QueuePacket qp) {
-    if (!_inQueue) {
-      _inQueue = true;
-      new Logger().Debug("Entered Queue. Position ${qp.position}");
-      _notify.display("Entered Queue. Position ${qp.position}");
-    } else {
-      if (int.parse(qp.position) > 0) {
-        new Logger().Debug("Queue Position ${qp.position}");
-        _notify.display("Queue Position ${qp.position}");
+    if (_sh.isChannelOwner) {
+      QueueItem q = _monitor.find(qp.id);
+      if (q == null) {
+        _monitor.add(qp.id, int.parse(qp.position));
       } else {
-        new Logger().Debug("Left queue");
-        _notify.display("Left queue");
+        if (int.parse(qp.position) > 0) {
+          _monitor.move(qp.id, int.parse(qp.position));
+        } else {
+          _monitor.remove(qp.id);
+        }
+      }   
+    } else {
+      if (!_inQueue) {
+        _inQueue = true;
+        _notify.display("Entered Queue. Position ${qp.position}");
+        _monitor.add(qp.id, int.parse(qp.position));
+      } else {
+        if (int.parse(qp.position) > 0) {
+          _notify.display("Queue Position ${qp.position}");
+          _monitor.move(qp.id, int.parse(qp.position));
+        } else {
+          _notify.display("Left queue");
+          _monitor.remove(qp.id);
+        }
       }
     }
   }
@@ -115,5 +130,123 @@ class LocalQueueManager implements PeerMediaEventListener {
   }
 }
 
+class QueueItem implements Comparable {
+  DateTime _entered;
+  String _id;
+  int _position;
+  
+  QueueItem(String id, int p) {
+    _id = id;
+    _position = p;
+    _entered = new DateTime.now();
+  }
+  
+  String toString() {
+    return "${_entered.toString()} ${_id} ${_position}";
+  }
+  
+  int compareTo(QueueItem o) {
+    if (_position < o._position)
+      return -1;
+    
+    if (_position == o._position)
+      return 0;
+    
+    return 1;
+  }
+  operator < (QueueItem o) {
+    return _position < o._position;
+  }
+  
+  operator <= (QueueItem o) {
+    return _position <= o._position;
+  }
+  
+  operator >= (QueueItem o) {
+    return _position >= o._position;
+  }
+  operator > (QueueItem o) {
+    return _position > o._position;
+  }
+}
 
+class QueueMonitor {
+  Element _container;
+  List<QueueItem> _items;
+  
+  QueueMonitor(Element e) {
+    _container = e;
+    _items = new List<QueueItem>();
+  }
+  
+  void add(String id, int p) {
+    _items.add(new QueueItem(id ,p));
+    sortPack();
+    write();
+  }
+  
+  void remove(String id) {
+    QueueItem q = find(id);
+    if (q != null)
+      _items.remove(q);
+    sortPack();
+    write();
+  }
+  
+  void move(String id, int position) {
+    QueueItem q = find(id);
+    if (q != null) {
+      q._position = position;
+      sortPack();
+      write();
+    }
+  }
+  
+  QueueItem find(String id) {
+    for (int i = 0; i < _items.length; i++) {
+      QueueItem q = _items[i];
+      if (q._id == id)
+        return q;
+    }
+    return null;
+  }
+  
+  void sortPack() {
+    _items.sort((a, b) => a.compareTo(b));
+  }
+  
+  void write() {
+    _container.nodes.clear();
+    _items.forEach((QueueItem q) {
+      _container.append(createDiv(q._entered, q._id, q._position));
+    });
+  }
+  
+  DivElement createDiv(DateTime t, String id, int p) {
+    DivElement e = new DivElement();
+    e.classes.add("queue_item");
+    
+    SpanElement span_time = new SpanElement();
+    span_time.appendText(t.toString());
+    span_time.classes.add("queue_item_time");
+    
+    SpanElement span_id = new SpanElement();
+    span_id.appendText(id);
+    span_id.classes.add("queue_item_id");
+    
+    SpanElement span_position = new SpanElement();
+    span_position.appendText(p.toString());
+    span_position.classes.add("queue_item_position");
+    
+    SpanElement span_action = new SpanElement();
+    span_action.appendText("A");
+    span_action.classes.add("queue_item_action");
+    
+    e.append(span_time);
+    e.append(span_id);
+    e.append(span_position);
+    e.append(span_action);
+    return e;
+  }
+}
 

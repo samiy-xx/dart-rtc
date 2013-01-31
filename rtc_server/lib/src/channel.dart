@@ -36,6 +36,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    */
   int get userCount => _users.length;
   
+  User get owner => _owner;
   /**
    * Channel id
    */
@@ -63,9 +64,6 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   bool join(User u) {
     if (!_addUser(u))
       return false;
-      
-    if (_users.length == 0)
-      _owner = u;
     
     u.subscribe(this);
     _notifyUserJoined(u);
@@ -97,6 +95,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
         server.sendPacket(user.connection, ip);
       }
     });
+    server.sendPacket(user.connection, new ChannelPacket.With(user.id, id, user == owner, userCount));
   }
   /**
    * Remove user from channel
@@ -127,6 +126,8 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    */
   bool _addUser(User u) {
     if (!_users.contains(u) && canJoin) {
+      if (_users.length == 0)
+        _owner = u;
       _users.add(u);
       return true;
     }
