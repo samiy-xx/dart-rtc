@@ -18,6 +18,14 @@ part 'src/event/peereventlistener.dart';
 part 'src/event/signalingeventlistener.dart';
 part 'src/event/datasourceeventlistener.dart';
 part 'src/event/binarydataeventlistener.dart';
+part 'src/event/rtcevent.dart';
+part 'src/event/mediastreamevent.dart';
+part 'src/event/signalingevent.dart';
+part 'src/event/peerevent.dart';
+part 'src/event/datasourceevent.dart';
+part 'src/event/initializationevent.dart';
+part 'src/event/packetevent.dart';
+part 'src/event/queueevent.dart';
 
 part 'src/signaling/signalhandler.dart';
 part 'src/signaling/basesignalhandler.dart';
@@ -32,7 +40,7 @@ part 'src/datasource/websocketdatasource.dart';
 
 part 'src/exception/notimplementedexception.dart';
 
-part 'src/queueclient.dart';
+part 'api/queueclient.dart';
 
 const int CLOSE_NORMAL = 1000; 
 const int CLOSE_GOING_AWAY = 1001; 

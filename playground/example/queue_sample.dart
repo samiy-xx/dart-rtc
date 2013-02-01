@@ -7,18 +7,28 @@ void main() {
   VideoElement localVideo = query("#local_video");
   VideoElement remoteVideo = query("#remote_video");
   Element c = query("#container");
-  new LocalQueueManager(c, localVideo, remoteVideo).initialize();
-  new Logger().setLevel(LogLevel.INFO);
-  new Logger().Error("Test");
-  new Logger().Warning("Test");
-  new Logger().Info("Test");
-  new Logger().Debug("Test");
+  Notifier notifier = new Notifier();
+  QueueMonitor monitor = new QueueMonitor(query("#queue"));
   
-  QueueClient q = new QueueClient(new WebSocketDataSource("ws://127.0.0.1:8234/ws"));
-  q.onInitializedEvent.listen((String e) {
-    print(e);
+  QueueClient qClient = new QueueClient(new WebSocketDataSource("ws://127.0.0.1:8234/ws"))
+  .setChannel("abc")
+  .setRequireAudio(true)
+  .setRequireVideo(true)
+  .setRequireDataChannel(false);
+  
+  qClient.onInitializedEvent.listen((InitializedEvent e) {
+    notifier.display(e.message);
   });
-  q.initialize();
+  
+  qClient.onRemoteMediaStreamAvailableEvent.listen((MediaStreamAvailableEvent e) {
+    if (e.pw == null)
+      localVideo.src = Url.createObjectUrl(e.ms);
+  });
+  
+  
+  qClient.initialize();
+  
+   
 }
 
 class LocalQueueManager implements PeerMediaEventListener {
