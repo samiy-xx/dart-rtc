@@ -81,7 +81,7 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
    */
   void onClose(CloseEvent e) {
     listeners.where((l) => l is DataSourceConnectionEventListener).forEach((l) {
-      l.onClose("${e.code.toString()} ${e.reason}");
+      l.onCloseDataSource("${e.code.toString()} ${e.reason}");
     });
   }
   

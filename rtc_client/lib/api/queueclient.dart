@@ -15,6 +15,7 @@ class QueueClient implements DataSourceConnectionEventListener, PeerConnectionEv
   bool _isInQueue = false;
   
   List<QueueUser> _queued;
+  List<QueueUser> get queued => _queued;
   
   bool get isChannelOwner => _sh.isChannelOwner;
   
@@ -62,8 +63,15 @@ class QueueClient implements DataSourceConnectionEventListener, PeerConnectionEv
   
   QueueClient(DataSource ds) {
     _ds = ds;
+    _ds.subscribe(this);
+    
     _pm = new PeerManager();
+    _pm.subscribe(this);
+    
     _sh = new StreamingSignalHandler(ds);
+    
+    
+    
     _queued = new List<QueueUser>();
     
     _initializedController = new StreamController<InitializedEvent>.broadcast();
