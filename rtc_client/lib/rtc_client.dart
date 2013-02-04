@@ -40,6 +40,8 @@ part 'src/datasource/websocketdatasource.dart';
 
 part 'src/exception/notimplementedexception.dart';
 
+part 'api/rtcclient.dart';
+part 'api/channelclient.dart';
 part 'api/queueclient.dart';
 
 const int CLOSE_NORMAL = 1000; 

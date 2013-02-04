@@ -13,6 +13,9 @@ class _User extends GenericEventTarget<UserEventListener> implements Comparable 
   /* millisecond timestamp when last connection to another user was done */
   int _timeSinceLastConnection;
   
+  bool _isDead = false;
+  
+  bool get isDead => _isDead;
   /** millisecond timestamp when last activity was registered */
   int get lastActivity => _lastActivity;
   
@@ -55,6 +58,7 @@ class _User extends GenericEventTarget<UserEventListener> implements Comparable 
    * Called when websocket connection closes
    */ 
   void _onClose(int status, String reason) {
+    _isDead = true;
     logger.Debug("User connection closed with status $status and reason $reason");
     //_container.removeUser(this);
     _talkingTo.forEach((User u) => u.hangup(this));

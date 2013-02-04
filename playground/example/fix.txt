@@ -1,0 +1,14 @@
+var wrapper = this._createWrapper$1($.RtcPeerConnection_RtcPeerConnection({'iceServers': [{'url': 'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]}));
+
+put this at the top
+RTCPeerConnection = (typeof RTCPeerConnection == 'undefined') ? webkitRTCPeerConnection : RTCPeerConnection;
+
+with the new MediaStream.supported boolean this is prolly not needed anymore?
+window.navigator.webkitGetUserMedia = (window.navigator.webkitGetUserMedia == undefined) ? window.navigator.getUserMedia : window.navigator.webkitGetUserMedia;
+
+replace existing values with these
+peer = $.RtcPeerConnection_RtcPeerConnection({'iceServers': [{'url': 'stun:stun.l.google.com:19302'}]}, {'optional': [{'RtpDataChannels': true}]});
+
+t = $.RtcSessionDescription_RtcSessionDescription({'sdp': p.get$sdp(), 'type': p.get$type()});
+candidate = $.RtcIceCandidate_RtcIceCandidate({'candidate': p.get$candidate(), 'sdpMid': p.get$sdpMid(), 'sdpMLineIndex': p.get$sdpMLineIndex()});
+

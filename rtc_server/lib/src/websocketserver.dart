@@ -186,8 +186,8 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
   void sendToClient(WebSocketConnection c, String p) {
     try {
       c.send(p);
-    } catch(e) {
-      logger.Debug("Socket Dead? removing connection. $e");
+    } catch(e, s) {
+      logger.Debug("Socket Dead? removing connection.");
       try {
         User u = _container.findUserByConn(c);
         if (u != null) {
@@ -195,10 +195,12 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
           _container.removeUser(u);
           //u.channel.leave(u);
           u = null;
+        } else {
+          logger.Debug("user is null");
         }
         c.close(1000, "Assuming dead");
-      } catch (e) {
-        logger.Debug("Last catch, sendToClient $e");
+      } catch (e, s) {
+        logger.Debug("Last catch, sendToClient $e, $s");
       }
     }
   }

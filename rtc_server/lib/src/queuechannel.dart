@@ -19,13 +19,6 @@ class QueueChannel extends Channel implements UserConnectionEventListener {
     _queue = new List<User>();
   }
   
-  /**
-   * Implements UserConnectionEventListener
-   */
-  void onClose(User user, int code, String reason){
-    leave(user);
-  }
-  
   bool join(User u) {
     //if (super.canJoin) {
     //  return super.join(u);
@@ -55,7 +48,7 @@ class QueueChannel extends Channel implements UserConnectionEventListener {
     User n = _popFromQueue();
     if (n != null) {
       super.join(n);
-      n.unsubscribe(this);
+      
     }
   }
   

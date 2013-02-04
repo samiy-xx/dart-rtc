@@ -105,7 +105,11 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
   void leave(User u) {
     new Logger().Debug("(channel.dart) User ${u.id} leaving channel $id");
     
-    _removeUser(u);
+    if (_owner != null && u == _owner)
+      _owner = null;
+    
+    if (_removeUser(u) == null)
+      new Logger().Warning("Attempted to remove user ${u.id} from container, but returned null");
     _notifyUserLeft(u);
     
     sendToAll(new ByePacket.With(u.id));
@@ -139,7 +143,8 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    */
   User _removeUser(User u) {
     int index = _users.indexOf(u);
-    if (index >= 0) {
+    
+    if (index > -1) {
       return _users.removeAt(index);
     }
     return null;
@@ -171,6 +176,8 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
       return;
     
     _users.forEach((User u) {
+        if (u.isDead)
+          print("WARN: user ${u.id} is dead");
         _container.getServer().sendPacket(u.connection, p);
     });
   }
