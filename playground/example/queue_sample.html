@@ -10,21 +10,32 @@
       padding: 0px;
       text-align: center;
     }
-    #container {
+    #wrapper {
       text-align: left;
-      margin-left: auto;
+      width: 600px;
+      margin: 0px;
+      margin-left:auto;
       margin-right: auto;
       position: relative;
-      width: 600px;
-      min-height: 300px;
       border: 1px solid #000;
+      padding: 5px;
+    }
+    
+    #container {
+      position: relative;
+      margin: 5px;
+    }
+    #controls {
+      margin: 5px;
+      height: 30px;
+    }
+    #controls button {
+      width: 600px;
     }
     #queue {
-      text-align: left;
-      margin-left: auto;
-      margin-right: auto;
+      
       position: relative;
-      width: 600px;
+      margin: 5px;
       min-height: 30px;
       max-height: 300px;
       overflow: auto;
@@ -64,13 +75,21 @@
     }
    
   </style>
-  <body>   
-    <div id="container">
-      <video id="local_video" autoplay></video>
-      <video id="remote_video" autoplay></video>
-    </div>
-    <div id="queue">
-      
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+        <h2>QueueOnline</h2>  
+      </div>
+      <div id="container">
+        <video id="local_video" autoplay></video>
+        <video id="remote_video" autoplay></video>
+      </div>
+      <div id="controls">
+        
+      </div>
+      <div id="queue">
+        
+       </div>
      </div>
     <script type="application/dart" src="queue_sample.dart"></script>
     <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->

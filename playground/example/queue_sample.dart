@@ -6,21 +6,10 @@ import '../../rtc_common/lib/rtc_common.dart';
 void main() {
   VideoElement localVideo = query("#local_video");
   VideoElement remoteVideo = query("#remote_video");
+  
   Element c = query("#container");
   Notifier notifier = new Notifier();
   QueueMonitor monitor = new QueueMonitor(query("#queue"));
-  
-  localVideo.onLoadedMetadata.listen((Event e) {
-    int h = Util.getHeight(c.clientWidth, Util.aspectRatio(localVideo.videoWidth, localVideo.videoHeight));
-    localVideo.width = c.clientWidth;
-    localVideo.height = h;
-  });
-  
-  remoteVideo.onLoadedMetadata.listen((Event e) {
-    int h = Util.getHeight(c.clientWidth, Util.aspectRatio(remoteVideo.videoWidth, remoteVideo.videoHeight));
-    remoteVideo.width = c.clientWidth;
-    remoteVideo.height = h;
-  });
   
   QueueClient qClient = new QueueClient(new WebSocketDataSource("ws://127.0.0.1:8234/ws"))
   .setChannel("abc")
@@ -28,42 +17,85 @@ void main() {
   .setRequireVideo(true)
   .setRequireDataChannel(false);
   
-  qClient.onInitializedEvent.listen((InitializedEvent e) {
-    notifier.display(e.message);
+  localVideo.onCanPlay.listen((_) => localVideo.play());
+  localVideo.onDoubleClick.listen((_) => localVideo.webkitRequestFullscreen());
+  localVideo.onLoadedMetadata.listen((Event e) {
+    int h = Util.getHeight(c.clientWidth, Util.aspectRatio(localVideo.videoWidth, localVideo.videoHeight));
+    localVideo.width = c.clientWidth;
+    localVideo.height = h;
   });
+  
+  remoteVideo.onCanPlay.listen((_) => remoteVideo.play());
+  remoteVideo.onDoubleClick.listen((_) => remoteVideo.webkitRequestFullscreen());
+  remoteVideo.onLoadedMetadata.listen((Event e) {
+    int h = Util.getHeight(c.clientWidth, Util.aspectRatio(remoteVideo.videoWidth, remoteVideo.videoHeight));
+    remoteVideo.width = c.clientWidth;
+    remoteVideo.height = h;
+  });
+  
+  qClient.onInitializedEvent.listen((InitializedEvent e) => notifier.display(e.message));
+  qClient.onSignalingOpenEvent.listen((SignalingOpenEvent e) => notifier.display("Signaling connected to server ${e.message}"));
+  qClient.onQueueEvent.listen((QueueEvent e) => notifier.display("Queue ${e.position}"));
   
   qClient.onRemoteMediaStreamAvailableEvent.listen((MediaStreamAvailableEvent e) {
     if (e.pw == null) {
+      notifier.display("Display local stream");
       remoteVideo.style.display = "none";
       remoteVideo.pause();
+      localVideo.style.display = "block";
       localVideo.src = Url.createObjectUrl(e.ms);
     } else {
+      notifier.display("Display remote stream");
       localVideo.pause();
       localVideo.style.display = "none";
       remoteVideo.src = Url.createObjectUrl(e.ms);
+      remoteVideo.style.display = "block";
     }
   });
   
-  qClient.onDataSourceOpenEvent.listen((DataSourceOpenEvent e) {
-    notifier.display("DataSource connected ${e.message}");
+  qClient.onRemoteMediaStreamRemovedEvent.listen((MediaStreamRemovedEvent e) {
+    notifier.display("Remote stream removed");
+    remoteVideo.style.display = "none";
+    remoteVideo.pause();
+    
+    localVideo.style.display = "block";
+    int h = Util.getHeight(c.clientWidth, Util.aspectRatio(localVideo.videoWidth, localVideo.videoHeight));
+    localVideo.width = c.clientWidth;
+    localVideo.height = h;
+    localVideo.play();
   });
   
-  qClient.onDataSourceCloseEvent.listen((DataSourceCloseEvent e) {
-    notifier.display("DataSource connection closed (${e.message})");
+  qClient.onSignalingCloseEvent.listen((SignalingCloseEvent e) {
+    notifier.display("Signaling connection to server has closed (${e.message})");
     window.setTimeout(() {
+      notifier.display("Attempting to reconnect to server");
       qClient.initialize();
-    }, 2000);
+    }, 10000);
   });
   
-  qClient.onQueueEvent.listen((QueueEvent e) {
-    notifier.display("Queue ${e.position}");
+  qClient.onPacketEvent.listen((PacketEvent e) {
+    if (e.type == PacketType.CHANNEL) {
+      ChannelPacket p = e.packet as ChannelPacket;
+      
+      if (p.owner) {
+        var nextButton = new ButtonElement();
+        nextButton.appendText("Next!");
+        query("#controls").append(nextButton);
+        nextButton.onClick.listen((Event e) {
+          if (qClient.queued.length > 0) {
+            notifier.display("Requesting new user from queue");
+            qClient.nextUser();  
+          } else {
+            notifier.display("Queue is empty");
+          }
+        });
+      }
+    }
   });
   
   monitor.set(qClient.queued);
   monitor.start();
   qClient.initialize();
-  
-   
 }
 
 // Could really use web_ui ?
@@ -88,7 +120,6 @@ class QueueMonitor {
   }
   
   void update() {
-    print(_items.length);
     _container.nodes.clear();
     _items.forEach((QueueUser u) {
       addNode(u);

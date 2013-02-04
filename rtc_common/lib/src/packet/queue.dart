@@ -23,4 +23,25 @@ class QueuePacket implements Packet {
   }
 }
 
+class NextPacket implements Packet {
+  NextPacket();
+  NextPacket.With(this.id, this.channelId);
+  
+  String packetType = PacketType.NEXT;
+  String id;
+  String channelId;
+  
+  Map toJson() {
+    return {
+      'id': id,
+      'channelId': channelId,
+      'packetType': packetType
+    };
+  }
+  
+  static NextPacket fromMap(Map m) {
+    return new NextPacket.With(m['id'], m['channelId']);
+  }
+}
+
 

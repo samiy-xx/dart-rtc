@@ -39,11 +39,6 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
     return _list;
   }
   
-  User createChannelUser(WebSocketConnection c) {
-    String id = genId();
-    return createChannelUserFromId(id, c);
-  }
-  
   User createUser(WebSocketConnection c) {
     String id = genId();
     return createUserFromId(id, c);
@@ -62,28 +57,11 @@ class UserContainer extends BaseUserContainer implements UserConnectionEventList
     return u;
   }
   
-  User createChannelUserFromId(String id, WebSocketConnection c) {
-    User u = findUserById(id);
-    
-    if (u != null) 
-      return u;
-    
-    u = new User.With(this, id, c);
-    u.subscribe(this);
-    add(u);
-    //_list.add(u);
-
-    return u;
-  }
-  
   /**
    * Removes the user specified
    */
   void removeUser(User u) {
     remove(u);
-    //if (_list.contains(u)) {
-    //  _list.removeAt(_list.indexOf(u));
-    //}
   }
   
   /**

@@ -30,3 +30,28 @@ class ChannelPacket implements Packet {
   }
 }
 
+abstract class Command extends Packet {
+  
+}
+
+class RemoveUserCommand implements Command {
+  RemoveUserCommand();
+  RemoveUserCommand.With(this.id, this.channelId);
+  
+  String packetType = PacketType.REMOVEUSER;
+  String id;
+  String channelId;
+  
+  Map toJson() {
+    return {
+      'id': id,
+      'channelId': channelId,
+      'packetType': packetType
+    };
+  }
+  
+  static RemoveUserCommand fromMap(Map m) {
+    return new RemoveUserCommand.With(m['id'], m['channelId']);
+  }
+}
+

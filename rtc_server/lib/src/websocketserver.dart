@@ -44,6 +44,7 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
     
     // Register handlers needed to handle on this low level
     registerHandler("helo", handleIncomingHelo);
+    registerHandler("bye", handleIncomingBye);
     registerHandler("pong", handleIncomingPong);
     registerHandler("desc", handleIncomingDescription);
     registerHandler("ice", handleIncomingIce);
@@ -186,10 +187,11 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
     try {
       c.send(p);
     } catch(e) {
-      logger.Debug("Socket Dead? removing connection");
+      logger.Debug("Socket Dead? removing connection. $e");
       try {
         User u = _container.findUserByConn(c);
         if (u != null) {
+          logger.Debug("removing dead user ${u.id}");
           _container.removeUser(u);
           //u.channel.leave(u);
           u = null;
@@ -207,6 +209,20 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
       c.close(1003, "Already HELO'd");
       logger.Warning("User exists, disconnecting");
     }
+    
+    
+    if (p.id != null && !p.id.isEmpty)
+      u = _container.createUserFromId(p.id, c);
+    else
+      u = _container.createUser(c);
+    
+    sendPacket(c, new ConnectionSuccessPacket.With(u.id));
+  }
+  
+  void handleIncomingBye(ByePacket p, WebSocketConnection c) {
+    User u = _container.findUserByConn(c);
+    if (u != null)
+      u.terminate();
   }
   /**
    * Handle the incoming sdp description

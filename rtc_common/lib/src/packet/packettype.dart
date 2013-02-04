@@ -19,6 +19,8 @@ class PacketType {
   static final String QUEUE = "queue";
   static final String CHANNEL = "channel";
   static final String FILE = "file";
+  static final String NEXT = "next";
+  static final String REMOVEUSER = "removeuser";
 }
 
 class PacketType2 {

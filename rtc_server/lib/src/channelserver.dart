@@ -4,8 +4,6 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
   ChannelContainer _channelContainer;
   
   ChannelServer() : super() {
-    registerHandler("helo", handleHelo);
-    registerHandler("bye", handleBye);
     registerHandler("peercreated", handlePeerCreated);
     registerHandler("usermessage", handleUserMessage);
     
@@ -22,20 +20,17 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
     new Logger().Info("Users: ${_container.userCount} Channels: ${_channelContainer.channelCount}");
   }
   
-  void handleHelo(HeloPacket hp, WebSocketConnection c) {
+  // Override
+  void handleIncomingHelo(HeloPacket hp, WebSocketConnection c) {
+    super.handleIncomingHelo(hp, c);
+    
     try {
       if (hp.channelId == null || hp.channelId.isEmpty) {
         c.close(1003, "Specify channel id");
         return;
       }
       
-      User u;
-      if (hp.id != null && !hp.id.isEmpty)
-        u = _container.createChannelUserFromId(hp.id, c);
-      else
-        u = _container.createChannelUser(c);
-      
-      sendToClient(c, PacketFactory.get(new ConnectionSuccessPacket.With(u.id)));
+      User u = _container.findUserByConn(c);
       
       Channel chan;
       chan = _channelContainer.findChannel(hp.channelId);
@@ -44,8 +39,7 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
           chan.join(u);
         } else {
           c.close(1003, "Channel was full");
-          //_container.removeUser(u);
-          //u = null;
+          
           return;
         }
       } else {
@@ -58,19 +52,6 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
     }
   }
   
-  void handleBye(ByePacket bp, WebSocketConnection c) {
-    User user = _container.findUserByConn(c);
-    
-    try {
-      if (user != null) {
-        //user.channel.leave(user);
-        //_container.removeUser(user);
-        user.terminate();
-      }
-    } catch(e) {
-      print(e);
-    }
-  }
 
   void handlePeerCreated(PeerCreatedPacket pcp, WebSocketConnection c) {
     User user = _container.findUserByConn(c);

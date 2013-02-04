@@ -57,6 +57,9 @@ class PacketFactory {
         case "queue":
           p = QueuePacket.fromMap(m);
           break;
+        case "next":
+          p = NextPacket.fromMap(m);
+          break;
         case "usermessage":
           p = UserMessage.fromMap(m);
           break;
@@ -71,6 +74,9 @@ class PacketFactory {
           break;
         case "channel":
           p = ChannelPacket.fromMap(m);
+          break;
+        case "removeuser":
+          p = RemoveUserCommand.fromMap(m);
           break;
         default:
           print("(packetfactory.dart) Unkown packet");
