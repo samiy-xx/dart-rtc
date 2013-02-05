@@ -1,6 +1,4 @@
-name:  web demo
-description:  web demo
-
+name: web_demo
+description: web demo
 dependencies:
   browser: any
-
