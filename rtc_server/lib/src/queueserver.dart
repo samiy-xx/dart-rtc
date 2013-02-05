@@ -35,8 +35,7 @@ class QueueServer extends WebSocketServer implements ContainerContentsEventListe
       
       User u = _container.findUserByConn(c);
       
-      Channel chan;
-      chan = _queueContainer.findChannel(hp.channelId);
+      Channel chan = _queueContainer.findChannel(hp.channelId);
       if (chan == null)
         chan = _queueContainer.createChannelWithId(hp.channelId);
       chan.join(u); 
