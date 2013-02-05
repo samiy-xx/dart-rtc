@@ -1,8 +1,8 @@
 import 'dart:html';
 
-import 'single/demo_client.dart';
-import '../rtc_client/lib/rtc_client.dart';
-import '../rtc_common/lib/rtc_common.dart';
+import '../lib/demo_client.dart';
+import '../../rtc_client/lib/rtc_client.dart';
+import '../../rtc_common/lib/rtc_common.dart';
 
 const int MARGIN = 10;
 const int MAX_WIDTH = 800;
