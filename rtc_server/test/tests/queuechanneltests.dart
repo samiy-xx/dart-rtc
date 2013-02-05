@@ -46,31 +46,28 @@ class QueueChannelTests {
       });
       
       test("QueueChannel, join user with userlimit exceeded, puts the user in queue", () {
-        for (int i = 0; i < channelLimit; i++) {
-          expect(c.join(TestFactory.getTestUser(TestFactory.getRandomId(), ws)), equals(true));
-          expect(c.userCount, equals(i + 1));
-        }
+        expect(c.join(TestFactory.getTestUser(TestFactory.getRandomId(), ws)), equals(true));
+        
         User toBeQueued = TestFactory.getTestUser(TestFactory.getRandomId(), ws);
         expect(c.join(toBeQueued), equals(false));
-        expect(c.userCount, equals(2));
+        expect(c.userCount, equals(1));
         
         expect(c.queue.length, equals(1));
         expect(c.queue[0], equals(toBeQueued));
       });
       
       test("QueueChannel, space in channel gets available, Queued user gets popped out of queue", () {
-        for (int i = 0; i < channelLimit; i++) {
-          expect(c.join(TestFactory.getTestUser(TestFactory.getRandomId(), ws)), equals(true));
-          expect(c.userCount, equals(i + 1));
-        }
+        expect(c.join(TestFactory.getTestUser(TestFactory.getRandomId(), ws)), equals(true));
+        
         User toBeQueued = TestFactory.getTestUser(TestFactory.getRandomId(), ws);
         expect(c.join(toBeQueued), equals(false));
-        expect(c.userCount, equals(2));
+        expect(c.userCount, equals(1));
         
         expect(c.queue.length, equals(1));
         expect(c.queue[0], equals(toBeQueued));
         
         c.leave(c.users[0]);
+        c.next();
         expect(c.queue.length, equals(0));
         expect(c.users.contains(toBeQueued), equals(true));
       });
@@ -110,13 +107,11 @@ class QueueChannelTests {
           leftQueue = true;
         };
         
-        for (int i = 0; i < channelLimit; i++) {
-          c.join(TestFactory.getTestUser(TestFactory.getRandomId(), ws));
-        }
+        c.join(TestFactory.getTestUser(TestFactory.getRandomId(), ws));
         c.join(toBeQueued);
         c.join(toBeMovedInQueue);
         c.leave(c.users[0]);
-        
+        c.next();
         Timer t = new Timer(100, (_) {
           expect(enteredQueue, equals(true));
           expect(leftQueue, equals(true)); 

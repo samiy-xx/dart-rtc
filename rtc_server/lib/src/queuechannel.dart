@@ -28,7 +28,7 @@ class QueueChannel extends Channel implements UserConnectionEventListener {
     
     _insertIntoQueue(u);
     u.subscribe(this);
-    return true;
+    return false;
     //}
     //return false;
   }

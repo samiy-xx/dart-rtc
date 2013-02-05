@@ -114,19 +114,20 @@ class ChannelTests {
         User third = TestFactory.getTestUser(TestFactory.getRandomId(), ws);
         
         c.join(first);
-        expect(server.packetsSent.length, equals(0));
+        expect(server.packetsSent.length, equals(1));
         
         c.join(second);
-        expect(server.packetsSent.length, equals(2));
-        expect(server.packetsSent[0].packetType, equals(PacketType.JOIN));
-        expect(server.packetsSent[0].id, equals(second.id));
-        expect(server.packetsSent[1].packetType, equals(PacketType.ID));
-        expect(server.packetsSent[1].id, equals(first.id));
+        expect(server.packetsSent.length, equals(4));
+        expect(server.packetsSent[0].packetType, equals(PacketType.CHANNEL));
+        expect(server.packetsSent[1].packetType, equals(PacketType.JOIN));
+        expect(server.packetsSent[1].id, equals(second.id));
+        expect(server.packetsSent[2].packetType, equals(PacketType.ID));
+        expect(server.packetsSent[2].id, equals(first.id));
         
         c.join(third);
-        expect(server.packetsSent.length, equals(6));
-        expect(server.packetsSent[2].packetType, equals(PacketType.JOIN));
-        expect(server.packetsSent[3].packetType, equals(PacketType.ID));
+        expect(server.packetsSent.length, equals(9));
+        expect(server.packetsSent[2].packetType, equals(PacketType.ID));
+        expect(server.packetsSent[3].packetType, equals(PacketType.CHANNEL));
         expect(server.packetsSent[4].packetType, equals(PacketType.JOIN));
         expect(server.packetsSent[5].packetType, equals(PacketType.ID));
       });
