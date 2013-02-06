@@ -21,5 +21,53 @@ void main() {
     chat_input.contentEditable = "true";
   });
   
+  qClient.onSignalingCloseEvent.listen((SignalingCloseEvent e) {
+    notifier.display("Signaling connection to server has closed (${e.message})");
+    window.setTimeout(() {
+      notifier.display("Attempting to reconnect to server");
+      qClient.initialize();
+    }, 10000);
+  });
+  
+  qClient.onPacketEvent.listen((PacketEvent e) {
+    if (e.type == "usermessage") {
+      
+    }
+  });
+  
 }
 
+DivElement createChatEntry(String time, String id, String message) {
+  DivElement entry = new DivElement();
+  entry.classes.add("output_entry");
+  
+  var span_time = new SpanElement();
+  span_time.classes.add("timestamp");
+  span_time.appendText(time);
+  
+  var span_name = new SpanElement();
+  span_name.classes.add("name");
+  span_name.appendText(id);
+  
+  var span_message = new SpanElement();
+  span_message.classes.add("message");
+  span_message.appendText(message);
+  
+  entry.append(span_time);
+  entry.append(span_name);
+  entry.append(span_message);
+  
+  return entry;
+}
+
+void pruneEntries() {
+  
+}
+
+void createUserEntry(String id) {
+  
+}
+
+void removeUserEntry(String id) {
+  
+}

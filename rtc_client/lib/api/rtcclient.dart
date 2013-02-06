@@ -6,4 +6,6 @@ abstract class RtcClient {
   RtcClient setRequireVideo(bool b);
   RtcClient setRequireDataChannel(bool b);
   RtcClient setChannel(String c);
+  
+  void sendChannelMessage(String message);
 }

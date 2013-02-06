@@ -75,9 +75,16 @@ class ChannelServer extends WebSocketServer implements ContainerContentsEventLis
         return;
       }
       
-      um.id = user.id;
+      List<Channel> channels = _channelContainer.getChannelsWhereUserIs(user);
+      if (channels.length > 0) {
+        channels.forEach((Channel c) {
+          c.sendToAllExceptSender(user, um);
+        });
+      }
+      //um.id = user.id;
       
-      sendToClient(other.connection, PacketFactory.get(um));
+      
+      //sendToClient(other.connection, PacketFactory.get(um));
       
     } on NoSuchMethodError catch(e) {
       new Logger().Error("Error: $e");

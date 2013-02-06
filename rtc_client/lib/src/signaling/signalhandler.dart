@@ -161,6 +161,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     // Get the packet via PacketFactory
     try {
       Packet p = PacketFactory.getPacketFromString(m);
+      _log.Debug(m);
       if (p.packetType == null || p.packetType.isEmpty)
         return;
       
@@ -244,14 +245,13 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    */
   void handleDescription(DescriptionPacket p) {
     _log.Debug("(signalhandler.dart) RECV: DescriptionPacket channel ${p.channelId} user ${p.id}");
-   
+    
     RtcSessionDescription t = new RtcSessionDescription({
       'sdp':p.sdp,
       'type':p.type
     });
     PeerWrapper peer = _peerManager.findWrapper(p.id);
-    //Peer p = findPeer(packet.roomId, packet.userId);
-   
+    
     if (peer != null) {
       _log.Debug("(signalhandler.dart) Setting remote description to peer");
       peer.setRemoteSessionDescription(t);

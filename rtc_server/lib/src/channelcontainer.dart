@@ -36,6 +36,9 @@ class ChannelContainer extends BaseChannelContainer implements ChannelConnection
     return c._users;
   }
   
+  List<Channel> getChannelsWhereUserIs(User u) {
+    return _list.where((Channel c) => c.users.contains(u));
+  }
   /**
    * Remove channel and kill users if any
    */

@@ -87,6 +87,7 @@ class ChannelClient implements RtcClient, DataSourceConnectionEventListener,
     _sh.registerHandler("bye", _byePacketHandler);
     _sh.registerHandler("channel", _channelPacketHandler);
     _sh.registerHandler("connected", _connectionSuccessPacketHandler);
+    _sh.registerHandler("usermessage", _userMessagePacketHandler);
   }
   
   void initialize() {
@@ -139,6 +140,10 @@ class ChannelClient implements RtcClient, DataSourceConnectionEventListener,
     return this;
   }
   
+  void sendChannelMessage(String message) {
+    _sh.send(PacketFactory.get(new UserMessage.With(_myId, message)));
+  }
+  
   /**
    * Request the server that users gets kicked out of channel
    */
@@ -146,6 +151,12 @@ class ChannelClient implements RtcClient, DataSourceConnectionEventListener,
     if (isChannelOwner && _otherId != null) {
       _sh.send(PacketFactory.get(new RemoveUserCommand.With(_otherId, _channelId)));
     }
+  }
+  
+  void _userMessagePacketHandler(UserMessage p) {
+    PeerWrapper pw = _pm.findWrapper(p.id);
+    if (_packetController.hasSubscribers)
+      _packetController.add(new PacketEvent(p, pw));
   }
   
   void _connectionSuccessPacketHandler(ConnectionSuccessPacket p) {
