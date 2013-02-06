@@ -26,13 +26,13 @@ class WebVideoContainer extends VideoContainer {
     _div = new DivElement();
     
     _div.nodes.add(_video);
-    _video.on.canPlay.add(_onCanPlay);
-    _video.on.play.add(_onPlay);
-    _video.on.pause.add(_onPause);
-    _video.on.ended.add(_onStop);
-    _video.on.loadedMetadata.add(_onMetadata);
+    _video.onCanPlay.listen(_onCanPlay);
+    _video.onPlay.listen(_onPlay);
+    _video.onPause.listen(_onPause);
+    _video.onEnded.listen(_onStop);
+    _video.onLoadedMetadata.listen(_onMetadata);
     
-    matcher.on.click.add((e) {
+    matcher.onClick.listen((e) {
       print(_id);
       
     });

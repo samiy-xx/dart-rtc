@@ -54,7 +54,8 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
     _peer.onIceCandidate.listen(_onIceCandidate);
     _peer.onIceChange.listen(_onIceChange);
     _peer.onNegotiationNeeded.listen(_onNegotiationNeeded);
-    _peer.onOpen.listen((Event e) => _isOpen = true);
+    //_peer.onOpen.listen((Event e) => _isOpen = true);
+    _peer.onStateChange.listen(_onStateChange);
   }
   
   void setAsHost(bool value) {
@@ -105,6 +106,12 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
     _peer.createAnswer(_onAnswerSuccess, _onRTCError, null);
   }
   
+  void _onStateChange(Event e) {
+    if (_peer.readyState == READYSTATE_OPEN)
+      _isOpen = true;
+    else
+      _isOpen = false;
+  }
   /*
    * Send the session description created by _sendOffer to the remote party
    * and set is our local session description
@@ -184,7 +191,7 @@ class PeerWrapper extends GenericEventTarget<PeerEventListener>{
    * Not sure
    */
   void _onIceChange(Event c) {
-    _log.Debug("(peerwrapper.dart) ICE Change ${c} (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceState})");
+    _log.Debug("(peerwrapper.dart) ICE Change ${c} (ice gathering state ${_peer.iceGatheringState}) (ice state ${_peer.iceConnectionState})");
   }
   
   void _onLocalDescriptionSuccess() {

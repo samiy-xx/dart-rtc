@@ -163,6 +163,10 @@ class WebVideoManager extends VideoManager {
    * optionally also calls the initialize method on video container
    */
   void inject(DivElement host, VideoContainer vc, [bool init]) {
+    if (?init) {
+      vc.initialize();
+    }
+    
     host.nodes.add(vc.matcher);
     host.style.visibility = "visible";
     if (host == _mainHost) {
@@ -170,9 +174,7 @@ class WebVideoManager extends VideoManager {
     } else {
       vc.matcher.classes.add("auxvid");
     }
-    if (?init) {
-      vc.initialize();
-    }
+    
   }
   
   /**

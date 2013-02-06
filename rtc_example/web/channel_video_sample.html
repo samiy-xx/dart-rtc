@@ -19,6 +19,38 @@
       
       
      </div>
+    <script type="text/javascript">
+      // Tip of the day. Specify this function to stop automatic execution of the dart js code
+      function dartMainRunner(start) {
+        if (navigator.mozGetUserMedia) {
+          RTCPeerConnection = mozRTCPeerConnection;
+        } else {
+          RTCPeerConnection = webkitRTCPeerConnection;
+        }
+        //alert(getPrefix('RTCPeerConnection', window));
+        //window.navigator.getUserMedia = getVendorUserMedia();
+        //RTCPeerConnection = makeAlias(window, 'mozRTCPeerConnection');
+        //RTCIceCandidate = makeAlias(window, 'mozRTCIceCandidate');
+        //RTCPeerConnection = mozRTCPeerConnection.bind(window);
+        //RTCIceCandidate = mozRTCIceCandidate.bind(window);
+        //RTCPeerConnection = function(a, b) { return new mozRTCPeerConnection(a, b); }
+        //RTCIceCandiate = function(a) { return new mozRTCIceCandidate(a); }
+        //RTCPeerConnection = getVendorPeerConnection();
+        //RTCSessionDescription = getVendorSessionDesciption();
+        //RTCIceCandidate = getVendorIceCandidate();
+        //RTCPeerConnection = mozRTCPeerConnection;
+        //RTCSessionDescription = mozRTCSessionDescription;
+        //RTCIceCandidate = mozRTCIceCandidate;
+        
+        //if (has_vendor_usermedia &&  has_vendor_peer && has_vendor_session && has_vendor_ice) {
+          start();
+        //} else {
+        //  alert("Can not start, failed to assing vendor specific values");
+        //}
+      }
+    </script>
+     <script type="text/javascript" src="vendorprefix.js"></script>
+    <script type="text/javascript" src="features.js"></script>
     <script type="application/dart" src="channel_video_sample.dart"></script>
     <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->
     <script src="packages/browser/dart.js"></script>
