@@ -27,6 +27,13 @@
       <p>Doubleclicking a username on the userlist will append /msg &lt;userid&gt; in the input field</p>
       <p style="background: cyan">Received Peer message will be shown with cyan background color</p>
     </div>
+    <script type="text/javascript">
+      // Tip of the day. Specify this function to stop automatic execution of the dart js code
+      function dartMainRunner(start) {
+        RTCPeerConnection = webkitRTCPeerConnection;
+          start();
+      }
+    </script>
     <script type="application/dart" src="datachannel_chat_sample.dart"></script>
     <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->
     <script src="packages/browser/dart.js"></script>
