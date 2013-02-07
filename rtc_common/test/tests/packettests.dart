@@ -5,7 +5,7 @@ class PacketTests {
     group('PacketTests', () {
       Packet p;
       final String packetId = "abc";
-      final String packetType = PacketType.BYE;
+      final PacketType packetType = PacketType.BYE;
       
       setUp(() {
         p = new ByePacket();

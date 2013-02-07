@@ -19,21 +19,21 @@ class PacketHandlerTests {
       });
       
       test("PacketHandler, handlers, can register", () {
-        expect(p.getHandlers("dart"), equals(null));
-        p.registerHandler("dart", (Packet p) => p = null);
-        expect(p.getHandlers("dart").length, equals(1));
+        expect(p.getHandlers(PacketType.JOIN), equals(null));
+        p.registerHandler(PacketType.JOIN, (Packet p) => p = null);
+        expect(p.getHandlers(PacketType.JOIN).length, equals(1));
       });
       
       test("PacketHandler, handlers, can clear given type", () {
-        expect(p.getHandlers("dart"), equals(null));
-        p.registerHandler("dart", (Packet p) => p = null);
-        expect(p.getHandlers("dart").length, equals(1));
-        p.clearHandlers("dart");
-        expect(p.getHandlers("dart"), equals(null));
+        expect(p.getHandlers(PacketType.JOIN), equals(null));
+        p.registerHandler(PacketType.JOIN, (Packet p) => p = null);
+        expect(p.getHandlers(PacketType.JOIN).length, equals(1));
+        p.clearHandlers(PacketType.JOIN);
+        expect(p.getHandlers(PacketType.JOIN), equals(null));
       });
       
       test("PacketHandler, handlers, execute", () {
-        String type = "bye";
+        PacketType type = PacketType.BYE;
         String packetId = "123";
         bool packetWasHandled = false;
         

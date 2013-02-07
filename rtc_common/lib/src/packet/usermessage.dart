@@ -4,14 +4,16 @@ class UserMessage implements Packet {
   UserMessage();
   UserMessage.With(this.id, this.message);
   
-  String packetType = "usermessage";
+  PacketType packetType = PacketType.USERMESSAGE;
   String id = "";
+  
   String message = "";
   
   Map toJson() {
     return {
-      'packetType': packetType,
+      'packetType': packetType.toString(),
       'id': id,
+      
       'message': message
     };
   }

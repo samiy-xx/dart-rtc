@@ -4,14 +4,14 @@ class FilePacket implements Packet {
   FilePacket();
   FilePacket.With(this.id, this.fileName, this.fileSize);
   
-  String packetType = PacketType.FILE;
+  PacketType packetType = PacketType.FILE;
   String id = "";
   String fileName = "";
   String fileSize = "0";
   
   Map toJson() {
     return {
-      'packetType': packetType,
+      'packetType': packetType.toString(),
       'id': id,
       'fileName': fileName,
       'fileSize': fileSize

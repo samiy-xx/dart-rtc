@@ -8,14 +8,14 @@ class IcePacket implements Packet{
   String sdpMid;
   int sdpMLineIndex;
   String id;
-  String packetType = PacketType.ICE;
+  PacketType packetType = PacketType.ICE;
   
   Map toJson() {
     return {
       'candidate':candidate,
       'sdpMid':sdpMid,
       'sdpMLineIndex':sdpMLineIndex,
-      'packetType':packetType,
+      'packetType':packetType.toString(),
       'id':id
     };
   }

@@ -7,24 +7,26 @@
   </head>
  
   <body>   
+    <div id="header">
+      <h2>Datachannel enabled chat application</h2>  
+    </div>
     <div id="wrapper"> 
-      
-      <div id="header">
-        <h2>ChatsOnline</h2>  
-      </div>
-      
       <div class="container container_left">
-        <div id="chat_output">
-        <div class="output_entry"><span class="timestamp">XXX</span><span class="name">NAME</span><span class="message">dfsdfdf</span></div> 
-        </div>
+        <div id="chat_output"></div>
         <div id="chat_input" class="input_inactive"></div>
       </div>
       <div class="container container_right">
         <div id="chat_users"></div>
       </div>
       <div style="clear: both"></div>
-      
-     </div>
+    </div>
+    <div id="footer">
+      <h3>Tutorial</h3>
+      <p>Channel messages are sent by typing a message in the input field and pressing enter</p>
+      <p>Peer message can be sent with /msg &lt;userid&gt; message here</p>
+      <p>Doubleclicking a username on the userlist will append /msg &lt;userid&gt; in the input field</p>
+      <p style="background: cyan">Received Peer message will be shown with cyan background color</p>
+    </div>
     <script type="application/dart" src="datachannel_chat_sample.dart"></script>
     <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->
     <script src="packages/browser/dart.js"></script>

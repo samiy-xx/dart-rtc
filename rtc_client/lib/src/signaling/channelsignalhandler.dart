@@ -10,7 +10,7 @@ class ChannelSignalHandler extends SignalHandler{
   set channelId(String value) => _channelId = value;
   
   ChannelSignalHandler(DataSource ds) : super(ds) {
-    registerHandler("channel", handleChannelInfo);
+    registerHandler(PacketType.CHANNEL, handleChannelInfo);
   }
   
   void initialize([String host]) {

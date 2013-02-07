@@ -6,10 +6,10 @@ class WheelSignalHandler extends SignalHandler {
   Function _test;
   
   WheelSignalHandler(DataSource ds) : super(ds) {
-    registerHandler("connected", onConnect);
-    registerHandler("disconnected", onUserDisconnect);
-    registerHandler("id", onIdExistingChannelUser);
-    registerHandler("usermessage", onUserMessage);
+    registerHandler(PacketType.CONNECTED, onConnect);
+    registerHandler(PacketType.DISCONNECTED, onUserDisconnect);
+    registerHandler(PacketType.ID, onIdExistingChannelUser);
+    registerHandler(PacketType.USERMESSAGE, onUserMessage);
   }
   
   void onIdExistingChannelUser(IdPacket p) {

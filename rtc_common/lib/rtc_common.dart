@@ -6,7 +6,7 @@ import 'dart:math';
 part 'src/packethandler.dart';
 part 'src/packetfactory.dart';
 part 'src/eventtarget.dart';
-
+part 'src/annotations.dart';
 // Exceptions
 part 'src/exception/invalidpacketexception.dart';
 
@@ -17,6 +17,7 @@ part 'src/packet/idpacket.dart';
 part 'src/packet/joinpacket.dart';
 part 'src/packet/peercreatedpacket.dart';
 part 'src/packet/usermessage.dart';
+part 'src/packet/channelmessage.dart';
 part 'src/packet/helopacket.dart';
 part 'src/packet/descpacket.dart';
 part 'src/packet/icepacket.dart';

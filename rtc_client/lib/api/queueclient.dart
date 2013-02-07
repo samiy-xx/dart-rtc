@@ -17,8 +17,6 @@ class QueueClient extends ChannelClient  {
   /** Currently queued users */
   List<QueueUser> get queued => _queued;
   
-  
-  
   /* controller for QueueEvents */
   StreamController<QueueEvent> _queueController;
   
@@ -28,7 +26,7 @@ class QueueClient extends ChannelClient  {
   QueueClient(DataSource ds) : super(ds){
     _queued = new List<QueueUser>();
     _queueController = new StreamController.broadcast();
-    _sh.registerHandler("queue", _queuePacketHandler);
+    _sh.registerHandler(PacketType.QUEUE, _queuePacketHandler);
   }
   
   /**
@@ -77,7 +75,6 @@ class QueueClient extends ChannelClient  {
         _queueController.add(new QueueEvent(QueueEventType.MOVE, int.parse(p.position)));
         
       }  
-    
   }
   
   void _addToQueue(QueueUser u) {
@@ -97,10 +94,8 @@ class QueueClient extends ChannelClient  {
       if (u.id == id)
         return u;
     }
-    
     return null;
   }
-  
 }
 
 class QueueUser implements Comparable {

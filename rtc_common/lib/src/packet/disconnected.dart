@@ -4,12 +4,12 @@ class Disconnected extends Packet {
   Disconnected();
   Disconnected.With(this.id);
   
-  String packetType = PacketType.DISCONNECTED;
+  PacketType packetType = PacketType.DISCONNECTED;
   String id = "";
   
   Map toJson() {
     return {
-      'packetType': packetType,
+      'packetType': packetType.toString(),
       'id': id
     };
   }

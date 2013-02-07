@@ -4,12 +4,12 @@ class ConnectionSuccessPacket implements Packet {
   ConnectionSuccessPacket();
   ConnectionSuccessPacket.With(this.id);
   
-  String packetType = "connected";
+  PacketType packetType = PacketType.CONNECTED;
   String id = "";
   
   Map toJson() {
     return {
-      'packetType': packetType,
+      'packetType': packetType.toString(),
       'id': id
     };
   }

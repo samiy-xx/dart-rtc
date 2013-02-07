@@ -4,12 +4,12 @@ class RandomUserPacket implements Packet {
   RandomUserPacket();
   RandomUserPacket.With(this.id);
   
-  String packetType = PacketType.RANDOM;
+  PacketType packetType = PacketType.RANDOM;
   String id = "";
   
   Map toJson() {
     return {
-      'packetType': packetType,
+      'packetType': packetType.toString(),
       'id': id
     };
   }

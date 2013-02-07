@@ -6,11 +6,11 @@ class WheelServer extends WebSocketServer {
    * Register all handlers here
    */
   WheelServer() {
-    registerHandler("helo", handleIncomingHelo);
-    registerHandler("bye", handleIncomingBye);
-    registerHandler("random", handleRandomUserRequest);
-    registerHandler("usermessage", handleUserMessage);
-    registerHandler("disconnected", handleDisconnect);
+    registerHandler(PacketType.HELO, handleIncomingHelo);
+    registerHandler(PacketType.BYE, handleIncomingBye);
+    registerHandler(PacketType.RANDOM, handleRandomUserRequest);
+    registerHandler(PacketType.USERMESSAGE, handleUserMessage);
+    registerHandler(PacketType.DISCONNECTED, handleDisconnect);
   }
   
   /**

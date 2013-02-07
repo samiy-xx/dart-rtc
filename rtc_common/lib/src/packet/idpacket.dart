@@ -4,13 +4,13 @@ class IdPacket implements Packet {
   IdPacket();
   IdPacket.With(this.id, this.channelId);
   
-  String packetType = PacketType.ID;
+  PacketType packetType = PacketType.ID;
   String channelId = "";
   String id = "";
   
   Map toJson() {
     return {
-      'packetType': packetType,
+      'packetType': packetType.toString(),
       'channelId': channelId,
       'id': id
     };

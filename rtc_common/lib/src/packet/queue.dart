@@ -4,7 +4,7 @@ class QueuePacket implements Packet {
   QueuePacket() : super();
   QueuePacket.With(this.id, this.channelId, this.position);
   
-  String packetType = PacketType.QUEUE;
+  PacketType packetType = PacketType.QUEUE;
   String id;
   String channelId;
   String position;
@@ -27,7 +27,7 @@ class NextPacket implements Packet {
   NextPacket();
   NextPacket.With(this.id, this.channelId);
   
-  String packetType = PacketType.NEXT;
+  PacketType packetType = PacketType.NEXT;
   String id;
   String channelId;
   
@@ -35,7 +35,7 @@ class NextPacket implements Packet {
     return {
       'id': id,
       'channelId': channelId,
-      'packetType': packetType
+      'packetType': packetType.toString()
     };
   }
   

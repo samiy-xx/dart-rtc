@@ -63,6 +63,9 @@ class PacketFactory {
         case "usermessage":
           p = UserMessage.fromMap(m);
           break;
+        case "channelmessage":
+          p = ChannelMessage.fromMap(m);
+          break;
         case "disconnected":
           p = Disconnected.fromMap(m);
           break;
@@ -96,4 +99,5 @@ class PacketFactory {
   static String get(Packet p) {
     return json.stringify(p); 
   }
+  
 }

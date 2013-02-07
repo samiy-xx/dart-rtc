@@ -4,10 +4,10 @@ class DataSignalHandler extends ChannelSignalHandler{
 String other = null;
   
   DataSignalHandler(DataSource ds) : super(ds) {
-    registerHandler("connected", onConnect);
-    registerHandler("join", onJoinChannel);
-    registerHandler("id", onIdExistingChannelUser);
-    registerHandler("usermessage", onUserMessage);
+    registerHandler(PacketType.CONNECTED, onConnect);
+    registerHandler(PacketType.JOIN, onJoinChannel);
+    registerHandler(PacketType.ID, onIdExistingChannelUser);
+    registerHandler(PacketType.USERMESSAGE, onUserMessage);
   }
   
   void onJoinChannel(JoinPacket p) {

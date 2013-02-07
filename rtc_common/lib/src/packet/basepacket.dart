@@ -7,7 +7,7 @@ abstract class Packet {
   /**
    * The type of the Packet
    */
-  String packetType;
+  PacketType packetType;
   
   /**
    * The id of the sender

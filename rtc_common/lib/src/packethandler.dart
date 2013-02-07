@@ -6,20 +6,20 @@ part of rtc_common;
  */
 class PacketHandler {
   /* Store all method handlers in list */
-  Map<String, List<Function>> _methodHandlers;
+  Map<PacketType, List<Function>> _methodHandlers;
   
   /**
    * Constructor
    * initialize array
    */
   PacketHandler() {
-    _methodHandlers = new Map<String, List<Function>>();
+    _methodHandlers = new Map<PacketType, List<Function>>();
   }
   
   /**
    * Add a new handler for given type
    */
-  void registerHandler(String type, Function handler) {
+  void registerHandler(PacketType type, Function handler) {
     if (!_methodHandlers.containsKey(type))
       _methodHandlers[type] = new List<Function>();
     _methodHandlers[type].add(handler);
@@ -28,7 +28,7 @@ class PacketHandler {
   /**
    * Clears all handlers associated to "type"
    */
-  void clearHandlers(String type) {
+  void clearHandlers(PacketType type) {
     if (_methodHandlers.containsKey(type))
       _methodHandlers.remove(type);
   }
@@ -36,7 +36,7 @@ class PacketHandler {
   /**
    * Returns a list of handler functions for given packet type
    */
-  List<Function> getHandlers(String type) {
+  List<Function> getHandlers(PacketType type) {
     if (_methodHandlers.containsKey(type))
       return _methodHandlers[type];
     

@@ -121,14 +121,14 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
     // FIX : after 7030
     //PeerConstraints con = new PeerConstraints();
     //con.dataChannelEnabled = _dataChannelsEnabled;
-    _log.Debug("(FIREFOXTEST) Attempting to create peer");
+    
     PeerWrapper wrapper = _createWrapper(
         new RtcPeerConnection(
             {'iceServers': [ {'url':'stun:stun.l.google.com:19302'}]},
             {'optional': [{'RtpDataChannels': true}]}
         )
     );
-    _log.Debug("(FIREFOXTEST) Peer created");
+    
     _add(wrapper);
     return wrapper;
   }
@@ -155,6 +155,10 @@ class PeerManager extends GenericEventTarget<PeerEventListener> {
     //p.onOpen.listen(onOpen);
     p.onStateChange.listen(onStateChanged);
     p.onIceCandidate.listen(onIceCandidate);
+    
+    listeners.where((l) => l is PeerConnectionEventListener).forEach((PeerConnectionEventListener l) {
+      l.onPeerCreated(wrapper);
+    });
     return wrapper;
   }
   

@@ -4,8 +4,8 @@ class StreamingSignalHandler extends ChannelSignalHandler {
   String other = null;
   
   StreamingSignalHandler(DataSource ds) : super(ds) {
-    registerHandler("join", onJoinChannel);
-    registerHandler("id", onIdExistingChannelUser);
+    registerHandler(PacketType.JOIN, onJoinChannel);
+    registerHandler(PacketType.ID, onIdExistingChannelUser);
   }
   
   void onJoinChannel(JoinPacket p) {
@@ -25,20 +25,23 @@ class StreamingSignalHandler extends ChannelSignalHandler {
     send(PacketFactory.get(new UserMessage.With(other, message)));
   }
   
+  @Override
   void handleJoin(JoinPacket join) {
     super.handleJoin(join);
     PeerWrapper pw = peerManager.findWrapper(join.id);
     MediaStream ms = peerManager.getLocalStream();
-    pw.addStream(ms);
-    
+    if (ms != null)
+      pw.addStream(ms);
   }
   
+  @Override
   void handleId(IdPacket id) {
     super.handleId(id);
     if (!id.id.isEmpty) {
       PeerWrapper pw = peerManager.findWrapper(id.id);
       MediaStream ms = peerManager.getLocalStream();
-      pw.addStream(ms);
+      if (ms != null)
+        pw.addStream(ms);
     }
   }
 }

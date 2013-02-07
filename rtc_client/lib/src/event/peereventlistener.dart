@@ -10,6 +10,7 @@ abstract class PeerEventListener {
  * Interface for peer connection related notifications
  */
 abstract class PeerConnectionEventListener extends PeerEventListener {
+  void onPeerCreated(PeerWrapper pw);
   /**
    * Notifies listeners that peer state has changed
    */

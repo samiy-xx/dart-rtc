@@ -95,7 +95,7 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
         server.sendPacket(user.connection, ip);
       }
     });
-    server.sendPacket(user.connection, new ChannelPacket.With(user.id, id, user == owner, userCount));
+    server.sendPacket(user.connection, new ChannelPacket.With(user.id, id, user == owner, userCount, _limit));
   }
   /**
    * Remove user from channel
@@ -150,6 +150,10 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
     return null;
   }
   
+  bool isInChannel(User u) {
+    return _users.contains(u); 
+  }
+  
   /*
    * Notify listeners about the user leaving
    */
@@ -201,10 +205,9 @@ class Channel extends GenericEventTarget<ChannelEventListener> implements UserCo
    * Check that id strings match
    **/
   operator ==(Object other) {
-    if (!(other is Channel)) {
-      new Logger().Warning("(channel.dart) operator== tried to match against ${other.runtimeType.toString()}");
-      return false;
-    }
-    return _id == (other as Channel)._id;
+      if (!(other is Channel)) {
+        return false;
+      }
+      return _id == (other as Channel)._id;
   }
 }

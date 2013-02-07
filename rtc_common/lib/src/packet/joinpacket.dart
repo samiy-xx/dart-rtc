@@ -4,13 +4,13 @@ class JoinPacket implements Packet {
   JoinPacket();
   JoinPacket.With(this.channelId, this.id);
   
-  String packetType = PacketType.JOIN;
+  PacketType packetType = PacketType.JOIN;
   String channelId = "";
   String id = "";
   
   Map toJson() {
     return {
-      'packetType': packetType,
+      'packetType': packetType.toString(),
       'channelId': channelId,
       'id': id
     };

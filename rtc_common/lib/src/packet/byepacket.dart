@@ -8,13 +8,13 @@ class ByePacket implements Packet {
   ByePacket();
   ByePacket.With(this.id);
   
-  String packetType = PacketType.BYE;
+  PacketType packetType = PacketType.BYE;
  
   String id = "";
   
   Map toJson() {
     return {
-      'packetType': packetType,
+      'packetType': packetType.toString(),
       'id': id
     };
   }

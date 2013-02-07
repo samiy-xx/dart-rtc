@@ -2,13 +2,14 @@ part of rtc_common;
 
 class ChannelPacket implements Packet {
   ChannelPacket() : super();
-  ChannelPacket.With(this.id, this.channelId, this.owner, this.users);
+  ChannelPacket.With(this.id, this.channelId, this.owner, this.users, this.limit);
   
-  String packetType = PacketType.CHANNEL;
+  PacketType packetType = PacketType.CHANNEL;
   String id;
   String channelId;
   bool owner;
   int users;
+  int limit;
   
   Map toJson() {
     return {
@@ -16,7 +17,8 @@ class ChannelPacket implements Packet {
       'channelId': channelId,
       'owner': owner,
       'users': users,
-      'packetType': packetType
+      'limit': limit,
+      'packetType': packetType.toString()
     };
   }
   
@@ -25,7 +27,8 @@ class ChannelPacket implements Packet {
         m['id'],
         m['channelId'], 
         m['owner'],
-        m['users']
+        m['users'],
+        m['limit']
     );
   }
 }
@@ -38,7 +41,7 @@ class RemoveUserCommand implements Command {
   RemoveUserCommand();
   RemoveUserCommand.With(this.id, this.channelId);
   
-  String packetType = PacketType.REMOVEUSER;
+  PacketType packetType = PacketType.REMOVEUSER;
   String id;
   String channelId;
   
@@ -46,7 +49,7 @@ class RemoveUserCommand implements Command {
     return {
       'id': id,
       'channelId': channelId,
-      'packetType': packetType
+      'packetType': packetType.toString()
     };
   }
   

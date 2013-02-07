@@ -49,13 +49,13 @@ class WebChannelHandler implements PeerMediaEventListener {
     _sh.channelId = "abc";
     _pm = new PeerManager();
     
-    _sh.registerHandler("usermessage", handleUserMessage);
-    _sh.registerHandler("connected", handleConnected);
-    _sh.registerHandler("disconnected", handleDisconnected);
-    _sh.registerHandler("bye", handleBye);
-    _sh.registerHandler("id", handleId);
-    _sh.registerHandler("join", handleJoin);
-    _sh.registerHandler("queue", handleQueue);
+    _sh.registerHandler(PacketType.USERMESSAGE, handleUserMessage);
+    _sh.registerHandler(PacketType.CONNECTED, handleConnected);
+    _sh.registerHandler(PacketType.DISCONNECTED, handleDisconnected);
+    _sh.registerHandler(PacketType.BYE, handleBye);
+    _sh.registerHandler(PacketType.ID, handleId);
+    _sh.registerHandler(PacketType.JOIN, handleJoin);
+    _sh.registerHandler(PacketType.QUEUE, handleQueue);
     
     _pm.subscribe(this);
   }

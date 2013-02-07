@@ -43,12 +43,12 @@ class WebSocketServer extends PacketHandler implements Server, ContainerContents
     _reader = new BinaryReader();
     
     // Register handlers needed to handle on this low level
-    registerHandler("helo", handleIncomingHelo);
-    registerHandler("bye", handleIncomingBye);
-    registerHandler("pong", handleIncomingPong);
-    registerHandler("desc", handleIncomingDescription);
-    registerHandler("ice", handleIncomingIce);
-    registerHandler("file", handleIncomingFile);
+    registerHandler(PacketType.HELO, handleIncomingHelo);
+    registerHandler(PacketType.BYE, handleIncomingBye);
+    registerHandler(PacketType.PONG, handleIncomingPong);
+    registerHandler(PacketType.DESC, handleIncomingDescription);
+    registerHandler(PacketType.ICE, handleIncomingIce);
+    registerHandler(PacketType.FILE, handleIncomingFile);
   }
   
   /**

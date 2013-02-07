@@ -8,17 +8,37 @@ body {
   width: 800px;
   text-align: left;
   margin: 0px;
+  margin-top: 5px;
   margin-left: auto;
   margin-right: auto;
-  border-right: 1px solid #666;  
-  border-left: 1px solid #666;
-  border-bottom: 1px solid #666; 
+  border: 1px solid #666;  
+  background: #eee;
+  -moz-box-shadow: 0 0 5px #888;
+  -webkit-box-shadow: 0 0 5px#888;
+  box-shadow: 0 0 5px #888;
 }
 
 #header {
-  margin: 5px;  
+  margin: 5px;
+  width: 800px;
+  text-align: left;
+  margin: 0px;
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
 }
-
+#footer {
+  margin: 5px;
+  width: 800px;
+  text-align: left;
+  margin: 0px;
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#footer p {
+  margin: 2px; 
+}
 #header h2 {
   margin: 0px;
   padding: 0px;  
@@ -28,7 +48,8 @@ body {
   height: 300px;
   overflow: auto;
   border: 1px solid #666;
-  margin: 5px;  
+  margin: 5px;
+  background: #fff;
 }
 
 #chat_input {
@@ -39,8 +60,8 @@ body {
 }
 
 #chat_users {
-  height: 330px;
-  
+  height: 327px;
+  background: #fff;
   overflow: auto;
   border: 1px solid #666;
   margin: 5px;  
@@ -48,7 +69,7 @@ body {
 
 .container {
   display: inline;
-  height: 350px;
+  
 }
 
 .container_left {
@@ -61,17 +82,22 @@ body {
   float: left;
 }
 
+.private_message {
+  background: cyan;
+  border-bottom: 1px solid #666;  
+}
 .input_active {
-  
+  background: #fff;
 }
 .input_inactive {
   background : #ddd;
 }
 .output_entry {
-  background: #eee;
+  margin-left: 5px;
+  margin-bottom: 1px;
 }
 .output_entry .timestamp {
-  padding-left: 5px;
+  
 }
 
 .output_entry .name {
@@ -80,4 +106,7 @@ body {
 
 .output_entry .message {
   padding-left: 5px;
+}
+.user_entry {
+  background: cyan;  
 }

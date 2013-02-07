@@ -56,25 +56,25 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     _listeners = new Map<String, List>();
     
     /* listen to ping, and respond with pong */
-    registerHandler("ping", handlePing);
+    registerHandler(PacketType.PING, handlePing);
     
     /* Listen for ice, required to create the peer connection */
-    registerHandler("ice", handleIce);
+    registerHandler(PacketType.ICE, handleIce);
     
     /* Listen for sdp packets */
-    registerHandler("desc", handleDescription);
+    registerHandler(PacketType.DESC, handleDescription);
     
     /* Listen for bye packets, when other user closes browser etc */
-    registerHandler("bye", handleBye);
+    registerHandler(PacketType.BYE, handleBye);
     
     /* Connect success to server */
-    registerHandler("connected", handleConnectionSuccess);
+    registerHandler(PacketType.CONNECTED, handleConnectionSuccess);
     
     /* Listen for join, when someone joins same channel as you are */
-    registerHandler("join", handleJoin);
+    registerHandler(PacketType.JOIN, handleJoin);
     
     /* Listen for id, all users in channel you joined */
-    registerHandler("id", handleId);
+    registerHandler(PacketType.ID, handleId);
   }
   
   // TODO: Should really figure out howto use GenericEventTarget here
@@ -161,8 +161,8 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     // Get the packet via PacketFactory
     try {
       Packet p = PacketFactory.getPacketFromString(m);
-      _log.Debug(m);
-      if (p.packetType == null || p.packetType.isEmpty)
+      
+      if (p.packetType == null)
         return;
       
       if (!executeHandler(p)) 

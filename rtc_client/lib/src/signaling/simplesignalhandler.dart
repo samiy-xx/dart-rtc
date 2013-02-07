@@ -3,8 +3,8 @@ part of rtc_client;
 class SimpleSignalHandler extends SignalHandler {
   
   SimpleSignalHandler(DataSource ds) : super(ds){
-    registerHandler("id", handleId);
-    registerHandler("join", handleJoin);
+    registerHandler(PacketType.ID, handleId);
+    registerHandler(PacketType.JOIN, handleJoin);
   }
   
   void handleJoin(JoinPacket packet) {
