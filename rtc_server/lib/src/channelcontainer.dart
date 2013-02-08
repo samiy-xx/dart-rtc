@@ -24,8 +24,13 @@ class ChannelContainer extends BaseChannelContainer implements ChannelConnection
   }
   
   void onLeaveChannel(Channel c, User u) {
+    logger.Debug("(channelcontainer.dart) User ${u.id} left channel ${c.id}");
+    
     if (c.userCount == 0) {
+      logger.Debug("(channelcontainer.dart) channel ${c.id} usercount is 0, removing channel");
       removeChannel(c);
+    } else {
+      logger.Debug("(channelcontainer.dart) channel ${c.id} usercount is ${c.userCount}");
     }
   }
   
@@ -49,6 +54,7 @@ class ChannelContainer extends BaseChannelContainer implements ChannelConnection
       if (c.userCount > 0)
         c.killAll();
       
+      //c.unsubscribe(this);
       remove(c);
     }
   }
@@ -89,6 +95,7 @@ class ChannelContainer extends BaseChannelContainer implements ChannelConnection
       return findChannel(id);
     
     Channel r = new Channel.With(this, id, _channelLimit);
+    r.subscribe(this);
     add(r);
     //_list.add(r);
     

@@ -1,0 +1,19 @@
+body {
+  margin: 0px;
+  padding: 0px;  
+  text-align:center;
+}
+
+#wrapper {
+  width: 800px;
+  text-align: left;
+  margin: 0px;
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #666;  
+  background: #eee;
+  -moz-box-shadow: 0 0 5px #888;
+  -webkit-box-shadow: 0 0 5px#888;
+  box-shadow: 0 0 5px #888;
+}
