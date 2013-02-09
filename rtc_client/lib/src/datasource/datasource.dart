@@ -29,6 +29,11 @@ abstract class DataSource {
   void send(String p);
   
   /**
+   * Send arraybuffer
+   */
+  void sendArrayBuffer(ArrayBuffer buf);
+  
+  /**
    * Subscribe for DataSource events
    * TODO: Required? comes from GenericEventTarget
    */

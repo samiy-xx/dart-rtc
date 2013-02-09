@@ -160,10 +160,25 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
   }
   
   /**
-   * Send data trough datasource
+   * Send string data trough datasource
    */
   void send(String p) {
     _dataSource.send(p);
+  }
+  
+  /**
+   * Sends a packet trough datasource
+   */
+  void sendPacket(Packet p) {
+    send(PacketFactory.get(p));
+  }
+  
+  // TODO: Need to be able to send arraybuffer to server
+  /**
+   * Sends an arraybuffer trough the datasource
+   */
+  void sendArrayBuffer(ArrayBuffer b) {
+    throw new UnimplementedError("Sending ArrayBuffer is not implemented");
   }
   
   /**
@@ -185,10 +200,6 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     } catch (e) {
       _log.Error("(signalhandler.dart) Error handleJoin $e");
     }
-    
-    /*MediaStream ms = _videoManager.getLocalStream();
-    if (ms != null)
-      p.addStream(ms);*/
   }
   
   /**
@@ -270,12 +281,7 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
    * Close the Web socket connection to the signaling server
    */
   void close() {
-    //if (_ws == null)
-    //  return;
-    
-    //if (_ws.readyState != WebSocket.CLOSED) {
-      _dataSource.send(PacketFactory.get(new ByePacket.With(_id)));
-      _dataSource.close();
-    //}
+    _dataSource.send(PacketFactory.get(new ByePacket.With(_id)));
+    _dataSource.close();
   }
 }

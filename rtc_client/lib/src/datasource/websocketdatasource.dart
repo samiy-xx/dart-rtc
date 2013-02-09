@@ -28,10 +28,10 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
    */
   void init() {
     _ws = new WebSocket(_connectionString);
-    _ws.on.open.add(onOpen);  
-    _ws.on.close.add(onClose);  
-    _ws.on.error.add(onError);  
-    _ws.on.message.add(onMessage);
+    _ws.onOpen.listen(onOpen);  
+    _ws.onClose.listen(onClose);  
+    _ws.onError.listen(onError);  
+    _ws.onMessage.listen(onMessage);
   }
   
   /**
@@ -46,6 +46,10 @@ class WebSocketDataSource extends GenericEventTarget<DataSourceEventListener> im
    */
   void send(String p) {
     _ws.send(p);
+  }
+  
+  void sendArrayBuffer(ArrayBuffer buf) {
+    throw new UnimplementedError("Sending ArrayBuffer is not implemented");
   }
   
   /**
