@@ -33,9 +33,6 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
   /** Id of the user */
   String get id => _id;
   
-  // TODO: Should really figure out howto use GenericEventTarget here
-  Map<String, List> _listeners;
-  
   /**
    * Constructor
    */
@@ -51,9 +48,6 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     
     /* Subscribe to peer manager events */
     _peerManager.subscribe(this);
-    
-    // TODO: Should really figure out howto use GenericEventTarget here
-    _listeners = new Map<String, List>();
     
     /* listen to ping, and respond with pong */
     registerHandler(PacketType.PING, handlePing);
@@ -75,14 +69,6 @@ class SignalHandler extends PacketHandler implements PeerPacketEventListener, Da
     
     /* Listen for id, all users in channel you joined */
     registerHandler(PacketType.ID, handleId);
-  }
-  
-  // TODO: Should really figure out howto use GenericEventTarget here
-  void subscribe(String type, Object listener) {
-    if (!_listeners.containsKey(type))
-      _listeners[type] = new List<Object>();
-    
-    _listeners[type].add(listener);
   }
   
   /**

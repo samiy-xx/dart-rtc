@@ -66,27 +66,3 @@ class PacketType {
   const PacketType(this.type);
   String toString() => type;
 }
-
-@deprecated
-class PacketType_old {
-  static final String HELO = "helo";
-  static final String DESC = "desc";
-  static final String ICE = "ice";
-  static final String USER = "user";
-  static final String BYE = "bye";
-  static final String JOIN = "join";
-  static final String ID = "id";
-  static final String ACK = "ack";
-  static final String PING = "ping";
-  static final String PONG = "pong";
-  static final String CONNECTED = "connected";
-  static final String RANDOM = "random";
-  static final String DISCONNECTED = "disconnected";
-  static final String QUEUE = "queue";
-  static final String CHANNEL = "channel";
-  static final String FILE = "file";
-  static final String NEXT = "next";
-  static final String REMOVEUSER = "removeuser";
-  static final String USERMESSAGE = "usermessage";
-  static final String CHANNELMESSAGE = "channelmessage";
-}
