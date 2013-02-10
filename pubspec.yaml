@@ -1,0 +1,6 @@
+name:  dart-rtc
+description:  A Dart WebRTC client and server library
+
+#dependencies:
+#  js: any
+#  unittest: any
