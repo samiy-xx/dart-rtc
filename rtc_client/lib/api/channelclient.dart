@@ -113,26 +113,23 @@ class ChannelClient implements RtcClient, DataSourceConnectionEventListener,
     
     if (!_requireAudio && !_requireVideo && !_requireDataChannel)
       throw new Exception("Must require either video, audio or data channel");
-    // TODO: Fix this madness
-    if (_requireAudio || _requireVideo) {
-      if (_ms == null) {
-        if (MediaStream.supported) {
-          window.navigator.getUserMedia(audio: _requireAudio, video: _requireVideo).then((LocalMediaStream stream) {
-            _ms = stream;
-            _pm.setLocalStream(stream);
-            _sh.initialize();
-            _initializedController.add(new InitializedEvent(true, "UserMedia received"));
-            _mediaStreamAvailableStreamController.add(new MediaStreamAvailableEvent(stream, null));
-          });
-        } else {
-          _initializedController.add(new InitializedEvent(false, "Failed to get user media"));
-        }
+    
+    // If either is set, need to request permission for audio and/or video
+    if ((_requireAudio || _requireVideo) && _ms == null) { 
+      if (MediaStream.supported) {
+        window.navigator.getUserMedia(audio: _requireAudio, video: _requireVideo).then((LocalMediaStream stream) {
+          _ms = stream;
+          _pm.setLocalStream(stream);
+          _sh.initialize();
+          _initializedController.add(new InitializedEvent(true, "UserMedia received"));
+          _mediaStreamAvailableStreamController.add(new MediaStreamAvailableEvent(stream, null));
+        });
       } else {
-        _sh.initialize();
+        _initializedController.add(new InitializedEvent(false, "Failed to get user media"));
+        return;
       }
-    } else {
-      _sh.initialize();
     }
+    _sh.initialize();
   }
   
   /**

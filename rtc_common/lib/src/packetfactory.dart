@@ -3,6 +3,8 @@ part of rtc_common;
 /**
  * PacketFactory
  * Static methods to create Packet from Map or JSON String
+ * 
+ * TODO: Use mirrors?
  */
 class PacketFactory {
   
@@ -10,8 +12,7 @@ class PacketFactory {
    * Returns a packet from string input
    */
   static Packet getPacketFromString(String input) {
-    try {
-      
+    try { 
       return getPacketFromMap(json.parse(input));
     } on InvalidPacketException catch(e) {
       throw e;
@@ -22,7 +23,6 @@ class PacketFactory {
    * Returns a packet from map
    */
   static Packet getPacketFromMap(Map m) {
-    
     try {
       String pt = m['packetType'];
       Packet p;
@@ -82,7 +82,7 @@ class PacketFactory {
           p = RemoveUserCommand.fromMap(m);
           break;
         default:
-          print("(packetfactory.dart) Unkown packet");
+          new Logger().Warning("(packetfactory.dart) Unkown packet");
           p = null;
           break;
       }

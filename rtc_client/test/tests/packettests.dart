@@ -6,15 +6,12 @@ class PacketTests {
       String packetId;
       Packet defaultPacket;
       
-      
       setUp(() {
         defaultPacket = new ByePacket.With(packetId);
-        
       });
       
       tearDown(() {
         defaultPacket = null;
-        
       });
       
       
